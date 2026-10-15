@@ -44,3 +44,10 @@ export type TimelineItemProps = {
 };
 
 export type StatusRequisicao = 'idle' | 'loading' | 'success' | 'error';
+
+export type FeedbackType = {
+  id?: string;
+  nome: string;
+  email: string;
+  mensagem: string;
+};
