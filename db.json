@@ -1,0 +1,16 @@
+{
+  "feedbacks": [
+    {
+      "id": "1",
+      "nome": "João Silva",
+      "email": "joao@email.com",
+      "mensagem": "Achei a solução Lobo-guará Tech muito inovadora!"
+    },
+    {
+      "id": "2",
+      "nome": "Maria Souza",
+      "email": "maria@email.com",
+      "mensagem": "Excelente protótipo, a interface está muito amigável."
+    }
+  ]
+}
