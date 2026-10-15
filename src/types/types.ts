@@ -1,19 +1,27 @@
-export type CabecalhoProps = {
-  titulo: string;
-};
 
-export type ItemMenu = {
+export interface CabecalhoProps {
+  titulo: string;
+}
+
+export interface ItemMenu {
   label: string;
   path: string;
-};
+}
 
-export type IntegranteProps = {
+
+export type IntegranteBase = {
   nome: string;
   rm: string;
   turma: string;
   foto: string;
+};
+
+export type RedesSociais = {
   linkedin: string;
   github: string;
+};
+
+export type IntegranteProps = IntegranteBase & RedesSociais & {
   funcao?: string;
   contribuicao?: string[];
 };
@@ -34,3 +42,5 @@ export type TimelineItemProps = {
   titulo: string;
   descricao: string;
 };
+
+export type StatusRequisicao = 'idle' | 'loading' | 'success' | 'error';
