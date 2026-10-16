@@ -79,7 +79,6 @@ const listaEtapas: EtapaRanking[] = [
 export default function Solucao() {
   return (
     <main className="w-full max-w-6xl mx-auto px-4 py-12 flex flex-col items-center">
-      {/* Apresentação do Ecossistema */}
       <section className="text-center max-w-4xl mx-auto mb-12">
         <div className="relative z-10 bg-[#fffbed]/90 rounded-2xl px-6 py-6 md:px-10 md:py-8 border border-[#ead9b6]/40 shadow-sm">
           <h1 className="text-3xl sm:text-4xl font-extrabold text-stone-900 mb-4">

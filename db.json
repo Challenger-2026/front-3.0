@@ -1,11 +1,4 @@
 {
-  "feedbacks": [
-    {
-      "nome": "Eduardo Lima de Souza",
-      "email": "limaedu1107@gmail.com",
-      "mensagem": "Que site incrivel!",
-      "id": "U0_p5iuqTJ0"
-    }
-  ],
+  "feedbacks": [],
   "$schema": "./node_modules/json-server/schema.json"
 }
