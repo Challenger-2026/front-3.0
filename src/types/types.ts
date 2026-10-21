@@ -55,6 +55,8 @@ export type FeedbackType = {
 // ===== Simulador do protótipo Soul Up =====
 
 export type TelaId =
+  | 'login'
+  | 'cadastro'
   | 'inicio'
   | 'comunidades'
   | 'nova-postagem'

@@ -2,6 +2,7 @@ import { useSimulador } from '../../hooks/useSimulador';
 import TelaInicio from './telas/TelaInicio';
 import TelaPerfil from './telas/TelaPerfil';
 import TelaEmConstrucao from './telas/TelaEmConstrucao';
+import TelaLogin from './telas/TelaLogin';
 
 export default function TelaAtual() {
   const { telaAtual, loading, error, carregarDados } = useSimulador();
@@ -22,6 +23,8 @@ export default function TelaAtual() {
   }
 
   switch (telaAtual) {
+    case 'login':
+      return <TelaLogin />;
     case 'inicio':
       return <TelaInicio />;
     case 'perfil':

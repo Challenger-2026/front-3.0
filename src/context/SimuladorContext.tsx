@@ -1,4 +1,5 @@
 import { createContext, useState, useEffect, useCallback } from 'react';
+import { mensagemDoErro } from '../utils/erros';
 import type { ReactNode } from 'react';
 import type {
   SimuladorContextType,
@@ -16,18 +17,12 @@ import { complementosUsuario } from '../data/complementosUsuario';
 // Dados públicos do app, carregados ao abrir o simulador (antes do login)
 const buscarDados = () => Promise.all([api.getUsuarios(), api.getComunidades(), api.getPostagens()]);
 
-const MENSAGEM_ERRO = 'Não foi possível carregar os dados do Soul Up. Verifique se a API está rodando.';
-
-// Falha de conexão (TypeError do fetch) usa a mensagem padrão; erro da API mostra a mensagem dela
-const mensagemDoErro = (err: unknown) =>
-  err instanceof Error && !(err instanceof TypeError) ? err.message : MENSAGEM_ERRO;
-
 // eslint-disable-next-line react-refresh/only-export-components
 export const SimuladorContext = createContext<SimuladorContextType | undefined>(undefined);
 
 export const SimuladorProvider = ({ children }: { children: ReactNode }) => {
   // ----- Navegação entre telas -----
-  const [historico, setHistorico] = useState<TelaId[]>(['inicio']);
+  const [historico, setHistorico] = useState<TelaId[]>(['login']);
 
   const telaAtual = historico[historico.length - 1];
 
@@ -44,8 +39,11 @@ export const SimuladorProvider = ({ children }: { children: ReactNode }) => {
     setHistorico((anterior) => (anterior.length > 1 ? anterior.slice(0, -1) : anterior));
   }, []);
 
+    // Reiniciar a simulação = sair da conta e voltar ao login
   const reiniciar = useCallback(() => {
-    setHistorico(['inicio']);
+    setUsuario(null);
+    setMinhasComunidades([]);
+    setHistorico(['login']);
   }, []);
 
   // ----- Dados vindos da API -----

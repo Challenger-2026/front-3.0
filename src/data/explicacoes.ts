@@ -1,13 +1,35 @@
 import type { Explicacao, TelaId } from '../types/types';
 
 export const explicacoes: Record<TelaId, Explicacao> = {
+    login: {
+    titulo: 'Login',
+    descricao:
+      'Porta de entrada do app. O usuário entra com o nome de usuário e a senha; a API confere os dados e devolve o perfil, sem CPF e sem senha.',
+    destaques: [
+      'POST /usuarios/login com username e senha',
+      'Erro genérico "Usuário ou senha inválidos": não revela qual campo está errado',
+      'Quem acabou de se cadastrar já entra com o próprio login',
+    ],
+    proximaAcao: 'Entre com anacarol e a senha soulup123, ou crie um cadastro.',
+  },
+  cadastro: {
+    titulo: 'Cadastro',
+    descricao:
+      'Cria a conta no Soul Up. Todo usuário novo começa com perfil Comum, 0 pontos e nível 1.',
+    destaques: [
+      'POST /usuarios com nome, CPF, e-mail, username, senha e data de nascimento',
+      'CPF, e-mail e username não podem se repetir: a API responde 409',
+      'Depois do cadastro o usuário já entra e segue para o onboarding',
+    ],
+    proximaAcao: 'Preencha os dados para criar a conta.',
+  },
   inicio: {
     titulo: 'Feed (tela inicial)',
     descricao:
       'É o ponto de partida do usuário no Soul Up. Mostra as ações sustentáveis já validadas pela moderação, primeiro das comunidades de que ele participa.',
     destaques: [
       'Só aparecem postagens aprovadas: pendentes e rejeitadas ficam restritas ao autor',
-      'Selo "Validado" e pontos liberados em cada ação',
+      'Pontos liberados em cada ação aprovada',
       'Filtro entre "Minhas comunidades" e "Explorar tudo"',
     ],
     proximaAcao: 'Toque no botão + para registrar uma ação sustentável.',

@@ -23,8 +23,12 @@ const abasDireita: ItemAba[] = [
   { tela: 'perfil', label: 'Perfil', icone: <FiUser size={20} /> },
 ];
 
+// Login e cadastro aparecem sem o sino e sem a barra inferior
+const telasDeEntrada: TelaId[] = ['login', 'cadastro'];
+
 export default function AppSoulUp({ children }: AppSoulUpProps) {
   const { telaAtual, podeVoltar, irPara, voltar } = useSimulador();
+    const naEntrada = telasDeEntrada.includes(telaAtual);
 
   const renderAba = (aba: ItemAba) => (
     <button
@@ -65,14 +69,18 @@ export default function AppSoulUp({ children }: AppSoulUpProps) {
           </span>
         </div>
 
-        <button
-          type="button"
-          onClick={() => irPara('notificacoes')}
-          aria-label="Notificações"
-          className="grid h-9 w-9 place-items-center rounded-full border border-slate-200 cursor-pointer"
-        >
-          <FiBell size={16} />
-        </button>
+        {naEntrada ? (
+          <span className="h-9 w-9" />
+        ) : (
+          <button
+            type="button"
+            onClick={() => irPara('notificacoes')}
+            aria-label="Notificações"
+            className="grid h-9 w-9 place-items-center rounded-full border border-slate-200 cursor-pointer"
+          >
+            <FiBell size={16} />
+          </button>
+        )}
       </header>
 
       {/* Conteúdo da tela (key reinicia a rolagem ao trocar de tela) */}
@@ -81,7 +89,8 @@ export default function AppSoulUp({ children }: AppSoulUpProps) {
       </main>
 
       {/* Barra inferior */}
-      <nav className="border-t border-slate-200 bg-white px-3 pt-2 pb-4">
+      {!naEntrada && (
+        <nav className="border-t border-slate-200 bg-white px-3 pt-2 pb-4">
         <div className="grid grid-cols-5 items-end">
           {abasEsquerda.map(renderAba)}
           <div className="flex justify-center">
@@ -97,6 +106,7 @@ export default function AppSoulUp({ children }: AppSoulUpProps) {
           {abasDireita.map(renderAba)}
         </div>
       </nav>
+      )}
     </div>
   );
 }
