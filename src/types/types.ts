@@ -157,6 +157,9 @@ export type UsuarioAtualizacao = Pick<UsuarioCadastro, 'nmCompleto' | 'username'
 // POST /usuarios/login
 export type LoginRequest = Pick<UsuarioCadastro, 'username' | 'senha'>;
 
+// Usuário como fica guardado no db.json (o Java também guarda cpf e senha, mas não devolve)
+export type UsuarioDoBanco = Usuario & Pick<UsuarioCadastro, 'cpf' | 'senha'>;
+
 export type DadosSimulador = {
   usuario: Usuario | null;
   usuarios: Usuario[];
