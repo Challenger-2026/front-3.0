@@ -1,7 +1,6 @@
 import type { TipoPerfil } from '../../../types/types';
 import { useSimulador } from '../../../hooks/useSimulador';
 import { buscarCategoriaPorPontos } from '../../../data/categorias';
-import { complementosUsuario } from '../../../data/complementosUsuario';
 import { formatarPontos } from '../../../utils/formatadores';
 import PostagemCard from '../PostagemCard';
 
@@ -12,11 +11,11 @@ const nomesPerfil: Record<TipoPerfil, string> = {
 };
 
 export default function TelaPerfil() {
-  const { usuario, postagens, comunidades } = useSimulador();
+  const { usuario, postagens, comunidades, complementos } = useSimulador();
 
   if (!usuario) return null;
 
-  const complemento = complementosUsuario[usuario.id];
+  const complemento = complementos[usuario.id];
 
   const minhas = postagens
     .filter((p) => p.idUsuario === usuario.id)

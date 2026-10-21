@@ -73,6 +73,7 @@ export type NavegacaoSimulador = {
   telaAtual: TelaId;
   podeVoltar: boolean;
   irPara: (tela: TelaId) => void;
+  trocarPara: (tela: TelaId) => void;
   voltar: () => void;
   reiniciar: () => void;
 };
@@ -161,14 +162,21 @@ export type LoginRequest = Pick<UsuarioCadastro, 'username' | 'senha'>;
 export type UsuarioDoBanco = Usuario & Pick<UsuarioCadastro, 'cpf' | 'senha'>;
 
 export type DadosSimulador = {
-  usuario: Usuario | null;
+  usuario: Usuario | null; // usuário logado (null antes do login)
   usuarios: Usuario[];
   comunidades: Comunidade[];
   minhasComunidades: Comunidade[];
   postagens: Postagem[];
+  complementos: Record<number, ComplementoUsuario>; // bio e interesses por id de usuário
   loading: boolean;
   error: string | null;
   carregarDados: () => Promise<void>;
 };
 
-export type SimuladorContextType = NavegacaoSimulador & DadosSimulador;
+export type AcoesUsuario = {
+  entrar: (dados: LoginRequest) => Promise<void>;
+  cadastrar: (dados: UsuarioCadastro) => Promise<void>;
+  salvarComplemento: (idUsuario: number, complemento: ComplementoUsuario) => void;
+};
+
+export type SimuladorContextType = NavegacaoSimulador & DadosSimulador & AcoesUsuario;

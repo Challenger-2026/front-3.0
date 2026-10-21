@@ -1,20 +1,20 @@
 import { createContext, useState, useEffect, useCallback } from 'react';
 import type { ReactNode } from 'react';
-import type { SimuladorContextType, TelaId, Usuario, Comunidade, Postagem } from '../types/types';
+import type {
+  SimuladorContextType,
+  TelaId,
+  Usuario,
+  Comunidade,
+  Postagem,
+  ComplementoUsuario,
+  LoginRequest,
+  UsuarioCadastro,
+} from '../types/types';
 import { api } from '../services/api';
+import { complementosUsuario } from '../data/complementosUsuario';
 
-// Usuário de demonstração do simulador
-const USUARIO_ATUAL_ID = 1;
-
-// Busca tudo o que o simulador precisa ao mesmo tempo
-const buscarDados = () =>
-  Promise.all([
-    api.getUsuario(USUARIO_ATUAL_ID),
-    api.getUsuarios(),
-    api.getComunidades(),
-    api.getComunidadesDoUsuario(USUARIO_ATUAL_ID),
-    api.getPostagens(),
-  ]);
+// Dados públicos do app, carregados ao abrir o simulador (antes do login)
+const buscarDados = () => Promise.all([api.getUsuarios(), api.getComunidades(), api.getPostagens()]);
 
 const MENSAGEM_ERRO = 'Não foi possível carregar os dados do Soul Up. Verifique se a API está rodando.';
 
@@ -35,6 +35,11 @@ export const SimuladorProvider = ({ children }: { children: ReactNode }) => {
     setHistorico((anterior) => [...anterior, tela]);
   }, []);
 
+  // Troca de tela sem deixar caminho de volta (ex.: depois do login)
+  const trocarPara = useCallback((tela: TelaId) => {
+    setHistorico([tela]);
+  }, []);
+
   const voltar = useCallback(() => {
     setHistorico((anterior) => (anterior.length > 1 ? anterior.slice(0, -1) : anterior));
   }, []);
@@ -52,16 +57,17 @@ export const SimuladorProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Bio e interesses não existem na API: começam com os fixos e recebem os do onboarding
+  const [complementos, setComplementos] = useState<Record<number, ComplementoUsuario>>(complementosUsuario);
+
   // Usado pelo botão "Tentar novamente"
   const carregarDados = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
-      const [dadosUsuario, dadosUsuarios, dadosComunidades, dadosMinhas, dadosPostagens] = await buscarDados();
-      setUsuario(dadosUsuario);
+      const [dadosUsuarios, dadosComunidades, dadosPostagens] = await buscarDados();
       setUsuarios(dadosUsuarios);
       setComunidades(dadosComunidades);
-      setMinhasComunidades(dadosMinhas);
       setPostagens(dadosPostagens);
     } catch (err) {
       setError(mensagemDoErro(err));
@@ -75,11 +81,9 @@ export const SimuladorProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [dadosUsuario, dadosUsuarios, dadosComunidades, dadosMinhas, dadosPostagens] = await buscarDados();
-        setUsuario(dadosUsuario);
+        const [dadosUsuarios, dadosComunidades, dadosPostagens] = await buscarDados();
         setUsuarios(dadosUsuarios);
         setComunidades(dadosComunidades);
-        setMinhasComunidades(dadosMinhas);
         setPostagens(dadosPostagens);
       } catch (err) {
         setError(mensagemDoErro(err));
@@ -92,12 +96,34 @@ export const SimuladorProvider = ({ children }: { children: ReactNode }) => {
     fetchData();
   }, []);
 
+  // ----- Ações do usuário -----
+  // Sem try/catch: se a API recusar, o erro sobe para a tela mostrar no formulário
+
+  const entrar = useCallback(async (dados: LoginRequest) => {
+    const logado = await api.login(dados);
+    const minhas = await api.getComunidadesDoUsuario(logado.id);
+    setUsuario(logado);
+    setMinhasComunidades(minhas);
+  }, []);
+
+  const cadastrar = useCallback(async (dados: UsuarioCadastro) => {
+    const novo = await api.cadastrarUsuario(dados);
+    setUsuarios((anteriores) => [...anteriores, novo]);
+    setUsuario(novo); // depois do cadastro o usuário já entra
+    setMinhasComunidades([]); // conta nova ainda não participa de comunidades
+  }, []);
+
+  const salvarComplemento = useCallback((idUsuario: number, complemento: ComplementoUsuario) => {
+    setComplementos((anteriores) => ({ ...anteriores, [idUsuario]: complemento }));
+  }, []);
+
   return (
     <SimuladorContext.Provider
       value={{
         telaAtual,
         podeVoltar: historico.length > 1,
         irPara,
+        trocarPara,
         voltar,
         reiniciar,
         usuario,
@@ -105,9 +131,13 @@ export const SimuladorProvider = ({ children }: { children: ReactNode }) => {
         comunidades,
         minhasComunidades,
         postagens,
+        complementos,
         loading,
         error,
         carregarDados,
+        entrar,
+        cadastrar,
+        salvarComplemento,
       }}
     >
       {children}
