@@ -4,6 +4,7 @@ import TelaPerfil from './telas/TelaPerfil';
 import TelaEmConstrucao from './telas/TelaEmConstrucao';
 import TelaLogin from './telas/TelaLogin';
 import TelaCadastro from './telas/TelaCadastro';
+import TelaOnboarding from './telas/TelaOnboarding';
 
 export default function TelaAtual() {
   const { telaAtual, loading, error, carregarDados } = useSimulador();
@@ -28,6 +29,8 @@ export default function TelaAtual() {
       return <TelaLogin />;
     case 'cadastro':
       return <TelaCadastro />;
+    case 'onboarding':
+      return <TelaOnboarding />;  
     case 'inicio':
       return <TelaInicio />;
     case 'perfil':
