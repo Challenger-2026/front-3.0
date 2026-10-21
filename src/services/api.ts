@@ -1,9 +1,10 @@
 import type { FeedbackType, Usuario, Comunidade, Postagem, ErroApi, Membro } from '../types/types';
 
-const BASE_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:5000';
+const JSON_SERVER_URL = 'http://localhost:5000';
+const BASE_URL = import.meta.env.VITE_API_URL ?? JSON_SERVER_URL;
 
-// Sem VITE_API_URL, o front está usando o json-server (db.json)
-const USANDO_JSON_SERVER = !import.meta.env.VITE_API_URL;
+// Apontando para a porta 5000, o front está usando o json-server (db.json)
+const USANDO_JSON_SERVER = BASE_URL === JSON_SERVER_URL;
 
 // Se a resposta não for ok, repassa a mensagem "erro" da API Java
 const tratarResposta = async <T>(response: Response, mensagemPadrao: string): Promise<T> => {
