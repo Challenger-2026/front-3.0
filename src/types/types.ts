@@ -57,6 +57,7 @@ export type FeedbackType = {
 export type TelaId =
   | 'login'
   | 'cadastro'
+  | 'onboarding'
   | 'inicio'
   | 'comunidades'
   | 'nova-postagem'
@@ -133,6 +134,8 @@ export interface ErroApi {
 export interface ComplementoUsuario {
   bio: string;
   interesses: string[];
+  momento?: string;
+  objetivo?: string;
 }
 
 // Linha da coleção "membros" do db.json (imita a T_LGT_USUARIO_COMUNIDADE do Java)
@@ -178,6 +181,9 @@ export type DadosSimulador = {
 export type AcoesUsuario = {
   entrar: (dados: LoginRequest) => Promise<void>;
   cadastrar: (dados: UsuarioCadastro) => Promise<void>;
+  atualizarDados: (dados: UsuarioAtualizacao) => Promise<void>;
+  trocarPerfil: (tipoPerfil: TipoPerfil) => Promise<void>;
+  excluirConta: () => Promise<void>;
   salvarComplemento: (idUsuario: number, complemento: ComplementoUsuario) => void;
 };
 

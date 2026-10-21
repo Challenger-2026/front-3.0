@@ -10,6 +10,8 @@ import type {
   ComplementoUsuario,
   LoginRequest,
   UsuarioCadastro,
+  UsuarioAtualizacao,
+  TipoPerfil,
 } from '../types/types';
 import { api } from '../services/api';
 import { complementosUsuario } from '../data/complementosUsuario';
@@ -39,7 +41,38 @@ export const SimuladorProvider = ({ children }: { children: ReactNode }) => {
     setHistorico((anterior) => (anterior.length > 1 ? anterior.slice(0, -1) : anterior));
   }, []);
 
-    // Reiniciar a simulação = sair da conta e voltar ao login
+    // Troca o usuário logado e a cópia dele na lista de usuários
+  const aplicarUsuario = useCallback((atualizado: Usuario) => {
+    setUsuario(atualizado);
+    setUsuarios((anteriores) => anteriores.map((u) => (u.id === atualizado.id ? atualizado : u)));
+  }, []);
+
+  const atualizarDados = useCallback(
+    async (dados: UsuarioAtualizacao) => {
+      if (!usuario) return;
+      aplicarUsuario(await api.atualizarUsuario(usuario.id, dados));
+    },
+    [usuario, aplicarUsuario],
+  );
+
+  const trocarPerfil = useCallback(
+    async (tipoPerfil: TipoPerfil) => {
+      if (!usuario) return;
+      aplicarUsuario(await api.trocarPerfil(usuario.id, tipoPerfil));
+    },
+    [usuario, aplicarUsuario],
+  );
+
+  const excluirConta = useCallback(async () => {
+    if (!usuario) return;
+    await api.excluirUsuario(usuario.id);
+    setUsuarios((anteriores) => anteriores.filter((u) => u.id !== usuario.id));
+    setUsuario(null);
+    setMinhasComunidades([]);
+    setHistorico(['login']);
+  }, [usuario]);
+
+  // Reiniciar a simulação = sair da conta e voltar ao login
   const reiniciar = useCallback(() => {
     setUsuario(null);
     setMinhasComunidades([]);
@@ -135,6 +168,9 @@ export const SimuladorProvider = ({ children }: { children: ReactNode }) => {
         carregarDados,
         entrar,
         cadastrar,
+        atualizarDados,
+        trocarPerfil,
+        excluirConta,
         salvarComplemento,
       }}
     >

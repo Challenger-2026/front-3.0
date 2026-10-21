@@ -23,6 +23,17 @@ export const explicacoes: Record<TelaId, Explicacao> = {
     ],
     proximaAcao: 'Preencha os dados para criar a conta.',
   },
+    onboarding: {
+    titulo: 'Onboarding',
+    descricao:
+      'Três perguntas rápidas logo depois do cadastro: momento, objetivo e temas de interesse. As respostas personalizam o Perfil e as sugestões do app.',
+    destaques: [
+      'Respostas guardadas no front: a API Java não tem esses campos',
+      'Mínimo de 2 temas de interesse',
+      'Dá para pular agora e responder depois em Configurações',
+    ],
+    proximaAcao: 'Responda as três etapas ou toque em "Pular por agora".',
+  },
   inicio: {
     titulo: 'Feed (tela inicial)',
     descricao:
@@ -85,5 +96,27 @@ export const explicacoes: Record<TelaId, Explicacao> = {
       'Subida ou descida de divisão na liga semanal',
       'Aviso de inatividade para moderadores',
     ],
+  },
+    ajustes: {
+    titulo: 'Configurações',
+    descricao:
+      'Onde o usuário escolhe como participa do Soul Up: Comum, Criador ou Moderador. A troca é feita na API e vale na hora.',
+    destaques: [
+      'PUT /usuarios/{id}/perfil com o novo tipoPerfil',
+      'Criador com comunidades não pode deixar de ser Criador: a API responde 409',
+      'Acesso aos dados cadastrais e às respostas do onboarding',
+    ],
+    proximaAcao: 'Troque o tipo de perfil ou abra os dados cadastrais.',
+  },
+  dados: {
+    titulo: 'Dados cadastrais',
+    descricao:
+      'Edição de nome, nome de usuário e senha. CPF, e-mail e data de nascimento ficam bloqueados depois do cadastro.',
+    destaques: [
+      'PUT /usuarios/{id}: a API só aceita nome, username e senha',
+      'Username repetido é recusado com 409',
+      'Excluir conta: DELETE /usuarios/{id}, recusado com 409 se houver postagens ou comunidades vinculadas',
+    ],
+    proximaAcao: 'Altere seus dados e salve, ou teste a exclusão da conta.',
   },
 };
