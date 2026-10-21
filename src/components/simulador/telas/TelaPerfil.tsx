@@ -48,7 +48,7 @@ export default function TelaPerfil() {
         >
           <FiSettings size={16} />
         </button>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 pr-10">
           <span className="grid h-14 w-14 place-items-center rounded-full bg-[#4F46E5]/10 text-xl font-bold text-[#4F46E5]">
             {usuario.nmCompleto.charAt(0)}
           </span>

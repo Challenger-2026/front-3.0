@@ -2,6 +2,7 @@ import { useSimulador } from '../../hooks/useSimulador';
 import TelaInicio from './telas/TelaInicio';
 import TelaPerfil from './telas/TelaPerfil';
 import TelaAjustes from './telas/TelaAjustes';
+import TelaDados from './telas/TelaDados';
 import TelaEmConstrucao from './telas/TelaEmConstrucao';
 import TelaLogin from './telas/TelaLogin';
 import TelaCadastro from './telas/TelaCadastro';
@@ -37,7 +38,9 @@ export default function TelaAtual() {
     case 'perfil':
       return <TelaPerfil />;
     case 'ajustes':
-      return <TelaAjustes />;  
+      return <TelaAjustes />;
+    case 'dados':
+      return <TelaDados />;  
     default:
       return <TelaEmConstrucao />;
   }
