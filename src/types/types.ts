@@ -51,3 +51,88 @@ export type FeedbackType = {
   email: string;
   mensagem: string;
 };
+
+// ===== Simulador do protótipo Soul Up =====
+
+export type TelaId =
+  | 'inicio'
+  | 'comunidades'
+  | 'nova-postagem'
+  | 'carteira'
+  | 'perfil'
+  | 'notificacoes';
+
+export type Explicacao = {
+  titulo: string;
+  descricao: string;
+  destaques: string[];
+  proximaAcao?: string;
+};
+
+export type NavegacaoSimulador = {
+  telaAtual: TelaId;
+  podeVoltar: boolean;
+  irPara: (tela: TelaId) => void;
+  voltar: () => void;
+  reiniciar: () => void;
+};
+
+// ===== Dados do Soul Up =====
+
+export type PerfilTipo = 'Comum' | 'Criador' | 'Moderador';
+export type StatusPostagem = 'Pendente' | 'Aprovado' | 'Rejeitado';
+export type CategoriaId = 'critico' | 'estrutural' | 'rotina';
+
+export type Usuario = {
+  id: string;
+  nome: string;
+  username: string;
+  email: string;
+  pontos: number;
+  perfil: PerfilTipo;
+  bio?: string;
+  interesses?: string[];
+};
+
+export type Comunidade = {
+  id: string;
+  nome: string;
+  descricao: string;
+  criadorId: string;
+  membros: number;
+  entrou: boolean;
+  plano: 'Free' | 'Premium';
+  verificada: boolean;
+};
+
+export type Postagem = {
+  id: string;
+  conteudo: string;
+  status: StatusPostagem;
+  pontos: number;
+  comunidadeId: string;
+  autorId: string;
+  autorNome: string;
+  criadaEm: string;
+  categoriaSelecionada: CategoriaId;
+  categoriaId?: CategoriaId;
+  validado?: boolean;
+};
+
+export type Categoria = {
+  id: CategoriaId;
+  nome: string;
+  pontosAcao: number;
+  co2Kg: number;
+};
+
+export type DadosSimulador = {
+  usuario: Usuario | null;
+  comunidades: Comunidade[];
+  postagens: Postagem[];
+  loading: boolean;
+  error: string | null;
+  carregarDados: () => Promise<void>;
+};
+
+export type SimuladorContextType = NavegacaoSimulador & DadosSimulador;
