@@ -5,20 +5,20 @@ import PostagemCard from '../PostagemCard';
 type Aba = 'minhas' | 'todas';
 
 export default function TelaInicio() {
-  const { comunidades, postagens, irPara } = useSimulador();
+  const { usuarios, comunidades, minhasComunidades, postagens, irPara } = useSimulador();
   const [aba, setAba] = useState<Aba>('minhas');
 
-  const minhasComunidades = comunidades.filter((c) => c.entrou);
   const idsMinhas = minhasComunidades.map((c) => c.id);
 
-  // Feed público: só postagens aprovadas, mais recentes primeiro
+    // Feed público: só postagens aprovadas, mais recentes primeiro (id decrescente, a API não tem data)
   const aprovadas = postagens
-    .filter((p) => p.status === 'Aprovado')
-    .sort((a, b) => b.criadaEm.localeCompare(a.criadaEm));
+    .filter((p) => p.stValidacao === 'APROVADO')
+    .sort((a, b) => b.id - a.id);
 
-  const feed = aba === 'minhas' ? aprovadas.filter((p) => idsMinhas.includes(p.comunidadeId)) : aprovadas;
+  const feed = aba === 'minhas' ? aprovadas.filter((p) => idsMinhas.includes(p.idComunidade)) : aprovadas;
 
-  const nomeDaComunidade = (id: string) => comunidades.find((c) => c.id === id)?.nome;
+  const nomeDaComunidade = (id: number) => comunidades.find((c) => c.id === id)?.nmComunidade;
+  const nomeDoAutor = (id: number) => usuarios.find((u) => u.id === id)?.nmCompleto;
 
   return (
     <>
@@ -59,7 +59,12 @@ export default function TelaInicio() {
 
       <div className="space-y-3">
         {feed.map((postagem) => (
-          <PostagemCard key={postagem.id} postagem={postagem} nomeComunidade={nomeDaComunidade(postagem.comunidadeId)} />
+                    <PostagemCard
+            key={postagem.id}
+            postagem={postagem}
+            nomeAutor={nomeDoAutor(postagem.idUsuario)}
+            nomeComunidade={nomeDaComunidade(postagem.idComunidade)}
+          />
         ))}
 
         {feed.length === 0 && (
