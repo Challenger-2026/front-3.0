@@ -10,6 +10,7 @@ export default function Header({ titulo }: CabecalhoProps) {
     { label: 'FAQ', path: '/faq' },
     { label: 'Integrantes', path: '/integrantes' },
     { label: 'Contato', path: '/contato' },
+    { label: 'Simulador', path: '/simulador' },
   ];
 
 

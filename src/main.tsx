@@ -11,6 +11,7 @@ import Sobre from './pages/Sobre';
 import Faq from './pages/Faq';
 import Integrantes from './pages/Integrantes';
 import Contato from './pages/Contato';
+import Simulador from './pages/Simulador';
 
 const router = createBrowserRouter([
   {
@@ -24,6 +25,7 @@ const router = createBrowserRouter([
       { path: '/integrantes', element: <Integrantes /> },
       { path: '/integrantes/:rm', element: <Integrantes /> },
       { path: '/contato', element: <Contato /> },
+      { path: '/simulador', element: <Simulador /> },
       { path: '*', element: <Navigate to="/" replace /> },
     ],
   },
