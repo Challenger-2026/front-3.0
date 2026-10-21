@@ -1,5 +1,4 @@
 import { createContext, useState, useEffect, useCallback } from 'react';
-import { mensagemDoErro } from '../utils/erros';
 import type { ReactNode } from 'react';
 import type {
   SimuladorContextType,
@@ -15,6 +14,7 @@ import type {
 } from '../types/types';
 import { api } from '../services/api';
 import { complementosUsuario } from '../data/complementosUsuario';
+import { mensagemDoErro } from '../utils/erros';
 
 // Dados públicos do app, carregados ao abrir o simulador (antes do login)
 const buscarDados = () => Promise.all([api.getUsuarios(), api.getComunidades(), api.getPostagens()]);
@@ -39,44 +39,6 @@ export const SimuladorProvider = ({ children }: { children: ReactNode }) => {
 
   const voltar = useCallback(() => {
     setHistorico((anterior) => (anterior.length > 1 ? anterior.slice(0, -1) : anterior));
-  }, []);
-
-    // Troca o usuário logado e a cópia dele na lista de usuários
-  const aplicarUsuario = useCallback((atualizado: Usuario) => {
-    setUsuario(atualizado);
-    setUsuarios((anteriores) => anteriores.map((u) => (u.id === atualizado.id ? atualizado : u)));
-  }, []);
-
-  const atualizarDados = useCallback(
-    async (dados: UsuarioAtualizacao) => {
-      if (!usuario) return;
-      aplicarUsuario(await api.atualizarUsuario(usuario.id, dados));
-    },
-    [usuario, aplicarUsuario],
-  );
-
-  const trocarPerfil = useCallback(
-    async (tipoPerfil: TipoPerfil) => {
-      if (!usuario) return;
-      aplicarUsuario(await api.trocarPerfil(usuario.id, tipoPerfil));
-    },
-    [usuario, aplicarUsuario],
-  );
-
-  const excluirConta = useCallback(async () => {
-    if (!usuario) return;
-    await api.excluirUsuario(usuario.id);
-    setUsuarios((anteriores) => anteriores.filter((u) => u.id !== usuario.id));
-    setUsuario(null);
-    setMinhasComunidades([]);
-    setHistorico(['login']);
-  }, [usuario]);
-
-  // Reiniciar a simulação = sair da conta e voltar ao login
-  const reiniciar = useCallback(() => {
-    setUsuario(null);
-    setMinhasComunidades([]);
-    setHistorico(['login']);
   }, []);
 
   // ----- Dados vindos da API -----
@@ -142,6 +104,44 @@ export const SimuladorProvider = ({ children }: { children: ReactNode }) => {
     setUsuarios((anteriores) => [...anteriores, novo]);
     setUsuario(novo); // depois do cadastro o usuário já entra
     setMinhasComunidades([]); // conta nova ainda não participa de comunidades
+  }, []);
+
+  // Troca o usuário logado e a cópia dele na lista de usuários
+  const aplicarUsuario = useCallback((atualizado: Usuario) => {
+    setUsuario(atualizado);
+    setUsuarios((anteriores) => anteriores.map((u) => (u.id === atualizado.id ? atualizado : u)));
+  }, []);
+
+  const atualizarDados = useCallback(
+    async (dados: UsuarioAtualizacao) => {
+      if (!usuario) return;
+      aplicarUsuario(await api.atualizarUsuario(usuario.id, dados));
+    },
+    [usuario, aplicarUsuario],
+  );
+
+  const trocarPerfil = useCallback(
+    async (tipoPerfil: TipoPerfil) => {
+      if (!usuario) return;
+      aplicarUsuario(await api.trocarPerfil(usuario.id, tipoPerfil));
+    },
+    [usuario, aplicarUsuario],
+  );
+
+  const excluirConta = useCallback(async () => {
+    if (!usuario) return;
+    await api.excluirUsuario(usuario.id);
+    setUsuarios((anteriores) => anteriores.filter((u) => u.id !== usuario.id));
+    setUsuario(null);
+    setMinhasComunidades([]);
+    setHistorico(['login']);
+  }, [usuario]);
+
+  // Reiniciar a simulação = sair da conta e voltar ao login
+  const reiniciar = useCallback(() => {
+    setUsuario(null);
+    setMinhasComunidades([]);
+    setHistorico(['login']);
   }, []);
 
   const salvarComplemento = useCallback((idUsuario: number, complemento: ComplementoUsuario) => {
