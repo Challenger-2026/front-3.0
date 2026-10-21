@@ -139,6 +139,24 @@ export interface Membro {
   idComunidade: number;
 }
 
+// ===== Corpo das requisições de usuário (mesmos campos dos DTOs de entrada do Java) =====
+
+// POST /usuarios
+export interface UsuarioCadastro {
+  nmCompleto: string;
+  cpf: string;
+  email: string;
+  username: string;
+  senha: string;
+  dtNascimento: string; // "AAAA-MM-DD", formato do input type="date"
+}
+
+// PUT /usuarios/{id} — o Java só deixa editar estes três
+export type UsuarioAtualizacao = Pick<UsuarioCadastro, 'nmCompleto' | 'username' | 'senha'>;
+
+// POST /usuarios/login
+export type LoginRequest = Pick<UsuarioCadastro, 'username' | 'senha'>;
+
 export type DadosSimulador = {
   usuario: Usuario | null;
   usuarios: Usuario[];

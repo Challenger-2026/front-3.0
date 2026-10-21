@@ -1,11 +1,11 @@
 {
   "feedbacks": [],
-  "usuarios": [
-    { "id": 1, "nmCompleto": "Ana Carolina Ribeiro", "email": "ana@soulup.io", "username": "anacarol", "dtNascimento": "2001-03-12", "sdPonto": 148.6, "nvUsuario": 1, "tipoPerfil": "CRIADOR" },
-    { "id": 2, "nmCompleto": "Bruno Tavares", "email": "bruno@soulup.io", "username": "brunot", "dtNascimento": "1998-07-25", "sdPonto": 312.4, "nvUsuario": 1, "tipoPerfil": "CRIADOR" },
-    { "id": 3, "nmCompleto": "Carla Menezes", "email": "carla@soulup.io", "username": "carlam", "dtNascimento": "1995-11-03", "sdPonto": 264.1, "nvUsuario": 1, "tipoPerfil": "MODERADOR" },
-    { "id": 4, "nmCompleto": "Diego Almeida", "email": "diego@soulup.io", "username": "diegoa", "dtNascimento": "2000-01-18", "sdPonto": 205.9, "nvUsuario": 1, "tipoPerfil": "COMUM" },
-    { "id": 5, "nmCompleto": "Eduarda Lopes", "email": "duda@soulup.io", "username": "dudalopes", "dtNascimento": "2003-05-30", "sdPonto": 97.3, "nvUsuario": 1, "tipoPerfil": "COMUM" }
+    "usuarios": [
+    { "id": 1, "nmCompleto": "Ana Carolina Ribeiro", "cpf": "11122233344", "email": "ana@soulup.io", "username": "anacarol", "senha": "soulup123", "dtNascimento": "2001-03-12", "sdPonto": 148.6, "nvUsuario": 1, "tipoPerfil": "CRIADOR" },
+    { "id": 2, "nmCompleto": "Bruno Tavares", "cpf": "22233344455", "email": "bruno@soulup.io", "username": "brunot", "senha": "soulup123", "dtNascimento": "1998-07-25", "sdPonto": 312.4, "nvUsuario": 1, "tipoPerfil": "CRIADOR" },
+    { "id": 3, "nmCompleto": "Carla Menezes", "cpf": "33344455566", "email": "carla@soulup.io", "username": "carlam", "senha": "soulup123", "dtNascimento": "1995-11-03", "sdPonto": 264.1, "nvUsuario": 1, "tipoPerfil": "MODERADOR" },
+    { "id": 4, "nmCompleto": "Diego Almeida", "cpf": "44455566677", "email": "diego@soulup.io", "username": "diegoa", "senha": "soulup123", "dtNascimento": "2000-01-18", "sdPonto": 205.9, "nvUsuario": 1, "tipoPerfil": "COMUM" },
+    { "id": 5, "nmCompleto": "Eduarda Lopes", "cpf": "55566677788", "email": "duda@soulup.io", "username": "dudalopes", "senha": "soulup123", "dtNascimento": "2003-05-30", "sdPonto": 97.3, "nvUsuario": 1, "tipoPerfil": "COMUM" }
   ],
   "comunidades": [
     { "id": 1, "nmComunidade": "Ciclo Zero Resíduo", "descricao": "Pessoas reduzindo lixo doméstico com compostagem e reuso criativo.", "dtCriacao": "2026-03-10", "idCriador": 1, "idRanking": null },
