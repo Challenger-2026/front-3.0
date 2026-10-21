@@ -4,13 +4,23 @@ import type { SimuladorContextType, TelaId, Usuario, Comunidade, Postagem } from
 import { api } from '../services/api';
 
 // Usuário de demonstração do simulador
-const USUARIO_ATUAL_ID = 'u1';
+const USUARIO_ATUAL_ID = 1;
 
-// Busca usuário, comunidades e postagens ao mesmo tempo
+// Busca tudo o que o simulador precisa ao mesmo tempo
 const buscarDados = () =>
-  Promise.all([api.getUsuario(USUARIO_ATUAL_ID), api.getComunidades(), api.getPostagens()]);
+  Promise.all([
+    api.getUsuario(USUARIO_ATUAL_ID),
+    api.getUsuarios(),
+    api.getComunidades(),
+    api.getComunidadesDoUsuario(USUARIO_ATUAL_ID),
+    api.getPostagens(),
+  ]);
 
 const MENSAGEM_ERRO = 'Não foi possível carregar os dados do Soul Up. Verifique se a API está rodando.';
+
+// Falha de conexão (TypeError do fetch) usa a mensagem padrão; erro da API mostra a mensagem dela
+const mensagemDoErro = (err: unknown) =>
+  err instanceof Error && !(err instanceof TypeError) ? err.message : MENSAGEM_ERRO;
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const SimuladorContext = createContext<SimuladorContextType | undefined>(undefined);
@@ -35,7 +45,9 @@ export const SimuladorProvider = ({ children }: { children: ReactNode }) => {
 
   // ----- Dados vindos da API -----
   const [usuario, setUsuario] = useState<Usuario | null>(null);
+  const [usuarios, setUsuarios] = useState<Usuario[]>([]);
   const [comunidades, setComunidades] = useState<Comunidade[]>([]);
+  const [minhasComunidades, setMinhasComunidades] = useState<Comunidade[]>([]);
   const [postagens, setPostagens] = useState<Postagem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -45,12 +57,14 @@ export const SimuladorProvider = ({ children }: { children: ReactNode }) => {
     setLoading(true);
     setError(null);
     try {
-      const [dadosUsuario, dadosComunidades, dadosPostagens] = await buscarDados();
+      const [dadosUsuario, dadosUsuarios, dadosComunidades, dadosMinhas, dadosPostagens] = await buscarDados();
       setUsuario(dadosUsuario);
+      setUsuarios(dadosUsuarios);
       setComunidades(dadosComunidades);
+      setMinhasComunidades(dadosMinhas);
       setPostagens(dadosPostagens);
     } catch (err) {
-      setError(MENSAGEM_ERRO);
+      setError(mensagemDoErro(err));
       console.error(err);
     } finally {
       setLoading(false);
@@ -61,12 +75,14 @@ export const SimuladorProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [dadosUsuario, dadosComunidades, dadosPostagens] = await buscarDados();
+        const [dadosUsuario, dadosUsuarios, dadosComunidades, dadosMinhas, dadosPostagens] = await buscarDados();
         setUsuario(dadosUsuario);
+        setUsuarios(dadosUsuarios);
         setComunidades(dadosComunidades);
+        setMinhasComunidades(dadosMinhas);
         setPostagens(dadosPostagens);
       } catch (err) {
-        setError(MENSAGEM_ERRO);
+        setError(mensagemDoErro(err));
         console.error(err);
       } finally {
         setLoading(false);
@@ -85,7 +101,9 @@ export const SimuladorProvider = ({ children }: { children: ReactNode }) => {
         voltar,
         reiniciar,
         usuario,
+        usuarios,
         comunidades,
+        minhasComunidades,
         postagens,
         loading,
         error,

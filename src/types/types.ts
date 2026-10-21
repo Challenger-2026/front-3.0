@@ -135,7 +135,9 @@ export interface Membro {
 
 export type DadosSimulador = {
   usuario: Usuario | null;
+  usuarios: Usuario[];
   comunidades: Comunidade[];
+  minhasComunidades: Comunidade[];
   postagens: Postagem[];
   loading: boolean;
   error: string | null;
