@@ -1,28 +1,41 @@
 {
   "feedbacks": [],
   "usuarios": [
-    { "id": "u1", "nome": "Ana Carolina Ribeiro", "username": "anacarol", "email": "ana@soulup.io", "pontos": 148.6, "perfil": "Criador", "bio": "Composteira em casa e bike no dia a dia.", "interesses": ["Resíduos e reciclagem", "Mobilidade urbana"] },
-    { "id": "u2", "nome": "Bruno Tavares", "username": "brunot", "email": "bruno@soulup.io", "pontos": 312.4, "perfil": "Criador", "bio": "Criador do Pedala Sampa. Bike todo dia.", "interesses": ["Mobilidade urbana", "Consumo consciente"] },
-    { "id": "u3", "nome": "Carla Menezes", "username": "carlam", "email": "carla@soulup.io", "pontos": 264.1, "perfil": "Moderador", "bio": "Modero mutirões e cuido de nascentes.", "interesses": ["Natureza e reflorestamento", "Água"] },
-    { "id": "u4", "nome": "Diego Almeida", "username": "diegoa", "email": "diego@soulup.io", "pontos": 205.9, "perfil": "Comum", "bio": "Mutirões de limpeza nos fins de semana.", "interesses": ["Natureza e reflorestamento"] },
-    { "id": "u5", "nome": "Eduarda Lopes", "username": "dudalopes", "email": "duda@soulup.io", "pontos": 97.3, "perfil": "Comum", "bio": "Feira orgânica e zero desperdício.", "interesses": ["Alimentação sustentável"] }
+    { "id": 1, "nmCompleto": "Ana Carolina Ribeiro", "email": "ana@soulup.io", "username": "anacarol", "dtNascimento": "2001-03-12", "sdPonto": 148.6, "nvUsuario": 1, "tipoPerfil": "CRIADOR" },
+    { "id": 2, "nmCompleto": "Bruno Tavares", "email": "bruno@soulup.io", "username": "brunot", "dtNascimento": "1998-07-25", "sdPonto": 312.4, "nvUsuario": 1, "tipoPerfil": "CRIADOR" },
+    { "id": 3, "nmCompleto": "Carla Menezes", "email": "carla@soulup.io", "username": "carlam", "dtNascimento": "1995-11-03", "sdPonto": 264.1, "nvUsuario": 1, "tipoPerfil": "MODERADOR" },
+    { "id": 4, "nmCompleto": "Diego Almeida", "email": "diego@soulup.io", "username": "diegoa", "dtNascimento": "2000-01-18", "sdPonto": 205.9, "nvUsuario": 1, "tipoPerfil": "COMUM" },
+    { "id": 5, "nmCompleto": "Eduarda Lopes", "email": "duda@soulup.io", "username": "dudalopes", "dtNascimento": "2003-05-30", "sdPonto": 97.3, "nvUsuario": 1, "tipoPerfil": "COMUM" }
   ],
   "comunidades": [
-    { "id": "c1", "nome": "Ciclo Zero Resíduo", "descricao": "Pessoas reduzindo lixo doméstico com compostagem e reuso criativo.", "criadorId": "u1", "membros": 1240, "entrou": true, "plano": "Premium", "verificada": true },
-    { "id": "c2", "nome": "Pedala Sampa", "descricao": "Trocar o carro pela bike nos deslocamentos do dia a dia.", "criadorId": "u2", "membros": 862, "entrou": true, "plano": "Free", "verificada": false },
-    { "id": "c3", "nome": "Guardiões da Mata", "descricao": "Plantio, recuperação de nascentes e mutirões de limpeza em áreas verdes.", "criadorId": "u3", "membros": 2103, "entrou": false, "plano": "Free", "verificada": false },
-    { "id": "c4", "nome": "Água que Fica", "descricao": "Metas semanais de economia de água em casa e no trabalho.", "criadorId": "u3", "membros": 478, "entrou": false, "plano": "Free", "verificada": false },
-    { "id": "c5", "nome": "SOS Mata Atlântica", "descricao": "Restauração da Mata Atlântica, plantio de nativas e monitoramento de rios.", "criadorId": "u2", "membros": 4210, "entrou": false, "plano": "Premium", "verificada": true }
+    { "id": 1, "nmComunidade": "Ciclo Zero Resíduo", "descricao": "Pessoas reduzindo lixo doméstico com compostagem e reuso criativo.", "dtCriacao": "2026-03-10", "idCriador": 1, "idRanking": null },
+    { "id": 2, "nmComunidade": "Pedala Sampa", "descricao": "Trocar o carro pela bike nos deslocamentos do dia a dia.", "dtCriacao": "2026-04-02", "idCriador": 2, "idRanking": null },
+    { "id": 3, "nmComunidade": "Guardiões da Mata", "descricao": "Plantio, recuperação de nascentes e mutirões de limpeza em áreas verdes.", "dtCriacao": "2026-04-21", "idCriador": 3, "idRanking": null },
+    { "id": 4, "nmComunidade": "Água que Fica", "descricao": "Metas semanais de economia de água em casa e no trabalho.", "dtCriacao": "2026-06-08", "idCriador": 3, "idRanking": null },
+    { "id": 5, "nmComunidade": "SOS Mata Atlântica", "descricao": "Restauração da Mata Atlântica, plantio de nativas e monitoramento de rios.", "dtCriacao": "2026-07-15", "idCriador": 2, "idRanking": null }
+  ],
+  "membros": [
+    { "id": 1, "idUsuario": 1, "idComunidade": 1 },
+    { "id": 2, "idUsuario": 2, "idComunidade": 2 },
+    { "id": 3, "idUsuario": 3, "idComunidade": 3 },
+    { "id": 4, "idUsuario": 3, "idComunidade": 4 },
+    { "id": 5, "idUsuario": 2, "idComunidade": 5 },
+    { "id": 6, "idUsuario": 1, "idComunidade": 2 },
+    { "id": 7, "idUsuario": 2, "idComunidade": 1 },
+    { "id": 8, "idUsuario": 4, "idComunidade": 3 },
+    { "id": 9, "idUsuario": 4, "idComunidade": 5 },
+    { "id": 10, "idUsuario": 5, "idComunidade": 4 },
+    { "id": 11, "idUsuario": 5, "idComunidade": 1 }
   ],
   "postagens": [
-    { "id": "p1", "conteudo": "Montei uma composteira no apartamento e desviei 6 kg de resíduo orgânico do aterro nesta semana.", "status": "Aprovado", "pontos": 6.6, "comunidadeId": "c1", "autorId": "u1", "autorNome": "Ana Carolina Ribeiro", "criadaEm": "2026-10-14", "categoriaSelecionada": "estrutural", "categoriaId": "estrutural", "validado": true },
-    { "id": "p2", "conteudo": "Fui de bicicleta ao trabalho todos os dias úteis, 12 km por dia.", "status": "Pendente", "pontos": 0, "comunidadeId": "c2", "autorId": "u1", "autorNome": "Ana Carolina Ribeiro", "criadaEm": "2026-10-20", "categoriaSelecionada": "rotina" },
-    { "id": "p5", "conteudo": "Comprei garrafa reutilizável, mas não mantive o hábito nem 2 dias.", "status": "Rejeitado", "pontos": 0, "comunidadeId": "c1", "autorId": "u1", "autorNome": "Ana Carolina Ribeiro", "criadaEm": "2026-10-17", "categoriaSelecionada": "rotina" },
-    { "id": "p7", "conteudo": "Fechei o mês com 240 km pedalados no trajeto casa-trabalho, zero combustível.", "status": "Aprovado", "pontos": 6.6, "comunidadeId": "c2", "autorId": "u2", "autorNome": "Bruno Tavares", "criadaEm": "2026-10-19", "categoriaSelecionada": "estrutural", "categoriaId": "estrutural", "validado": true },
-    { "id": "p8", "conteudo": "Mutirão de plantio: 120 mudas nativas na margem do córrego, com 30 voluntários.", "status": "Aprovado", "pontos": 10.6, "comunidadeId": "c3", "autorId": "u4", "autorNome": "Diego Almeida", "criadaEm": "2026-10-18", "categoriaSelecionada": "critico", "categoriaId": "critico", "validado": true },
-    { "id": "p9", "conteudo": "Instalei captação de água da chuva e reduzi 30% da conta no mês.", "status": "Aprovado", "pontos": 6.6, "comunidadeId": "c4", "autorId": "u5", "autorNome": "Eduarda Lopes", "criadaEm": "2026-10-20", "categoriaSelecionada": "estrutural", "categoriaId": "estrutural", "validado": true },
-    { "id": "p30", "conteudo": "Plantei 15 mudas de ipê e pau-brasil no mutirão do parque municipal.", "status": "Aprovado", "pontos": 10.6, "comunidadeId": "c5", "autorId": "u4", "autorNome": "Diego Almeida", "criadaEm": "2026-10-18", "categoriaSelecionada": "critico", "categoriaId": "critico", "validado": true },
-    { "id": "p32", "conteudo": "Compostei os resíduos orgânicos da semana inteira.", "status": "Aprovado", "pontos": 6.6, "comunidadeId": "c1", "autorId": "u2", "autorNome": "Bruno Tavares", "criadaEm": "2026-10-19", "categoriaSelecionada": "estrutural", "categoriaId": "estrutural", "validado": true }
+    { "id": 1, "ctTexto": "Montei uma composteira no apartamento e desviei 6 kg de resíduo orgânico do aterro nesta semana.", "ctUrl": "", "stValidacao": "APROVADO", "ptGerado": 6.6, "idUsuario": 1, "idComunidade": 1 },
+    { "id": 2, "ctTexto": "Comprei garrafa reutilizável, mas não mantive o hábito nem 2 dias.", "ctUrl": "", "stValidacao": "REJEITADO", "ptGerado": 1.6, "idUsuario": 1, "idComunidade": 1 },
+    { "id": 3, "ctTexto": "Mutirão de plantio: 120 mudas nativas na margem do córrego, com 30 voluntários.", "ctUrl": "", "stValidacao": "APROVADO", "ptGerado": 10.6, "idUsuario": 4, "idComunidade": 3 },
+    { "id": 4, "ctTexto": "Plantei 15 mudas de ipê e pau-brasil no mutirão do parque municipal.", "ctUrl": "", "stValidacao": "APROVADO", "ptGerado": 10.6, "idUsuario": 4, "idComunidade": 5 },
+    { "id": 5, "ctTexto": "Fechei o mês com 240 km pedalados no trajeto casa-trabalho, zero combustível.", "ctUrl": "", "stValidacao": "APROVADO", "ptGerado": 6.6, "idUsuario": 2, "idComunidade": 2 },
+    { "id": 6, "ctTexto": "Compostei os resíduos orgânicos da semana inteira.", "ctUrl": "", "stValidacao": "APROVADO", "ptGerado": 6.6, "idUsuario": 2, "idComunidade": 1 },
+    { "id": 7, "ctTexto": "Fui de bicicleta ao trabalho todos os dias úteis, 12 km por dia.", "ctUrl": "", "stValidacao": "PENDENTE", "ptGerado": 1.6, "idUsuario": 1, "idComunidade": 2 },
+    { "id": 8, "ctTexto": "Instalei captação de água da chuva e reduzi 30% da conta no mês.", "ctUrl": "", "stValidacao": "APROVADO", "ptGerado": 6.6, "idUsuario": 5, "idComunidade": 4 }
   ],
   "$schema": "./node_modules/json-server/schema.json"
 }
