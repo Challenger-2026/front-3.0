@@ -126,6 +126,12 @@ export interface ErroApi {
   status: number;
 }
 
+// Dados que a API não guarda e ficam fixos no front
+export interface ComplementoUsuario {
+  bio: string;
+  interesses: string[];
+}
+
 // Linha da coleção "membros" do db.json (imita a T_LGT_USUARIO_COMUNIDADE do Java)
 export interface Membro {
   id: number;

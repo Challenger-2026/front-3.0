@@ -7,3 +7,6 @@ export const categorias: Categoria[] = [
 ];
 
 export const buscarCategoria = (id: CategoriaId) => categorias.find((c) => c.id === id);
+
+// A API só devolve ptGerado; a categoria é deduzida pelos pontos (10.6 / 6.6 / 1.6)
+export const buscarCategoriaPorPontos = (ptGerado: number) => categorias.find((c) => c.pontosAcao === ptGerado);
