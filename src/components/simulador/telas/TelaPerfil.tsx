@@ -1,3 +1,4 @@
+import { FiSettings } from 'react-icons/fi';
 import type { TipoPerfil } from '../../../types/types';
 import { useSimulador } from '../../../hooks/useSimulador';
 import { buscarCategoriaPorPontos } from '../../../data/categorias';
@@ -11,7 +12,7 @@ const nomesPerfil: Record<TipoPerfil, string> = {
 };
 
 export default function TelaPerfil() {
-  const { usuario, postagens, comunidades, complementos } = useSimulador();
+  const { usuario, postagens, comunidades, complementos, irPara } = useSimulador();
 
   if (!usuario) return null;
 
@@ -38,7 +39,15 @@ export default function TelaPerfil() {
 
   return (
     <>
-      <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+      <section className="relative rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+        <button
+          type="button"
+          onClick={() => irPara('ajustes')}
+          aria-label="Configurações"
+          className="absolute right-3 top-3 grid h-9 w-9 place-items-center rounded-full border border-slate-200 text-slate-500 cursor-pointer"
+        >
+          <FiSettings size={16} />
+        </button>
         <div className="flex items-center gap-3">
           <span className="grid h-14 w-14 place-items-center rounded-full bg-[#4F46E5]/10 text-xl font-bold text-[#4F46E5]">
             {usuario.nmCompleto.charAt(0)}

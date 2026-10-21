@@ -63,6 +63,8 @@ export type TelaId =
   | 'nova-postagem'
   | 'carteira'
   | 'perfil'
+  | 'ajustes'
+  | 'dados'
   | 'notificacoes';
 
 export type Explicacao = {
