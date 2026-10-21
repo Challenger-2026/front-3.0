@@ -77,47 +77,41 @@ export type NavegacaoSimulador = {
   reiniciar: () => void;
 };
 
-// ===== Dados do Soul Up =====
+// ===== Dados do Soul Up (mesmos nomes da API Java) =====
 
-export type PerfilTipo = 'Comum' | 'Criador' | 'Moderador';
-export type StatusPostagem = 'Pendente' | 'Aprovado' | 'Rejeitado';
+export type TipoPerfil = 'COMUM' | 'CRIADOR' | 'MODERADOR';
+export type StatusValidacao = 'PENDENTE' | 'APROVADO' | 'REJEITADO';
 export type CategoriaId = 'critico' | 'estrutural' | 'rotina';
 
-export type Usuario = {
-  id: string;
-  nome: string;
-  username: string;
+export interface Usuario {
+  id: number;
+  nmCompleto: string;
   email: string;
-  pontos: number;
-  perfil: PerfilTipo;
-  bio?: string;
-  interesses?: string[];
-};
+  username: string;
+  dtNascimento: string; // LocalDate do Java chega como "AAAA-MM-DD"
+  sdPonto: number;
+  nvUsuario: number;
+  tipoPerfil: TipoPerfil;
+}
 
-export type Comunidade = {
-  id: string;
-  nome: string;
+export interface Comunidade {
+  id: number;
+  nmComunidade: string;
   descricao: string;
-  criadorId: string;
-  membros: number;
-  entrou: boolean;
-  plano: 'Free' | 'Premium';
-  verificada: boolean;
-};
+  dtCriacao: string;
+  idCriador: number;
+  idRanking: number | null; // null enquanto a comunidade não tem ranking
+}
 
-export type Postagem = {
-  id: string;
-  conteudo: string;
-  status: StatusPostagem;
-  pontos: number;
-  comunidadeId: string;
-  autorId: string;
-  autorNome: string;
-  criadaEm: string;
-  categoriaSelecionada: CategoriaId;
-  categoriaId?: CategoriaId;
-  validado?: boolean;
-};
+export interface Postagem {
+  id: number;
+  ctTexto: string;
+  ctUrl: string;
+  stValidacao: StatusValidacao;
+  ptGerado: number;
+  idUsuario: number;
+  idComunidade: number;
+}
 
 export type Categoria = {
   id: CategoriaId;
@@ -125,6 +119,12 @@ export type Categoria = {
   pontosAcao: number;
   co2Kg: number;
 };
+
+// Formato de erro devolvido pela API Java
+export interface ErroApi {
+  erro: string;
+  status: number;
+}
 
 export type DadosSimulador = {
   usuario: Usuario | null;
