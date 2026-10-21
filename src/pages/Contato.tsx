@@ -204,7 +204,6 @@ export default function Contato() {
                   <FaTrash />
                 </button>
                 <h3 className="font-bold text-stone-900">{f.nome}</h3>
-                <p className="text-xs text-stone-500 mb-3">{f.email}</p>
                 <p className="text-sm text-stone-700 leading-relaxed">"{f.mensagem}"</p>
               </article>
             ))}

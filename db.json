@@ -1,4 +1,11 @@
 {
-  "feedbacks": [],
+  "feedbacks": [
+    {
+      "nome": "assad",
+      "email": "asddsa@g.com",
+      "mensagem": "adsdadsadasd",
+      "id": "l_V7VTYotJk"
+    }
+  ],
   "$schema": "./node_modules/json-server/schema.json"
 }
