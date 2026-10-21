@@ -1,5 +1,5 @@
 import { SimuladorProvider } from '../context/SimuladorContext';
-import Celular from '../components/simulador/telas/Celular';
+import Celular from '../components/simulador/Celular';
 import AppSoulUp from '../components/simulador/AppSoulUp';
 import PainelExplicacao from '../components/simulador/PainelExplicacao';
 import TelaEmConstrucao from '../components/simulador/telas/TelaEmConstrucao';
