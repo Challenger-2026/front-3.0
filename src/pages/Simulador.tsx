@@ -2,7 +2,7 @@ import { SimuladorProvider } from '../context/SimuladorContext';
 import Celular from '../components/simulador/Celular';
 import AppSoulUp from '../components/simulador/AppSoulUp';
 import PainelExplicacao from '../components/simulador/PainelExplicacao';
-import TelaEmConstrucao from '../components/simulador/telas/TelaEmConstrucao';
+import TelaAtual from '../components/simulador/TelaAtual';
 
 export default function Simulador() {
   return (
@@ -18,11 +18,11 @@ export default function Simulador() {
         <div className="grid items-start gap-8 lg:grid-cols-2">
           <Celular>
             <AppSoulUp>
-              <TelaEmConstrucao />
+              <TelaAtual/>
             </AppSoulUp>
           </Celular>
 
-          <PainelExplicacao />
+          <PainelExplicacao/>
         </div>
       </div>
     </SimuladorProvider>

@@ -2,13 +2,13 @@ import type { Explicacao, TelaId } from '../types/types';
 
 export const explicacoes: Record<TelaId, Explicacao> = {
   inicio: {
-    titulo: 'Tela inicial',
+    titulo: 'Feed (tela inicial)',
     descricao:
-      'É o ponto de partida do usuário no Soul Up. Reúne o saldo de pontos, o CO₂ evitado e o andamento da meta de sequência.',
+      'É o ponto de partida do usuário no Soul Up. Mostra as ações sustentáveis já validadas pela moderação, primeiro das comunidades de que ele participa.',
     destaques: [
-      'Saldo de pontos e equivalente em kg de CO₂ evitado',
-      'Progresso da meta pessoal de 7, 15 ou 30 dias',
-      'Atalhos para ranking, metas e sugestões "Para você"',
+      'Só aparecem postagens aprovadas: pendentes e rejeitadas ficam restritas ao autor',
+      'Selo "Validado" e pontos liberados em cada ação',
+      'Filtro entre "Minhas comunidades" e "Explorar tudo"',
     ],
     proximaAcao: 'Toque no botão + para registrar uma ação sustentável.',
   },
@@ -44,14 +44,14 @@ export const explicacoes: Record<TelaId, Explicacao> = {
     ],
     proximaAcao: 'Escolha um benefício para resgatar.',
   },
-  perfil: {
+    perfil: {
     titulo: 'Perfil',
     descricao:
-      'Dados do usuário, tipo de perfil (Comum, Moderador ou Criador), distintivos conquistados e configurações de privacidade.',
+      'Resumo do impacto do usuário: tipo de perfil (Comum, Moderador ou Criador), pontos, ações validadas e quanto CO₂ ele já evitou.',
     destaques: [
-      'Distintivos mensais com animais da fauna brasileira em risco de extinção',
-      'Candidatura para se tornar moderador',
-      'Privacidade e pedido de exclusão de dados (LGPD)',
+      'CO₂ evitado calculado pela categoria de cada ação aprovada',
+      'Ações aguardando validação da moderação às cegas',
+      'Comunidades criadas, quando o perfil é Criador',
     ],
   },
   notificacoes: {
