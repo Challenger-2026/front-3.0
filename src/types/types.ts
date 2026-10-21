@@ -51,3 +51,28 @@ export type FeedbackType = {
   email: string;
   mensagem: string;
 };
+
+// ===== Simulador do protótipo Soul Up =====
+
+export type TelaId =
+  | 'inicio'
+  | 'comunidades'
+  | 'nova-postagem'
+  | 'carteira'
+  | 'perfil'
+  | 'notificacoes';
+
+export type Explicacao = {
+  titulo: string;
+  descricao: string;
+  destaques: string[];
+  proximaAcao?: string;
+};
+
+export type SimuladorContextType = {
+  telaAtual: TelaId;
+  podeVoltar: boolean;
+  irPara: (tela: TelaId) => void;
+  voltar: () => void;
+  reiniciar: () => void;
+};
