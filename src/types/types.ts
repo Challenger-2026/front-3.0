@@ -126,6 +126,13 @@ export interface ErroApi {
   status: number;
 }
 
+// Linha da coleção "membros" do db.json (imita a T_LGT_USUARIO_COMUNIDADE do Java)
+export interface Membro {
+  id: number;
+  idUsuario: number;
+  idComunidade: number;
+}
+
 export type DadosSimulador = {
   usuario: Usuario | null;
   comunidades: Comunidade[];
