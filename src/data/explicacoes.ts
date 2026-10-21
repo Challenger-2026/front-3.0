@@ -1,13 +1,46 @@
 import type { Explicacao, TelaId } from '../types/types';
 
 export const explicacoes: Record<TelaId, Explicacao> = {
+    login: {
+    titulo: 'Login',
+    descricao:
+      'Porta de entrada do app. O usuário entra com o nome de usuário e a senha; a API confere os dados e devolve o perfil, sem CPF e sem senha.',
+    destaques: [
+      'POST /usuarios/login com username e senha',
+      'Erro genérico "Usuário ou senha inválidos": não revela qual campo está errado',
+      'Quem acabou de se cadastrar já entra com o próprio login',
+    ],
+    proximaAcao: 'Entre com anacarol e a senha soulup123, ou crie um cadastro.',
+  },
+  cadastro: {
+    titulo: 'Cadastro',
+    descricao:
+      'Cria a conta no Soul Up. Todo usuário novo começa com perfil Comum, 0 pontos e nível 1.',
+    destaques: [
+      'POST /usuarios com nome, CPF, e-mail, username, senha e data de nascimento',
+      'CPF, e-mail e username não podem se repetir: a API responde 409',
+      'Depois do cadastro o usuário já entra e segue para o onboarding',
+    ],
+    proximaAcao: 'Preencha os dados para criar a conta.',
+  },
+    onboarding: {
+    titulo: 'Onboarding',
+    descricao:
+      'Três perguntas rápidas logo depois do cadastro: momento, objetivo e temas de interesse. As respostas personalizam o Perfil e as sugestões do app.',
+    destaques: [
+      'Respostas guardadas no front: a API Java não tem esses campos',
+      'Mínimo de 2 temas de interesse',
+      'Dá para pular agora e responder depois em Configurações',
+    ],
+    proximaAcao: 'Responda as três etapas ou toque em "Pular por agora".',
+  },
   inicio: {
     titulo: 'Feed (tela inicial)',
     descricao:
       'É o ponto de partida do usuário no Soul Up. Mostra as ações sustentáveis já validadas pela moderação, primeiro das comunidades de que ele participa.',
     destaques: [
       'Só aparecem postagens aprovadas: pendentes e rejeitadas ficam restritas ao autor',
-      'Selo "Validado" e pontos liberados em cada ação',
+      'Pontos liberados em cada ação aprovada',
       'Filtro entre "Minhas comunidades" e "Explorar tudo"',
     ],
     proximaAcao: 'Toque no botão + para registrar uma ação sustentável.',
@@ -63,5 +96,27 @@ export const explicacoes: Record<TelaId, Explicacao> = {
       'Subida ou descida de divisão na liga semanal',
       'Aviso de inatividade para moderadores',
     ],
+  },
+    ajustes: {
+    titulo: 'Configurações',
+    descricao:
+      'Onde o usuário escolhe como participa do Soul Up: Comum, Criador ou Moderador. A troca é feita na API e vale na hora.',
+    destaques: [
+      'PUT /usuarios/{id}/perfil com o novo tipoPerfil',
+      'Criador com comunidades não pode deixar de ser Criador: a API responde 409',
+      'Acesso aos dados cadastrais e às respostas do onboarding',
+    ],
+    proximaAcao: 'Troque o tipo de perfil ou abra os dados cadastrais.',
+  },
+  dados: {
+    titulo: 'Dados cadastrais',
+    descricao:
+      'Edição de nome, nome de usuário e senha. CPF, e-mail e data de nascimento ficam bloqueados depois do cadastro.',
+    destaques: [
+      'PUT /usuarios/{id}: a API só aceita nome, username e senha',
+      'Username repetido é recusado com 409',
+      'Excluir conta: DELETE /usuarios/{id}, recusado com 409 se houver postagens ou comunidades vinculadas',
+    ],
+    proximaAcao: 'Altere seus dados e salve, ou teste a exclusão da conta.',
   },
 };

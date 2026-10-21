@@ -55,11 +55,16 @@ export type FeedbackType = {
 // ===== Simulador do protótipo Soul Up =====
 
 export type TelaId =
+  | 'login'
+  | 'cadastro'
+  | 'onboarding'
   | 'inicio'
   | 'comunidades'
   | 'nova-postagem'
   | 'carteira'
   | 'perfil'
+  | 'ajustes'
+  | 'dados'
   | 'notificacoes';
 
 export type Explicacao = {
@@ -73,51 +78,46 @@ export type NavegacaoSimulador = {
   telaAtual: TelaId;
   podeVoltar: boolean;
   irPara: (tela: TelaId) => void;
+  trocarPara: (tela: TelaId) => void;
   voltar: () => void;
   reiniciar: () => void;
 };
 
-// ===== Dados do Soul Up =====
+// ===== Dados do Soul Up (mesmos nomes da API Java) =====
 
-export type PerfilTipo = 'Comum' | 'Criador' | 'Moderador';
-export type StatusPostagem = 'Pendente' | 'Aprovado' | 'Rejeitado';
+export type TipoPerfil = 'COMUM' | 'CRIADOR' | 'MODERADOR';
+export type StatusValidacao = 'PENDENTE' | 'APROVADO' | 'REJEITADO';
 export type CategoriaId = 'critico' | 'estrutural' | 'rotina';
 
-export type Usuario = {
-  id: string;
-  nome: string;
-  username: string;
+export interface Usuario {
+  id: number;
+  nmCompleto: string;
   email: string;
-  pontos: number;
-  perfil: PerfilTipo;
-  bio?: string;
-  interesses?: string[];
-};
+  username: string;
+  dtNascimento: string; // LocalDate do Java chega como "AAAA-MM-DD"
+  sdPonto: number;
+  nvUsuario: number;
+  tipoPerfil: TipoPerfil;
+}
 
-export type Comunidade = {
-  id: string;
-  nome: string;
+export interface Comunidade {
+  id: number;
+  nmComunidade: string;
   descricao: string;
-  criadorId: string;
-  membros: number;
-  entrou: boolean;
-  plano: 'Free' | 'Premium';
-  verificada: boolean;
-};
+  dtCriacao: string;
+  idCriador: number;
+  idRanking: number | null; // null enquanto a comunidade não tem ranking
+}
 
-export type Postagem = {
-  id: string;
-  conteudo: string;
-  status: StatusPostagem;
-  pontos: number;
-  comunidadeId: string;
-  autorId: string;
-  autorNome: string;
-  criadaEm: string;
-  categoriaSelecionada: CategoriaId;
-  categoriaId?: CategoriaId;
-  validado?: boolean;
-};
+export interface Postagem {
+  id: number;
+  ctTexto: string;
+  ctUrl: string;
+  stValidacao: StatusValidacao;
+  ptGerado: number;
+  idUsuario: number;
+  idComunidade: number;
+}
 
 export type Categoria = {
   id: CategoriaId;
@@ -126,13 +126,67 @@ export type Categoria = {
   co2Kg: number;
 };
 
+// Formato de erro devolvido pela API Java
+export interface ErroApi {
+  erro: string;
+  status: number;
+}
+
+// Dados que a API não guarda e ficam fixos no front
+export interface ComplementoUsuario {
+  bio: string;
+  interesses: string[];
+  momento?: string;
+  objetivo?: string;
+}
+
+// Linha da coleção "membros" do db.json (imita a T_LGT_USUARIO_COMUNIDADE do Java)
+export interface Membro {
+  id: number;
+  idUsuario: number;
+  idComunidade: number;
+}
+
+// ===== Corpo das requisições de usuário (mesmos campos dos DTOs de entrada do Java) =====
+
+// POST /usuarios
+export interface UsuarioCadastro {
+  nmCompleto: string;
+  cpf: string;
+  email: string;
+  username: string;
+  senha: string;
+  dtNascimento: string; // "AAAA-MM-DD", formato do input type="date"
+}
+
+// PUT /usuarios/{id} — o Java só deixa editar estes três
+export type UsuarioAtualizacao = Pick<UsuarioCadastro, 'nmCompleto' | 'username' | 'senha'>;
+
+// POST /usuarios/login
+export type LoginRequest = Pick<UsuarioCadastro, 'username' | 'senha'>;
+
+// Usuário como fica guardado no db.json (o Java também guarda cpf e senha, mas não devolve)
+export type UsuarioDoBanco = Usuario & Pick<UsuarioCadastro, 'cpf' | 'senha'>;
+
 export type DadosSimulador = {
-  usuario: Usuario | null;
+  usuario: Usuario | null; // usuário logado (null antes do login)
+  usuarios: Usuario[];
   comunidades: Comunidade[];
+  minhasComunidades: Comunidade[];
   postagens: Postagem[];
+  complementos: Record<number, ComplementoUsuario>; // bio e interesses por id de usuário
   loading: boolean;
   error: string | null;
   carregarDados: () => Promise<void>;
 };
 
-export type SimuladorContextType = NavegacaoSimulador & DadosSimulador;
+export type AcoesUsuario = {
+  entrar: (dados: LoginRequest) => Promise<void>;
+  cadastrar: (dados: UsuarioCadastro) => Promise<void>;
+  atualizarDados: (dados: UsuarioAtualizacao) => Promise<void>;
+  trocarPerfil: (tipoPerfil: TipoPerfil) => Promise<void>;
+  excluirConta: () => Promise<void>;
+  salvarComplemento: (idUsuario: number, complemento: ComplementoUsuario) => void;
+};
+
+export type SimuladorContextType = NavegacaoSimulador & DadosSimulador & AcoesUsuario;

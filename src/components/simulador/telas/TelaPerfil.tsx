@@ -1,59 +1,77 @@
+import { FiSettings } from 'react-icons/fi';
+import type { TipoPerfil } from '../../../types/types';
 import { useSimulador } from '../../../hooks/useSimulador';
-import { buscarCategoria } from '../../../data/categorias';
+import { buscarCategoriaPorPontos } from '../../../data/categorias';
 import { formatarPontos } from '../../../utils/formatadores';
 import PostagemCard from '../PostagemCard';
 
+const nomesPerfil: Record<TipoPerfil, string> = {
+  COMUM: 'Comum',
+  CRIADOR: 'Criador',
+  MODERADOR: 'Moderador',
+};
+
 export default function TelaPerfil() {
-  const { usuario, postagens, comunidades } = useSimulador();
+  const { usuario, postagens, comunidades, complementos, irPara } = useSimulador();
 
   if (!usuario) return null;
 
+  const complemento = complementos[usuario.id];
+
   const minhas = postagens
-    .filter((p) => p.autorId === usuario.id)
-    .sort((a, b) => b.criadaEm.localeCompare(a.criadaEm));
-  const aprovadas = minhas.filter((p) => p.status === 'Aprovado');
-  const pendentes = minhas.filter((p) => p.status === 'Pendente');
-  const criadas = comunidades.filter((c) => c.criadorId === usuario.id);
+    .filter((p) => p.idUsuario === usuario.id)
+    .sort((a, b) => b.id - a.id);
+  const aprovadas = minhas.filter((p) => p.stValidacao === 'APROVADO');
+  const pendentes = minhas.filter((p) => p.stValidacao === 'PENDENTE');
+  const criadas = comunidades.filter((c) => c.idCriador === usuario.id);
 
   // CO₂ evitado = soma do fator de cada ação aprovada
   const co2Evitado = aprovadas.reduce(
-    (total, p) => total + (buscarCategoria(p.categoriaId ?? p.categoriaSelecionada)?.co2Kg ?? 0),
+    (total, p) => total + (buscarCategoriaPorPontos(p.ptGerado)?.co2Kg ?? 0),
     0,
   );
 
   const estatisticas = [
     { label: 'Publicações', valor: String(minhas.length) },
     { label: 'Validadas', valor: String(aprovadas.length) },
-    { label: 'Pontos', valor: formatarPontos(usuario.pontos) },
+    { label: 'Pontos', valor: formatarPontos(usuario.sdPonto) },
   ];
 
   return (
     <>
-      <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-        <div className="flex items-center gap-3">
+      <section className="relative rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+        <button
+          type="button"
+          onClick={() => irPara('ajustes')}
+          aria-label="Configurações"
+          className="absolute right-3 top-3 grid h-9 w-9 place-items-center rounded-full border border-slate-200 text-slate-500 cursor-pointer"
+        >
+          <FiSettings size={16} />
+        </button>
+        <div className="flex items-center gap-3 pr-10">
           <span className="grid h-14 w-14 place-items-center rounded-full bg-[#4F46E5]/10 text-xl font-bold text-[#4F46E5]">
-            {usuario.nome.charAt(0)}
+            {usuario.nmCompleto.charAt(0)}
           </span>
           <div>
-            <h1 className="text-lg font-bold">{usuario.nome}</h1>
+            <h1 className="text-lg font-bold">{usuario.nmCompleto}</h1>
             <p className="text-xs text-slate-500">@{usuario.username}</p>
             <span className="mt-1 inline-block rounded-full bg-slate-100 px-2.5 py-0.5 text-[11px] font-semibold">
-              {usuario.perfil}
+              {nomesPerfil[usuario.tipoPerfil]}
             </span>
           </div>
         </div>
 
         {criadas.length > 0 && (
           <p className="mt-2 text-[11px] text-slate-500">
-            Criadora de: <strong>{criadas.map((c) => c.nome).join(', ')}</strong>
+            Criadora de: <strong>{criadas.map((c) => c.nmComunidade).join(', ')}</strong>
           </p>
         )}
 
-        {usuario.bio && <p className="mt-3 text-sm">{usuario.bio}</p>}
+        {complemento && <p className="mt-3 text-sm">{complemento.bio}</p>}
 
-        {usuario.interesses && usuario.interesses.length > 0 && (
+        {complemento && complemento.interesses.length > 0 && (
           <div className="mt-2 flex flex-wrap gap-1">
-            {usuario.interesses.map((tema) => (
+            {complemento.interesses.map((tema) => (
               <span key={tema} className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] text-slate-500">
                 {tema}
               </span>
@@ -78,7 +96,7 @@ export default function TelaPerfil() {
       <h2 className="pt-1 text-sm font-bold uppercase tracking-wider text-slate-500">Minhas publicações</h2>
       <div className="space-y-3">
         {aprovadas.map((postagem) => (
-          <PostagemCard key={postagem.id} postagem={postagem} />
+          <PostagemCard key={postagem.id} postagem={postagem} nomeAutor={usuario.nmCompleto} />
         ))}
 
         {aprovadas.length === 0 && (
