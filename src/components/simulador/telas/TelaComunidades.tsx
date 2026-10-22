@@ -99,7 +99,7 @@ export default function TelaComunidades() {
 
               <div className="mt-3 flex items-center justify-between gap-2">
                 <span className="text-xs font-semibold text-slate-500">
-                  {total === undefined ? '…' : total} {total === 1 ? 'membro' : 'membros'} · desde{' '}
+                {total === undefined ? '…' : total} {total === 1 ? 'membro' : 'membros'} · criada em{' '}
                   {formatarData(c.dtCriacao)}
                 </span>
                 {participa ? (
