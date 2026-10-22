@@ -7,6 +7,7 @@ import { mensagemDoErro } from '../../../utils/erros';
 import { formatarData, formatarPontos } from '../../../utils/formatadores';
 import SelosComunidade from '../SelosComunidade';
 import PostagemCard from '../PostagemCard';
+import AdministrarComunidade from '../AdministrarComunidade';
 
 export default function TelaComunidade() {
   const {
@@ -145,6 +146,8 @@ export default function TelaComunidade() {
           </p>
         )}
       </section>
+
+      <AdministrarComunidade comunidade={comunidade} />
 
       {complemento.plano === 'Premium' && (
         <section className="rounded-2xl bg-[#4F46E5] p-4 text-white shadow-sm">
