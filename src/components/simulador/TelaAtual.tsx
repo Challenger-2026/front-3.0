@@ -22,6 +22,7 @@ import TelaContestacoes from './telas/TelaContestacoes';
 import TelaRevisoes from './telas/TelaRevisoes';
 import TelaRevisao from './telas/TelaRevisao';
 
+
 export default function TelaAtual() {
   const { telaAtual, loading, error, carregarDados } = useSimulador();
 

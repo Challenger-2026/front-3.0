@@ -305,6 +305,11 @@ export interface Contestacao {
   deltaReputacao?: number; // bônus ou penalidade aplicada ao moderador original
 }
 
+// Perfil de teste mostrado ao lado do simulador (login rápido com a senha padrão do db.json)
+export type PerfilTeste = Pick<Usuario, 'username'> & {
+  demonstra: string;
+};
+
 // Usuário como fica guardado no db.json (o Java também guarda cpf e senha, mas não devolve)
 export type UsuarioDoBanco = Usuario & Pick<UsuarioCadastro, 'cpf' | 'senha'>;
 
