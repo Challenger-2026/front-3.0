@@ -8,6 +8,7 @@ import { formatarData, formatarPontos } from '../../../utils/formatadores';
 import SelosComunidade from '../SelosComunidade';
 import PostagemCard from '../PostagemCard';
 import AdministrarComunidade from '../AdministrarComunidade';
+import MissoesComunidade from '../MissoesComunidade';
 
 export default function TelaComunidade() {
   const {
@@ -171,6 +172,8 @@ export default function TelaComunidade() {
           </p>
         </section>
       )}
+
+      <MissoesComunidade comunidade={comunidade} />
 
       {denunciadas > 0 && (
         <button
