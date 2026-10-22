@@ -145,6 +145,31 @@ export const prioridadeDenuncia = (quantidade: number): PrioridadeDenuncia => {
 export const postagemRemovida = (idPostagem: number, revisoes: RevisaoDenuncia[]) =>
   revisoes.some((r) => r.idPostagem === idPostagem && r.acao === 'REMOVER');
 
+// Fila de denúncias: mesmas regras da fila às cegas (sem as próprias postagens e sem as comunidades dele),
+// só postagens aprovadas ainda não revisadas e sem as denúncias feitas pelo próprio moderador.
+// Ordem: mais denúncias primeiro.
+export const denunciasNaFila = (
+  postagens: Postagem[],
+  denuncias: Denuncia[],
+  revisoes: RevisaoDenuncia[],
+  idModerador: number,
+  idsMinhasComunidades: number[],
+) =>
+  postagens
+    .filter(
+      (p) =>
+        p.stValidacao === 'APROVADO' &&
+        p.idUsuario !== idModerador &&
+        !idsMinhasComunidades.includes(p.idComunidade) &&
+        !revisoes.some((r) => r.idPostagem === p.id),
+    )
+    .map((postagem) => ({
+      postagem,
+      recebidas: denuncias.filter((d) => d.idPostagem === postagem.id && d.idUsuario !== idModerador),
+    }))
+    .filter((item) => item.recebidas.length > 0)
+    .sort((a, b) => b.recebidas.length - a.recebidas.length);
+
 // Só em postagens aprovadas (as únicas que aparecem no feed)
 export const denunciasIniciais: Denuncia[] = [
   { id: 1, idPostagem: 3, idUsuario: 2, motivo: 'Foto não corresponde à ação', detalhe: 'A foto mostra poucas mudas, não 120.' },

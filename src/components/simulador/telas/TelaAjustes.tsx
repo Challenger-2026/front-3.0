@@ -115,6 +115,16 @@ export default function TelaAjustes() {
           Interesses e sugestões para você
           <FiChevronRight className="text-slate-400" />
         </button>
+        {usuario.tipoPerfil === 'MODERADOR' && (
+          <button
+            type="button"
+            onClick={() => irPara('moderacao')}
+            className="flex w-full items-center justify-between rounded-2xl border border-slate-200 bg-white p-3 text-left text-sm font-semibold cursor-pointer"
+          >
+            Fila de moderação
+            <FiChevronRight className="text-slate-400" />
+          </button>
+        )}
         <button
           type="button"
           onClick={reiniciar}

@@ -14,6 +14,7 @@ import TelaEditarPostagem from './telas/TelaEditarPostagem';
 import TelaPontos from './telas/TelaPontos';
 import TelaMetas from './telas/TelaMetas';
 import TelaCandidatura from './telas/TelaCandidatura';
+import TelaModeracao from './telas/TelaModeracao';
 
 export default function TelaAtual() {
   const { telaAtual, loading, error, carregarDados } = useSimulador();
@@ -61,7 +62,9 @@ export default function TelaAtual() {
     case 'metas':
       return <TelaMetas />;
     case 'candidatura':
-      return <TelaCandidatura />;  
+      return <TelaCandidatura />;
+    case 'moderacao':
+      return <TelaModeracao />;  
     default:
       return <TelaEmConstrucao />;
   }
