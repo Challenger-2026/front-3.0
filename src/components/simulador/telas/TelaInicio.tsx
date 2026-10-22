@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { useSimulador } from '../../../hooks/useSimulador';
 import PostagemCard from '../PostagemCard';
+import ParaVoce from '../ParaVoce';
 
 type Aba = 'minhas' | 'todas';
 
 export default function TelaInicio() {
-  const { usuarios, comunidades, minhasComunidades, postagens, irPara } = useSimulador();
+  const { usuarios, comunidades, minhasComunidades, postagens, irPara, abrirComunidade } = useSimulador();
   const [aba, setAba] = useState<Aba>('minhas');
 
   const idsMinhas = minhasComunidades.map((c) => c.id);
@@ -36,6 +37,22 @@ export default function TelaInicio() {
         <span className="text-sm text-slate-500">Compartilhe uma ação sustentável…</span>
       </button>
 
+      {/* Atalhos para as comunidades de que o usuário participa */}
+      {minhasComunidades.length > 0 && (
+        <div className="flex gap-2 overflow-x-auto pb-1">
+          {minhasComunidades.map((c) => (
+            <button
+              key={c.id}
+              type="button"
+              onClick={() => abrirComunidade(c.id)}
+              className="shrink-0 rounded-full border border-slate-200 bg-slate-100 px-3 py-1.5 text-xs font-semibold cursor-pointer"
+            >
+              {c.nmComunidade}
+            </button>
+          ))}
+        </div>
+      )}
+
       <div className="flex gap-2">
         <button
           type="button"
@@ -56,6 +73,8 @@ export default function TelaInicio() {
           Explorar tudo
         </button>
       </div>
+
+      <ParaVoce compacto />
 
       <div className="space-y-3">
         {feed.map((postagem) => (

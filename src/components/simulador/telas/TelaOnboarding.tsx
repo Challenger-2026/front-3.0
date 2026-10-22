@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useSimulador } from '../../../hooks/useSimulador';
 import { momentos, objetivos, temasInteresse, MIN_TEMAS } from '../../../data/onboarding';
+import ParaVoce from '../ParaVoce';
 
 const titulos = ['Conta um pouco sobre você.', 'O que você espera da Soul Up?', 'Quais temas te interessam?'];
 
@@ -39,7 +40,8 @@ export default function TelaOnboarding() {
     if (etapa === 2) {
       if (interesses.length < MIN_TEMAS) return setErro(`Selecione ao menos ${MIN_TEMAS} temas de interesse.`);
       salvarComplemento(usuario.id, { bio: bio.trim(), momento, objetivo, interesses });
-      sair();
+      setErro('');
+      setEtapa(3); // última etapa: sugestões com as respostas salvas
       return;
     }
     setErro('');
@@ -50,6 +52,35 @@ export default function TelaOnboarding() {
     setErro('');
     setEtapa(etapa - 1);
   };
+
+  // ----- Depois de salvar: sugestões do "Para você" -----
+  if (etapa === 3) {
+    return (
+      <>
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#4F46E5]">Para você</p>
+          <h1 className="text-xl font-bold leading-snug">Selecionamos metas, missões e comunidades com a sua cara.</h1>
+        </div>
+        <ParaVoce />
+        <div className="space-y-2">
+          <button
+            type="button"
+            onClick={() => trocarPara('inicio')}
+            className="w-full rounded-full bg-[#4F46E5] py-3 text-sm font-bold text-white cursor-pointer"
+          >
+            Ir para o feed
+          </button>
+          <button
+            type="button"
+            onClick={() => trocarPara('para-voce')}
+            className="w-full rounded-full border border-slate-200 bg-white py-3 text-sm font-semibold cursor-pointer"
+          >
+            Ver todas as sugestões
+          </button>
+        </div>
+      </>
+    );
+  }
 
   return (
     <>
@@ -130,7 +161,7 @@ export default function TelaOnboarding() {
           onClick={avancar}
           className="w-full rounded-full bg-[#4F46E5] py-3 text-sm font-bold text-white cursor-pointer"
         >
-          {etapa === 2 ? 'Salvar' : 'Continuar'}
+          {etapa === 2 ? 'Salvar e ver sugestões' : 'Continuar'}
         </button>
 
         {etapa > 0 ? (
