@@ -15,7 +15,7 @@ type OpcaoPerfil = {
 const opcoes: OpcaoPerfil[] = [
   { perfil: 'COMUM', titulo: 'Usuário comum', texto: 'Registrar ações, pontuar e resgatar benefícios.', icone: <FiCompass size={20} /> },
   { perfil: 'CRIADOR', titulo: 'Criador', texto: 'Cria e administra comunidades. Não modera a própria comunidade.', icone: <FiStar size={20} /> },
-  { perfil: 'MODERADOR', titulo: 'Moderador', texto: 'Avalia às cegas a fila global de postagens da Soul Up.', icone: <FiShield size={20} /> },
+  { perfil: 'MODERADOR', titulo: 'Moderador', texto: 'Avalia às cegas a fila global de postagens da Soul Up. Requer candidatura.', icone: <FiShield size={20} /> },
 ];
 
 export default function TelaAjustes() {
