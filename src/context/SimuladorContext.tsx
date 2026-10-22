@@ -6,6 +6,11 @@ import type {
   Usuario,
   Comunidade,
   Postagem,
+  Moderacao,
+  MetaAtividades,
+  PeriodoMeta,
+  PostagemCadastro,
+  PostagemEdicao,
   ComplementoUsuario,
   LoginRequest,
   UsuarioCadastro,
@@ -15,9 +20,12 @@ import type {
 import { api } from '../services/api';
 import { complementosUsuario } from '../data/complementosUsuario';
 import { mensagemDoErro } from '../utils/erros';
+import { hojeIso, proximaMetrica } from '../data/metas';
+import { buscarCategoriaPorImpacto } from '../data/categorias';
 
 // Dados públicos do app, carregados ao abrir o simulador (antes do login)
-const buscarDados = () => Promise.all([api.getUsuarios(), api.getComunidades(), api.getPostagens()]);
+const buscarDados = () =>
+  Promise.all([api.getUsuarios(), api.getComunidades(), api.getPostagens(), api.getModeracoes()]);
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const SimuladorContext = createContext<SimuladorContextType | undefined>(undefined);
@@ -47,18 +55,29 @@ export const SimuladorProvider = ({ children }: { children: ReactNode }) => {
   const [comunidades, setComunidades] = useState<Comunidade[]>([]);
   const [minhasComunidades, setMinhasComunidades] = useState<Comunidade[]>([]);
   const [postagens, setPostagens] = useState<Postagem[]>([]);
+  const [moderacoes, setModeracoes] = useState<Moderacao[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   // Bio e interesses não existem na API: começam com os fixos e recebem os do onboarding
   const [complementos, setComplementos] = useState<Record<number, ComplementoUsuario>>(complementosUsuario);
+  
+  // Metas não existem na API: ficam no front, uma por usuário
+  const [metas, setMetas] = useState<Record<number, MetaAtividades>>({});
+
+  // Postagem aberta na tela de feedback
+  const [idPostagemAberta, setIdPostagemAberta] = useState<number | null>(null);
 
   // Usado pelo botão "Tentar novamente"
   const carregarDados = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
-      const [dadosUsuarios, dadosComunidades, dadosPostagens] = await buscarDados();
+      const [dadosUsuarios, dadosComunidades, dadosPostagens, dadosModeracoes] = await buscarDados();
+      setUsuarios(dadosUsuarios);
+      setComunidades(dadosComunidades);
+      setPostagens(dadosPostagens);
+      setModeracoes(dadosModeracoes);
       setUsuarios(dadosUsuarios);
       setComunidades(dadosComunidades);
       setPostagens(dadosPostagens);
@@ -148,6 +167,111 @@ export const SimuladorProvider = ({ children }: { children: ReactNode }) => {
     setComplementos((anteriores) => ({ ...anteriores, [idUsuario]: complemento }));
   }, []);
 
+  
+  // ----- Postagens -----
+
+  const abrirPostagem = useCallback(
+    (id: number) => {
+      setIdPostagemAberta(id);
+      irPara('feedback');
+    },
+    [irPara],
+  );
+
+  // Sem try/catch: a tela mostra o erro (ex.: 409 "O usuário precisa ser membro da comunidade para publicar")
+  const publicarPostagem = useCallback(
+    async (dados: Omit<PostagemCadastro, 'idUsuario'>) => {
+      if (!usuario) throw new Error('Entre na sua conta para publicar');
+      const nova = await api.publicarPostagem({ ...dados, idUsuario: usuario.id });
+      setPostagens((anteriores) => [...anteriores, nova]);
+      return nova;
+    },
+    [usuario],
+  );
+  
+  // Demonstração: a API não tem PUT /postagens/{id}, então a edição fica só no estado do front
+  const editarPostagem = useCallback(
+    (id: number, dados: PostagemEdicao) => {
+      if (!usuario) return;
+      setPostagens((anteriores) =>
+        anteriores.map((p) =>
+          p.id === id && p.idUsuario === usuario.id && p.stValidacao === 'PENDENTE'
+            ? {
+                ...p,
+                ctTexto: dados.ctTexto,
+                ctUrl: dados.ctUrl,
+                ptGerado: buscarCategoriaPorImpacto(dados.impacto)?.pontosAcao ?? p.ptGerado,
+              }
+            : p,
+        ),
+      );
+    },
+    [usuario],
+  );
+
+  // ----- Metas (só no front) -----
+
+  // Aplica uma mudança na meta do usuário logado
+  const alterarMeta = useCallback(
+    (mudar: (meta: MetaAtividades) => MetaAtividades | null) => {
+      if (!usuario) return;
+      setMetas((anteriores) => {
+        const atual = anteriores[usuario.id];
+        if (!atual) return anteriores;
+        const copia = { ...anteriores };
+        const nova = mudar(atual);
+        if (nova) copia[usuario.id] = nova;
+        else delete copia[usuario.id];
+        return copia;
+      });
+    },
+    [usuario],
+  );
+
+  const criarMeta = useCallback(
+    (periodoDias: PeriodoMeta, alvo: number) => {
+      if (!usuario) return;
+      // só contam as aprovações de postagens criadas depois do início da meta
+      const idBase = postagens.reduce((maior, p) => Math.max(maior, p.id), 0);
+      const nova: MetaAtividades = {
+        periodoDias,
+        alvo: Math.min(Math.max(1, alvo), periodoDias),
+        iniciadaEm: hojeIso(),
+        idBase,
+        upgradeRecusado: false,
+      };
+      setMetas((anteriores) => ({ ...anteriores, [usuario.id]: nova }));
+    },
+    [usuario, postagens],
+  );
+
+  const aumentarMeta = useCallback(
+    (novoAlvo: number) => {
+      alterarMeta((meta) => ({
+        ...meta,
+        alvo: Math.min(Math.max(meta.alvo, novoAlvo), meta.periodoDias),
+        upgradeRecusado: false,
+      }));
+    },
+    [alterarMeta],
+  );
+
+  // 7 → 15 → 30, mantendo o progresso (o idBase não muda)
+  const subirMetrica = useCallback(() => {
+    alterarMeta((meta) => {
+      const proxima = proximaMetrica(meta.periodoDias);
+      return proxima ? { ...meta, periodoDias: proxima, alvo: proxima, upgradeRecusado: false } : meta;
+    });
+  }, [alterarMeta]);
+
+  const recusarUpgrade = useCallback(() => {
+    alterarMeta((meta) => ({ ...meta, upgradeRecusado: true }));
+  }, [alterarMeta]);
+
+  const encerrarMeta = useCallback(() => {
+    alterarMeta(() => null);
+  }, [alterarMeta]);
+
   return (
     <SimuladorContext.Provider
       value={{
@@ -162,7 +286,9 @@ export const SimuladorProvider = ({ children }: { children: ReactNode }) => {
         comunidades,
         minhasComunidades,
         postagens,
+        moderacoes,
         complementos,
+        metas,
         loading,
         error,
         carregarDados,
@@ -172,6 +298,15 @@ export const SimuladorProvider = ({ children }: { children: ReactNode }) => {
         trocarPerfil,
         excluirConta,
         salvarComplemento,
+        idPostagemAberta,
+        abrirPostagem,
+        publicarPostagem,
+        editarPostagem,
+        criarMeta,
+        aumentarMeta,
+        subirMetrica,
+        recusarUpgrade,
+        encerrarMeta,
       }}
     >
       {children}

@@ -61,6 +61,11 @@ export type TelaId =
   | 'inicio'
   | 'comunidades'
   | 'nova-postagem'
+  | 'editar-postagem'
+  | 'atividades'
+  | 'feedback'
+  | 'pontos'
+  | 'metas'
   | 'carteira'
   | 'perfil'
   | 'ajustes'
@@ -88,7 +93,8 @@ export type NavegacaoSimulador = {
 export type TipoPerfil = 'COMUM' | 'CRIADOR' | 'MODERADOR';
 export type StatusValidacao = 'PENDENTE' | 'APROVADO' | 'REJEITADO';
 export type CategoriaId = 'critico' | 'estrutural' | 'rotina';
-
+export type Impacto = 'CRITICO' | 'ESTRUTURAL' | 'ROTINA'; // valores aceitos pelo @Pattern do DTOPostagemRequest
+export type DecisaoModeracao = 'A' | 'R'; // A = aprovar, R = reprovar
 export interface Usuario {
   id: number;
   nmCompleto: string;
@@ -121,10 +127,22 @@ export interface Postagem {
 
 export type Categoria = {
   id: CategoriaId;
+  impacto: Impacto;
   nome: string;
+  descricao: string;
   pontosAcao: number;
   co2Kg: number;
 };
+
+// Resposta de /moderacoes (idModerador é o id da T_LGT_MODERADOR, não o do usuário)
+export interface Moderacao {
+  id: number;
+  decisao: DecisaoModeracao;
+  justificativa: string;
+  bnModerador: number;
+  idModerador: number;
+  idPostagem: number;
+}
 
 // Formato de erro devolvido pela API Java
 export interface ErroApi {
@@ -165,6 +183,30 @@ export type UsuarioAtualizacao = Pick<UsuarioCadastro, 'nmCompleto' | 'username'
 // POST /usuarios/login
 export type LoginRequest = Pick<UsuarioCadastro, 'username' | 'senha'>;
 
+// POST /postagens — o Java calcula o ptGerado pelo impacto e grava como PENDENTE
+export interface PostagemCadastro {
+  ctTexto: string;
+  ctUrl: string;
+  impacto: Impacto;
+  idUsuario: number;
+  idComunidade: number;
+}
+
+// Edição de postagem pendente — só demonstração: a API não tem PUT /postagens/{id}
+export type PostagemEdicao = Pick<PostagemCadastro, 'ctTexto' | 'ctUrl' | 'impacto'>;
+
+// ===== Metas de atividades (só no front: a API Java não tem metas) =====
+
+export type PeriodoMeta = 7 | 15 | 30;
+
+export interface MetaAtividades {
+  periodoDias: PeriodoMeta;
+  alvo: number;
+  iniciadaEm: string; // "AAAA-MM-DD"
+  idBase: number; // maior id de postagem quando a meta começou: só contam aprovadas com id maior
+  upgradeRecusado: boolean;
+}
+
 // Usuário como fica guardado no db.json (o Java também guarda cpf e senha, mas não devolve)
 export type UsuarioDoBanco = Usuario & Pick<UsuarioCadastro, 'cpf' | 'senha'>;
 
@@ -174,8 +216,9 @@ export type DadosSimulador = {
   comunidades: Comunidade[];
   minhasComunidades: Comunidade[];
   postagens: Postagem[];
+  moderacoes: Moderacao[];
   complementos: Record<number, ComplementoUsuario>; // bio e interesses por id de usuário
-  loading: boolean;
+  metas: Record<number, MetaAtividades>; // meta de atividades por id de usuário
   error: string | null;
   carregarDados: () => Promise<void>;
 };
@@ -189,4 +232,16 @@ export type AcoesUsuario = {
   salvarComplemento: (idUsuario: number, complemento: ComplementoUsuario) => void;
 };
 
-export type SimuladorContextType = NavegacaoSimulador & DadosSimulador & AcoesUsuario;
+export type AcoesPostagem = {
+  idPostagemAberta: number | null; // postagem mostrada na tela de feedback
+  abrirPostagem: (id: number) => void;
+  publicarPostagem: (dados: Omit<PostagemCadastro, 'idUsuario'>) => Promise<Postagem>;
+  editarPostagem: (id: number, dados: PostagemEdicao) => void;
+  criarMeta: (periodoDias: PeriodoMeta, alvo: number) => void;
+  aumentarMeta: (novoAlvo: number) => void;
+  subirMetrica: () => void;
+  recusarUpgrade: () => void;
+  encerrarMeta: () => void;
+};
+
+export type SimuladorContextType = NavegacaoSimulador & DadosSimulador & AcoesUsuario & AcoesPostagem;

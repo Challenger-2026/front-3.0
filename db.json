@@ -271,5 +271,14 @@
       "idComunidade": 4
     }
   ],
+    "moderacoes": [
+    { "id": 1, "decisao": "A", "justificativa": "Ação comprovada com fotos e registro diário.", "bnModerador": 0.66, "idModerador": 1, "idPostagem": 1 },
+    { "id": 2, "decisao": "R", "justificativa": "O registro não traz evidência suficiente da atividade realizada.", "bnModerador": 0.16, "idModerador": 1, "idPostagem": 2 },
+    { "id": 3, "decisao": "A", "justificativa": "Ação de alto impacto comprovada com fotos e lista de presença.", "bnModerador": 1.06, "idModerador": 1, "idPostagem": 3 },
+    { "id": 4, "decisao": "A", "justificativa": "Fotos das mudas e do mutirão.", "bnModerador": 1.06, "idModerador": 1, "idPostagem": 4 },
+    { "id": 5, "decisao": "A", "justificativa": "Registro consistente com o histórico da comunidade.", "bnModerador": 0.66, "idModerador": 1, "idPostagem": 5 },
+    { "id": 6, "decisao": "A", "justificativa": "Evidência consistente.", "bnModerador": 0.66, "idModerador": 1, "idPostagem": 6 },
+    { "id": 7, "decisao": "A", "justificativa": "Comprovação com fotos da instalação e conta de água.", "bnModerador": 0.66, "idModerador": 1, "idPostagem": 8 }
+  ],
   "$schema": "./node_modules/json-server/schema.json"
 }
