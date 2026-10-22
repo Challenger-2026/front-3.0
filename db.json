@@ -1,11 +1,284 @@
 {
-  "feedbacks": [
+  "feedbacks": [],
+  "usuarios": [
     {
-      "nome": "assad",
-      "email": "asddsa@g.com",
-      "mensagem": "adsdadsadasd",
-      "id": "l_V7VTYotJk"
+      "id": 1,
+      "nmCompleto": "Ana Carolina Ribeiro",
+      "cpf": "11122233344",
+      "email": "ana@soulup.io",
+      "username": "anacarol",
+      "senha": "soulup123",
+      "dtNascimento": "2001-03-12",
+      "sdPonto": 148.6,
+      "nvUsuario": 1,
+      "tipoPerfil": "CRIADOR"
+    },
+    {
+      "id": 2,
+      "nmCompleto": "Bruno Tavares",
+      "cpf": "22233344455",
+      "email": "bruno@soulup.io",
+      "username": "brunot",
+      "senha": "soulup123",
+      "dtNascimento": "1998-07-25",
+      "sdPonto": 312.4,
+      "nvUsuario": 1,
+      "tipoPerfil": "CRIADOR"
+    },
+    {
+      "id": 3,
+      "nmCompleto": "Carla Menezes",
+      "cpf": "33344455566",
+      "email": "carla@soulup.io",
+      "username": "carlam",
+      "senha": "soulup123",
+      "dtNascimento": "1995-11-03",
+      "sdPonto": 264.1,
+      "nvUsuario": 1,
+      "tipoPerfil": "MODERADOR"
+    },
+    {
+      "id": 4,
+      "nmCompleto": "Diego Almeida",
+      "cpf": "44455566677",
+      "email": "diego@soulup.io",
+      "username": "diegoa",
+      "senha": "soulup123",
+      "dtNascimento": "2000-01-18",
+      "sdPonto": 205.9,
+      "nvUsuario": 1,
+      "tipoPerfil": "COMUM"
+    },
+    {
+      "id": 5,
+      "nmCompleto": "Eduarda Lopes",
+      "cpf": "55566677788",
+      "email": "duda@soulup.io",
+      "username": "dudalopes",
+      "senha": "soulup123",
+      "dtNascimento": "2003-05-30",
+      "sdPonto": 97.3,
+      "nvUsuario": 1,
+      "tipoPerfil": "COMUM"
+    },
+    {
+      "nmCompleto": "Ana Carolina",
+      "cpf": "12356789100",
+      "email": "abroba@gmail.com",
+      "username": "anabau",
+      "senha": "Abroba123",
+      "dtNascimento": "1999-09-02",
+      "sdPonto": 0,
+      "nvUsuario": 1,
+      "tipoPerfil": "COMUM",
+      "id": 6
+    },
+    {
+      "nmCompleto": "Ana Abroba",
+      "cpf": "01234567891",
+      "email": "abroba@abroba.com",
+      "username": "abroba",
+      "senha": "Abroba123",
+      "dtNascimento": "1999-09-02",
+      "sdPonto": 0,
+      "nvUsuario": 1,
+      "tipoPerfil": "CRIADOR",
+      "id": 7
+    },
+    {
+      "nmCompleto": "Ana Abroba",
+      "cpf": "01234567890",
+      "email": "abroba1@gmail.com",
+      "username": "abroba1",
+      "senha": "Abroba123",
+      "dtNascimento": "1999-09-02",
+      "sdPonto": 0,
+      "nvUsuario": 1,
+      "tipoPerfil": "COMUM",
+      "id": 8
     }
+  ],
+  "comunidades": [
+    {
+      "id": 1,
+      "nmComunidade": "Ciclo Zero Resíduo",
+      "descricao": "Pessoas reduzindo lixo doméstico com compostagem e reuso criativo.",
+      "dtCriacao": "2026-03-10",
+      "idCriador": 1,
+      "idRanking": null
+    },
+    {
+      "id": 2,
+      "nmComunidade": "Pedala Sampa",
+      "descricao": "Trocar o carro pela bike nos deslocamentos do dia a dia.",
+      "dtCriacao": "2026-04-02",
+      "idCriador": 2,
+      "idRanking": null
+    },
+    {
+      "id": 3,
+      "nmComunidade": "Guardiões da Mata",
+      "descricao": "Plantio, recuperação de nascentes e mutirões de limpeza em áreas verdes.",
+      "dtCriacao": "2026-04-21",
+      "idCriador": 3,
+      "idRanking": null
+    },
+    {
+      "id": 4,
+      "nmComunidade": "Água que Fica",
+      "descricao": "Metas semanais de economia de água em casa e no trabalho.",
+      "dtCriacao": "2026-06-08",
+      "idCriador": 3,
+      "idRanking": null
+    },
+    {
+      "id": 5,
+      "nmComunidade": "SOS Mata Atlântica",
+      "descricao": "Restauração da Mata Atlântica, plantio de nativas e monitoramento de rios.",
+      "dtCriacao": "2026-07-15",
+      "idCriador": 2,
+      "idRanking": null
+    }
+  ],
+  "membros": [
+    {
+      "id": 1,
+      "idUsuario": 1,
+      "idComunidade": 1
+    },
+    {
+      "id": 2,
+      "idUsuario": 2,
+      "idComunidade": 2
+    },
+    {
+      "id": 3,
+      "idUsuario": 3,
+      "idComunidade": 3
+    },
+    {
+      "id": 4,
+      "idUsuario": 3,
+      "idComunidade": 4
+    },
+    {
+      "id": 5,
+      "idUsuario": 2,
+      "idComunidade": 5
+    },
+    {
+      "id": 6,
+      "idUsuario": 1,
+      "idComunidade": 2
+    },
+    {
+      "id": 7,
+      "idUsuario": 2,
+      "idComunidade": 1
+    },
+    {
+      "id": 8,
+      "idUsuario": 4,
+      "idComunidade": 3
+    },
+    {
+      "id": 9,
+      "idUsuario": 4,
+      "idComunidade": 5
+    },
+    {
+      "id": 10,
+      "idUsuario": 5,
+      "idComunidade": 4
+    },
+    {
+      "id": 11,
+      "idUsuario": 5,
+      "idComunidade": 1
+    }
+  ],
+  "postagens": [
+    {
+      "id": 1,
+      "ctTexto": "Montei uma composteira no apartamento e desviei 6 kg de resíduo orgânico do aterro nesta semana.",
+      "ctUrl": "",
+      "stValidacao": "APROVADO",
+      "ptGerado": 6.6,
+      "idUsuario": 1,
+      "idComunidade": 1
+    },
+    {
+      "id": 2,
+      "ctTexto": "Comprei garrafa reutilizável, mas não mantive o hábito nem 2 dias.",
+      "ctUrl": "",
+      "stValidacao": "REJEITADO",
+      "ptGerado": 1.6,
+      "idUsuario": 1,
+      "idComunidade": 1
+    },
+    {
+      "id": 3,
+      "ctTexto": "Mutirão de plantio: 120 mudas nativas na margem do córrego, com 30 voluntários.",
+      "ctUrl": "",
+      "stValidacao": "APROVADO",
+      "ptGerado": 10.6,
+      "idUsuario": 4,
+      "idComunidade": 3
+    },
+    {
+      "id": 4,
+      "ctTexto": "Plantei 15 mudas de ipê e pau-brasil no mutirão do parque municipal.",
+      "ctUrl": "",
+      "stValidacao": "APROVADO",
+      "ptGerado": 10.6,
+      "idUsuario": 4,
+      "idComunidade": 5
+    },
+    {
+      "id": 5,
+      "ctTexto": "Fechei o mês com 240 km pedalados no trajeto casa-trabalho, zero combustível.",
+      "ctUrl": "",
+      "stValidacao": "APROVADO",
+      "ptGerado": 6.6,
+      "idUsuario": 2,
+      "idComunidade": 2
+    },
+    {
+      "id": 6,
+      "ctTexto": "Compostei os resíduos orgânicos da semana inteira.",
+      "ctUrl": "",
+      "stValidacao": "APROVADO",
+      "ptGerado": 6.6,
+      "idUsuario": 2,
+      "idComunidade": 1
+    },
+    {
+      "id": 7,
+      "ctTexto": "Fui de bicicleta ao trabalho todos os dias úteis, 12 km por dia.",
+      "ctUrl": "",
+      "stValidacao": "PENDENTE",
+      "ptGerado": 1.6,
+      "idUsuario": 1,
+      "idComunidade": 2
+    },
+    {
+      "id": 8,
+      "ctTexto": "Instalei captação de água da chuva e reduzi 30% da conta no mês.",
+      "ctUrl": "",
+      "stValidacao": "APROVADO",
+      "ptGerado": 6.6,
+      "idUsuario": 5,
+      "idComunidade": 4
+    }
+  ],
+    "moderacoes": [
+    { "id": 1, "decisao": "A", "justificativa": "Ação comprovada com fotos e registro diário.", "bnModerador": 0.66, "idModerador": 1, "idPostagem": 1 },
+    { "id": 2, "decisao": "R", "justificativa": "O registro não traz evidência suficiente da atividade realizada.", "bnModerador": 0.16, "idModerador": 1, "idPostagem": 2 },
+    { "id": 3, "decisao": "A", "justificativa": "Ação de alto impacto comprovada com fotos e lista de presença.", "bnModerador": 1.06, "idModerador": 1, "idPostagem": 3 },
+    { "id": 4, "decisao": "A", "justificativa": "Fotos das mudas e do mutirão.", "bnModerador": 1.06, "idModerador": 1, "idPostagem": 4 },
+    { "id": 5, "decisao": "A", "justificativa": "Registro consistente com o histórico da comunidade.", "bnModerador": 0.66, "idModerador": 1, "idPostagem": 5 },
+    { "id": 6, "decisao": "A", "justificativa": "Evidência consistente.", "bnModerador": 0.66, "idModerador": 1, "idPostagem": 6 },
+    { "id": 7, "decisao": "A", "justificativa": "Comprovação com fotos da instalação e conta de água.", "bnModerador": 0.66, "idModerador": 1, "idPostagem": 8 }
   ],
   "$schema": "./node_modules/json-server/schema.json"
 }

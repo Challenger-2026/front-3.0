@@ -17,6 +17,7 @@ export default function App() {
     else if (location.pathname === '/solucao') titulo = 'Nossa Solução | Lobo-guará Tech';
     else if (location.pathname === '/faq') titulo = 'Perguntas Frequentes | Lobo-guará Tech';
     else if (location.pathname === '/contato') titulo = 'Contato | Lobo-guará Tech';
+    else if (location.pathname === '/simulador') titulo = 'Simulador | Lobo-guará Tech';
     else if (location.pathname.startsWith('/integrantes')) return;
 
     document.title = titulo;

@@ -8,4 +8,10 @@ export default defineConfig({
     react(),
     tailwindcss(),
   ],
+  server: {
+    // o json-server grava no db.json a cada POST/PATCH/DELETE; sem isso o Vite recarrega a página
+    watch: {
+      ignored: ['**/db.json'],
+    },
+  },
 })
