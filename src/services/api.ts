@@ -285,7 +285,6 @@ export const api = {
   },
 
   // PUT /usuarios/{id}/perfil
-   // PUT /usuarios/{id}/perfil
   trocarPerfil: async (id: number, tipoPerfil: TipoPerfil): Promise<Usuario> => {
     if (USANDO_JSON_SERVER) {
       const atual = await api.getUsuario(id);
