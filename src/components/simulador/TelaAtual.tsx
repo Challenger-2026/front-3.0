@@ -16,6 +16,7 @@ import TelaMetas from './telas/TelaMetas';
 import TelaCandidatura from './telas/TelaCandidatura';
 import TelaModeracao from './telas/TelaModeracao';
 import TelaAnaliseModeracao from './telas/TelaAnaliseModeracao';
+import TelaDenuncias from './telas/TelaDenuncias';
 
 export default function TelaAtual() {
   const { telaAtual, loading, error, carregarDados } = useSimulador();
@@ -67,7 +68,9 @@ export default function TelaAtual() {
     case 'moderacao':
       return <TelaModeracao />;
     case 'moderacao-analise':
-      return <TelaAnaliseModeracao />;  
+      return <TelaAnaliseModeracao />; 
+    case 'denuncias':
+      return <TelaDenuncias />; 
     default:
       return <TelaEmConstrucao />;
   }

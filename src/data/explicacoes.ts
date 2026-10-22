@@ -23,7 +23,7 @@ export const explicacoes: Record<TelaId, Explicacao> = {
     ],
     proximaAcao: 'Preencha os dados para criar a conta.',
   },
-    onboarding: {
+  onboarding: {
     titulo: 'Onboarding',
     descricao:
       'Três perguntas rápidas logo depois do cadastro: momento, objetivo e temas de interesse. As respostas personalizam o Perfil e as sugestões do app.',
@@ -42,6 +42,7 @@ export const explicacoes: Record<TelaId, Explicacao> = {
       'Só aparecem postagens aprovadas: pendentes e rejeitadas ficam restritas ao autor',
       'Pontos liberados em cada ação aprovada',
       'Filtro entre "Minhas comunidades" e "Explorar tudo"',
+      'Demonstração: denunciar uma publicação (a denúncia vai para a fila de denúncias dos moderadores)',
     ],
     proximaAcao: 'Toque no botão + para registrar uma ação sustentável.',
   },
