@@ -56,16 +56,73 @@ export const explicacoes: Record<TelaId, Explicacao> = {
     ],
     proximaAcao: 'Escolha uma comunidade para ver os detalhes.',
   },
-  'nova-postagem': {
+    'nova-postagem': {
     titulo: 'Registrar ação sustentável',
     descricao:
-      'O usuário descreve a ação, escolhe a categoria e anexa a comprovação. A postagem vai para a fila de moderação às cegas.',
+      'O usuário escolhe a comunidade, descreve a ação, cola o link da comprovação e escolhe o tipo de impacto. A postagem nasce Pendente e vai para a fila de moderação às cegas.',
     destaques: [
-      'Cada categoria tem uma pontuação própria',
-      'Teto diário de pontos com redução progressiva',
-      'Os pontos só entram depois da aprovação do moderador',
+      'POST /postagens com ctTexto, ctUrl, impacto, idUsuario e idComunidade',
+      'Os pontos são calculados pela API a partir do impacto: Crítico 10,6, Estrutural 6,6, Rotina 1,6',
+      'Só membros publicam na comunidade: fora dela a API responde 409',
+      'Os pontos só entram no saldo depois da aprovação do moderador',
     ],
-    proximaAcao: 'Preencha a ação e envie para moderação.',
+    proximaAcao: 'Preencha a ação e envie para validação.',
+  },
+    'editar-postagem': {
+    titulo: 'Editar postagem pendente (demonstração)',
+    descricao:
+      'Enquanto a postagem aguarda a moderação, o autor pode corrigir o texto, o link e o tipo de impacto. Depois de moderada, ela não muda mais.',
+    destaques: [
+      'Demonstração: a API Java ainda não tem PUT /postagens/{id}',
+      'A alteração fica só nesta sessão do simulador e some ao recarregar a página',
+      'Trocar o impacto muda os pontos a liberar',
+    ],
+    proximaAcao: 'Altere a postagem e salve.',
+  },
+  atividades: {
+    titulo: 'Atividades registradas',
+    descricao:
+      'Histórico privado das postagens do usuário, com o status de cada uma. No feed só aparecem as aprovadas; aqui ele vê também as pendentes e as rejeitadas.',
+    destaques: [
+      'Lista vinda do GET /postagens, filtrada pelo autor',
+      'Contagem de aprovadas, aguardando e rejeitadas',
+      'Ordem por id decrescente: a API não guarda a data da postagem',
+    ],
+    proximaAcao: 'Toque em "Ver detalhes" para abrir o feedback da moderação.',
+  },
+  feedback: {
+    titulo: 'Feedback da moderação',
+    descricao:
+      'Mostra a decisão do moderador, a justificativa e os pontos da ação. O nome de quem avaliou não aparece: a moderação é às cegas nos dois sentidos.',
+    destaques: [
+      'Decisão e justificativa vêm do GET /moderacoes, pelo idPostagem',
+      'Pendente: os pontos aparecem como "a liberar"',
+      'A categoria é deduzida pelo ptGerado da postagem',
+    ],
+    proximaAcao: 'Veja sua pontuação ou registre outra ação.',
+  },
+  pontos: {
+    titulo: 'Minha pontuação',
+    descricao:
+      'Saldo de pontos, CO₂ evitado e como cada tipo de impacto pontua. O saldo é o sdPonto da API, que só cresce quando a moderação aprova uma ação.',
+    destaques: [
+      'Saldo: sdPonto do usuário (somado pelo Java na aprovação)',
+      'CO₂ evitado: fator da categoria de cada ação aprovada',
+      'Extrato com as ações aprovadas e os pontos a liberar das pendentes',
+      'Teto diário de 15 pts com redução progressiva: demonstração, a API ainda paga o valor cheio',
+    ],
+    proximaAcao: 'Abra "Minha meta de atividades" para definir uma meta.',
+  },
+  metas: {
+    titulo: 'Meta de atividades',
+    descricao:
+      'O usuário escolhe quantas atividades quer concluir em 7, 15 ou 30 dias. Só contam as ações aprovadas pela moderação depois que a meta começou.',
+    destaques: [
+      'Metas ficam no front: a API Java ainda não tem essa tabela',
+      'Faixas da sequência: 1–7 dias = 1 pt/dia, 8–15 = 2, 16–30 = 3',
+      'Ao concluir, dá para aumentar o alvo ou subir para a próxima métrica',
+    ],
+    proximaAcao: 'Escolha o período e o número de atividades.',
   },
   carteira: {
     titulo: 'Carteira',

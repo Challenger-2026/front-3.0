@@ -7,6 +7,12 @@ import TelaEmConstrucao from './telas/TelaEmConstrucao';
 import TelaLogin from './telas/TelaLogin';
 import TelaCadastro from './telas/TelaCadastro';
 import TelaOnboarding from './telas/TelaOnboarding';
+import TelaNovaPostagem from './telas/TelaNovaPostagem';
+import TelaAtividades from './telas/TelaAtividades';
+import TelaFeedback from './telas/TelaFeedback';
+import TelaEditarPostagem from './telas/TelaEditarPostagem';
+import TelaPontos from './telas/TelaPontos';
+import TelaMetas from './telas/TelaMetas';
 
 export default function TelaAtual() {
   const { telaAtual, loading, error, carregarDados } = useSimulador();
@@ -40,7 +46,19 @@ export default function TelaAtual() {
     case 'ajustes':
       return <TelaAjustes />;
     case 'dados':
-      return <TelaDados />;  
+      return <TelaDados />;
+    case 'nova-postagem':
+      return <TelaNovaPostagem />;
+    case 'atividades':
+      return <TelaAtividades />;
+    case 'feedback':
+      return <TelaFeedback />;
+    case 'editar-postagem':
+      return <TelaEditarPostagem />;
+    case 'pontos':
+      return <TelaPontos />;
+    case 'metas':
+      return <TelaMetas />;  
     default:
       return <TelaEmConstrucao />;
   }

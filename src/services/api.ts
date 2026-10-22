@@ -3,6 +3,8 @@ import type {
   Usuario,
   Comunidade,
   Postagem,
+  PostagemCadastro,
+  Moderacao,
   ErroApi,
   Membro,
   TipoPerfil,
@@ -11,6 +13,7 @@ import type {
   LoginRequest,
   UsuarioDoBanco,
 } from '../types/types';
+import { buscarCategoriaPorImpacto } from '../data/categorias';
 
 const JSON_SERVER_URL = 'http://localhost:5000';
 const BASE_URL = import.meta.env.VITE_API_URL ?? JSON_SERVER_URL;
@@ -233,5 +236,52 @@ export const api = {
     const response = await fetch(`${BASE_URL}/postagens`);
     const postagens = await tratarResposta<Postagem[]>(response, 'Erro ao buscar postagens');
     return postagens.map(comIdNumerico);
+  },
+  
+  // POST /postagens — nasce PENDENTE; o ptGerado vem do impacto e só entra no saldo quando a moderação aprova
+  publicarPostagem: async (dados: PostagemCadastro): Promise<Postagem> => {
+    if (USANDO_JSON_SERVER) {
+      // mesma ordem do publicar do PostagemService
+      const [usuarios, comunidades, membros] = await Promise.all([
+        buscarNoJsonServer<Usuario>(`/usuarios?id=${dados.idUsuario}`),
+        buscarNoJsonServer<Comunidade>(`/comunidades?id=${dados.idComunidade}`),
+        buscarNoJsonServer<Membro>(`/membros?idUsuario=${dados.idUsuario}&idComunidade=${dados.idComunidade}`),
+      ]);
+      if (usuarios.length === 0) throw new Error('Usuário não encontrado');
+      if (comunidades.length === 0) throw new Error('Comunidade não encontrada');
+      if (membros.length === 0) throw new Error('O usuário precisa ser membro da comunidade para publicar');
+
+      // o db.json guarda a postagem como o Java devolve: sem o campo impacto
+      const nova: Omit<Postagem, 'id'> = {
+        ctTexto: dados.ctTexto,
+        ctUrl: dados.ctUrl,
+        stValidacao: 'PENDENTE',
+        ptGerado: buscarCategoriaPorImpacto(dados.impacto)?.pontosAcao ?? 0,
+        idUsuario: dados.idUsuario,
+        idComunidade: dados.idComunidade,
+      };
+      const response = await fetch(`${BASE_URL}/postagens`, {
+        method: 'POST',
+        headers: HEADERS_JSON,
+        body: JSON.stringify(nova),
+      });
+      return comIdNumerico(await tratarResposta<Postagem>(response, 'Erro ao publicar postagem'));
+    }
+
+    const response = await fetch(`${BASE_URL}/postagens`, {
+      method: 'POST',
+      headers: HEADERS_JSON,
+      body: JSON.stringify(dados),
+    });
+    return comIdNumerico(await tratarResposta<Postagem>(response, 'Erro ao publicar postagem'));
+  },
+
+  // ===== Moderações =====
+
+  // GET /moderacoes — usado no feedback para mostrar a decisão e a justificativa
+  getModeracoes: async (): Promise<Moderacao[]> => {
+    const response = await fetch(`${BASE_URL}/moderacoes`);
+    const moderacoes = await tratarResposta<Moderacao[]>(response, 'Erro ao buscar moderações');
+    return moderacoes.map(comIdNumerico);
   },
 };
