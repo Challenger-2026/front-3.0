@@ -71,7 +71,6 @@ export type TelaId =
   | 'ajustes'
   | 'dados'
   | 'notificacoes'
-  | 'notificacoes'
   | 'candidatura'
   | 'moderacao'
   | 'moderacao-analise'

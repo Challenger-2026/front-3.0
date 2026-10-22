@@ -183,11 +183,12 @@ export const explicacoes: Record<TelaId, Explicacao> = {
       'Antes de moderar, o usuário aceita o aviso de confidencialidade, confere os requisitos e responde a 5 perguntas sobre a moderação às cegas. Com 4 acertos, o perfil vira Moderador.',
     destaques: [
       'Aprovado no questionário: PUT /usuarios/{id}/perfil com MODERADOR (o Java cria a linha na T_LGT_MODERADOR)',
-      'Taxa de rejeição: calculada com as postagens do GET /postagens',
+      'Taxa de rejeição: postagens do GET /postagens + um histórico de demonstração fixo no front',
+      'Criador com comunidades passa no questionário, mas a API recusa a troca com 409',
       'Demonstração: o tempo mínimo de 3 meses usa uma data de cadastro fixa no front (a API não guarda essa data)',
       'Demonstração: o aceite da confidencialidade e o questionário ficam só no front',
     ],
-    proximaAcao: 'Entre como diegoa para ver um candidato elegível; anacarol mostra o caso não elegível.',
+    proximaAcao: 'diegoa vira moderador; dudalopes não é elegível; anacarol passa no questionário e recebe o 409 da API.',
   },
   moderacao: {
     titulo: 'Fila global de moderação',

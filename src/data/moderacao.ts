@@ -53,11 +53,18 @@ export const mesesNaPlataforma = (dataIso: string, hoje = new Date()) => {
   return Math.max(0, hoje.getDate() < inicio.getDate() ? meses - 1 : meses);
 };
 
-// Rejeitadas ÷ postagens já moderadas do usuário (pendentes não contam)
+// Histórico anterior de postagens avaliadas (demonstração, igual ao protótipo: a API não guarda)
+export const historicoModeracao: Record<number, { avaliadas: number; rejeitadas: number }> = {
+  1: { avaliadas: 30, rejeitadas: 1 },
+};
+
+// Rejeitadas ÷ avaliadas: histórico de demonstração + postagens já moderadas do GET /postagens
 export const taxaRejeicao = (idUsuario: number, postagens: Postagem[]) => {
   const moderadas = postagens.filter((p) => p.idUsuario === idUsuario && p.stValidacao !== 'PENDENTE');
-  if (moderadas.length === 0) return 0;
-  return moderadas.filter((p) => p.stValidacao === 'REJEITADO').length / moderadas.length;
+  const historico = historicoModeracao[idUsuario] ?? { avaliadas: 0, rejeitadas: 0 };
+  const avaliadas = historico.avaliadas + moderadas.length;
+  const rejeitadas = historico.rejeitadas + moderadas.filter((p) => p.stValidacao === 'REJEITADO').length;
+  return avaliadas === 0 ? 0 : rejeitadas / avaliadas;
 };
 
 export const QUIZ_MODERADOR: PerguntaQuiz[] = [

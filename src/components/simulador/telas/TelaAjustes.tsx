@@ -28,6 +28,11 @@ export default function TelaAjustes() {
 
   const escolher = async (perfil: TipoPerfil) => {
     if (perfil === usuario.tipoPerfil) return;
+    // Moderador não troca direto: passa pela candidatura (confidencialidade, requisitos e questionário)
+    if (perfil === 'MODERADOR') {
+      irPara('candidatura');
+      return;
+    }
     setErro('');
     setAviso('');
     setTrocando(perfil);
