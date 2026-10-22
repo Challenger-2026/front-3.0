@@ -7,6 +7,7 @@ import TelaEmConstrucao from './telas/TelaEmConstrucao';
 import TelaLogin from './telas/TelaLogin';
 import TelaCadastro from './telas/TelaCadastro';
 import TelaOnboarding from './telas/TelaOnboarding';
+import TelaNovaPostagem from './telas/TelaNovaPostagem';
 
 export default function TelaAtual() {
   const { telaAtual, loading, error, carregarDados } = useSimulador();
@@ -40,7 +41,9 @@ export default function TelaAtual() {
     case 'ajustes':
       return <TelaAjustes />;
     case 'dados':
-      return <TelaDados />;  
+      return <TelaDados />;
+    case 'nova-postagem':
+      return <TelaNovaPostagem />;  
     default:
       return <TelaEmConstrucao />;
   }
