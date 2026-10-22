@@ -219,6 +219,7 @@ export type DadosSimulador = {
   moderacoes: Moderacao[];
   complementos: Record<number, ComplementoUsuario>; // bio e interesses por id de usuário
   metas: Record<number, MetaAtividades>; // meta de atividades por id de usuário
+  loading: boolean;
   error: string | null;
   carregarDados: () => Promise<void>;
 };

@@ -92,6 +92,23 @@ export default function TelaPerfil() {
           {formatarPontos(co2Evitado)} kg de CO₂ evitados · {pendentes.length} ação(ões) aguardando validação
         </p>
       </section>
+      
+      <div className="grid grid-cols-2 gap-2">
+        <button
+          type="button"
+          onClick={() => irPara('atividades')}
+          className="rounded-full border border-slate-200 bg-white py-2.5 text-sm font-semibold cursor-pointer"
+        >
+          Minhas atividades
+        </button>
+        <button
+          type="button"
+          onClick={() => irPara('pontos')}
+          className="rounded-full border border-slate-200 bg-white py-2.5 text-sm font-semibold cursor-pointer"
+        >
+          Minha pontuação
+        </button>
+      </div>
 
       <h2 className="pt-1 text-sm font-bold uppercase tracking-wider text-slate-500">Minhas publicações</h2>
       <div className="space-y-3">
