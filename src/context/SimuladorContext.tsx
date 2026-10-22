@@ -25,6 +25,12 @@ import type {
   AcaoDenuncia,
   Contestacao,
   DecisaoRevisao,
+  ComunidadeEdicao,
+  ComplementoComunidade,
+  ComplementoNovaComunidade,
+  Missao,
+  MissaoCadastro,
+  Sugestao,
 } from '../types/types';
 import { api } from '../services/api';
 import { complementosUsuario } from '../data/complementosUsuario';
@@ -42,6 +48,7 @@ import {
   reputacaoDe,
   reputacoesIniciais,
 } from '../data/moderacao';
+import { complementoDe, complementosComunidadeIniciais, ehDono, missoesIniciais } from '../data/comunidades';
 
 // Dados públicos do app, carregados ao abrir o simulador (antes do login)
 const buscarDados = () =>
@@ -57,19 +64,31 @@ export const SimuladorProvider = ({ children }: { children: ReactNode }) => {
   // ----- Navegação entre telas -----
   const [historico, setHistorico] = useState<TelaId[]>(['login']);
 
+  // Sugestão deixada para a próxima tela (missão → nova postagem; Para você → metas)
+  const [sugestao, setSugestao] = useState<Sugestao | null>(null);
+
   const telaAtual = historico[historico.length - 1];
 
+  // A sugestão só vale na tela dela: ir para outra tela descarta
   const irPara = useCallback((tela: TelaId) => {
     setHistorico((anterior) => [...anterior, tela]);
+    setSugestao((atual) => (atual && atual.tela === tela ? atual : null));
   }, []);
 
   // Troca de tela sem deixar caminho de volta (ex.: depois do login)
   const trocarPara = useCallback((tela: TelaId) => {
     setHistorico([tela]);
+    setSugestao(null);
   }, []);
 
   const voltar = useCallback(() => {
     setHistorico((anterior) => (anterior.length > 1 ? anterior.slice(0, -1) : anterior));
+    setSugestao(null);
+  }, []);
+
+  const seguirSugestao = useCallback((nova: Sugestao) => {
+    setSugestao(nova);
+    setHistorico((anterior) => [...anterior, nova.tela]);
   }, []);
 
   // ----- Dados vindos da API -----
@@ -194,6 +213,7 @@ export const SimuladorProvider = ({ children }: { children: ReactNode }) => {
     setUsuario(null);
     setMinhasComunidades([]);
     setHistorico(['login']);
+    setSugestao(null);
   }, []);
 
   const salvarComplemento = useCallback((idUsuario: number, complemento: ComplementoUsuario) => {
@@ -438,6 +458,149 @@ export const SimuladorProvider = ({ children }: { children: ReactNode }) => {
     [usuario, contestacoes, reputacoes],
   );
 
+  // ----- Comunidades -----
+  const [idComunidadeAberta, setIdComunidadeAberta] = useState<number | null>(null);
+  const [totalMembros, setTotalMembros] = useState<Record<number, number>>({});
+
+  // Demonstrações (a API não tem esses campos/tabelas): valem só nesta sessão do simulador
+  const [complementosComunidade, setComplementosComunidade] =
+    useState<Record<number, ComplementoComunidade>>(complementosComunidadeIniciais);
+  const [missoes, setMissoes] = useState<Missao[]>(missoesIniciais);
+
+  const abrirComunidade = useCallback(
+    (id: number) => {
+      setIdComunidadeAberta(id);
+      irPara('comunidade');
+    },
+    [irPara],
+  );
+
+  // Uma chamada de GET /comunidades/{id}/membros/total por comunidade
+  const carregarTotaisMembros = useCallback(async () => {
+    const totais = await Promise.all(comunidades.map((c) => api.getTotalMembros(c.id)));
+    setTotalMembros(Object.fromEntries(comunidades.map((c, i) => [c.id, totais[i]])));
+  }, [comunidades]);
+
+  // Soma ou tira um membro do total já carregado (depois de entrar ou sair)
+  const alterarTotal = useCallback((id: number, diferenca: number) => {
+    setTotalMembros((anteriores) =>
+      anteriores[id] === undefined ? anteriores : { ...anteriores, [id]: anteriores[id] + diferenca },
+    );
+  }, []);
+
+  // Sem try/catch nas ações da API: a tela mostra o erro (ex.: 409 ao excluir com membros)
+  const criarComunidade = useCallback(
+    async (dados: ComunidadeEdicao, complemento: ComplementoNovaComunidade) => {
+      if (!usuario) throw new Error('Entre na sua conta para criar uma comunidade');
+      const nova = await api.cadastrarComunidade({ ...dados, idUsuario: usuario.id });
+      setComunidades((anteriores) => [...anteriores, nova]);
+      setMinhasComunidades((anteriores) => [...anteriores, nova]); // quem cria já é membro
+      setTotalMembros((anteriores) => ({ ...anteriores, [nova.id]: 1 }));
+      setComplementosComunidade((anteriores) => ({
+        ...anteriores,
+        [nova.id]: {
+          temas: [],
+          plano: complemento.plano,
+          verificada: false,
+          verificacaoPendente: Boolean(complemento.organizacao), // organização aguarda verificação
+          organizacao: complemento.organizacao,
+          regras: complemento.regras,
+        },
+      }));
+      return nova;
+    },
+    [usuario],
+  );
+
+  const editarComunidade = useCallback(
+    async (id: number, dados: ComunidadeEdicao, regras: string) => {
+      if (!usuario) return;
+      const alterada = await api.atualizarComunidade(id, { ...dados, idUsuario: usuario.id });
+      setComunidades((anteriores) => anteriores.map((c) => (c.id === id ? alterada : c)));
+      setMinhasComunidades((anteriores) => anteriores.map((c) => (c.id === id ? alterada : c)));
+      // as regras não existem na API: ficam no complemento (demonstração)
+      setComplementosComunidade((anteriores) => ({
+        ...anteriores,
+        [id]: { ...complementoDe(id, anteriores), regras: regras.trim() || undefined },
+      }));
+    },
+    [usuario],
+  );
+
+  const excluirComunidade = useCallback(
+    async (id: number) => {
+      if (!usuario) return;
+      await api.excluirComunidade(id, usuario.id);
+      setComunidades((anteriores) => anteriores.filter((c) => c.id !== id));
+      setMinhasComunidades((anteriores) => anteriores.filter((c) => c.id !== id));
+      setMissoes((anteriores) => anteriores.filter((m) => m.idComunidade !== id));
+    },
+    [usuario],
+  );
+
+  // Entrar e sair mudam o "Minhas comunidades", a Nova postagem e a fila do moderador
+  const entrarComunidade = useCallback(
+    async (id: number) => {
+      if (!usuario) return;
+      await api.entrarComunidade(id, usuario.id);
+      const comunidade = comunidades.find((c) => c.id === id);
+      if (comunidade) {
+        setMinhasComunidades((anteriores) => [...anteriores, comunidade].sort((a, b) => a.id - b.id));
+      }
+      alterarTotal(id, 1);
+    },
+    [usuario, comunidades, alterarTotal],
+  );
+
+  const sairComunidade = useCallback(
+    async (id: number) => {
+      if (!usuario) return;
+      await api.sairComunidade(id, usuario.id);
+      setMinhasComunidades((anteriores) => anteriores.filter((c) => c.id !== id));
+      alterarTotal(id, -1);
+    },
+    [usuario, alterarTotal],
+  );
+
+  // ----- Missões (demonstração): só o criador da comunidade cria, edita e encerra -----
+
+  const podeAdministrar = useCallback(
+    (idComunidade: number) => {
+      const comunidade = comunidades.find((c) => c.id === idComunidade);
+      return comunidade !== undefined && ehDono(comunidade, usuario);
+    },
+    [comunidades, usuario],
+  );
+
+  const criarMissao = useCallback(
+    (idComunidade: number, dados: MissaoCadastro) => {
+      if (!podeAdministrar(idComunidade)) return;
+      setMissoes((anteriores) => [
+        ...anteriores,
+        { ...dados, id: proximoId(anteriores), idComunidade, encerrada: false, criadaEm: hojeIso() },
+      ]);
+    },
+    [podeAdministrar],
+  );
+
+  const editarMissao = useCallback(
+    (id: number, dados: MissaoCadastro) => {
+      const missao = missoes.find((m) => m.id === id);
+      if (!missao || !podeAdministrar(missao.idComunidade)) return;
+      setMissoes((anteriores) => anteriores.map((m) => (m.id === id ? { ...m, ...dados } : m)));
+    },
+    [missoes, podeAdministrar],
+  );
+
+  const encerrarMissao = useCallback(
+    (id: number) => {
+      const missao = missoes.find((m) => m.id === id);
+      if (!missao || !podeAdministrar(missao.idComunidade)) return;
+      setMissoes((anteriores) => anteriores.map((m) => (m.id === id ? { ...m, encerrada: true } : m)));
+    },
+    [missoes, podeAdministrar],
+  );
+
   return (
     <SimuladorContext.Provider
       value={{
@@ -489,6 +652,22 @@ export const SimuladorProvider = ({ children }: { children: ReactNode }) => {
         abrirContestacao,
         contestar,
         revisarContestacao,
+        idComunidadeAberta,
+        abrirComunidade,
+        totalMembros,
+        carregarTotaisMembros,
+        criarComunidade,
+        editarComunidade,
+        excluirComunidade,
+        entrarComunidade,
+        sairComunidade,
+        complementosComunidade,
+        missoes,
+        criarMissao,
+        editarMissao,
+        encerrarMissao,
+        sugestao,
+        seguirSugestao,
       }}
     >
       {children}
