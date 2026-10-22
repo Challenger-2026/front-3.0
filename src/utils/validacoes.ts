@@ -26,3 +26,24 @@ export const regrasSenha = {
   minLength: { value: 8, message: 'A senha precisa ter ao menos 8 caracteres.' },
   maxLength: { value: 150, message: 'A senha pode ter no máximo 150 caracteres.' },
 };
+
+// Regras da Nova postagem e da Edição de postagem
+// (vazio usa as mesmas mensagens do @NotBlank do DTOPostagemRequest)
+
+export const regrasTextoPostagem = {
+  validate: (valor: string) => {
+    const texto = valor.trim();
+    if (!texto) return 'O texto da postagem é obrigatório';
+    if (texto.length < 15) return 'Conte um pouco mais sobre a ação (mínimo de 15 caracteres)';
+    return true;
+  },
+};
+
+export const regrasUrlPostagem = {
+  validate: (valor: string) => {
+    const url = valor.trim();
+    if (!url) return 'A URL da evidência é obrigatória';
+    if (!/^https?:\/\/\S+\.\S+$/i.test(url)) return 'Informe um link começando com http:// ou https://';
+    return true;
+  },
+};

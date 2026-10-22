@@ -5,6 +5,7 @@ import { useSimulador } from '../../../hooks/useSimulador';
 import { categorias } from '../../../data/categorias';
 import { mensagemDoErro } from '../../../utils/erros';
 import { formatarPontos } from '../../../utils/formatadores';
+import { regrasTextoPostagem, regrasUrlPostagem } from '../../../utils/validacoes';
 
 // O autor (idUsuario) vem do usuário logado, no contexto
 type FormNovaPostagem = Omit<PostagemCadastro, 'idUsuario'>;
@@ -153,14 +154,7 @@ export default function TelaNovaPostagem() {
             placeholder="Ex.: Montei uma composteira e desviei 6 kg de resíduo do aterro nesta semana."
             aria-invalid={errors.ctTexto ? 'true' : 'false'}
             className={`${classeCampo} resize-none`}
-            {...register('ctTexto', {
-              validate: (valor) => {
-                const texto = valor.trim();
-                if (!texto) return 'O texto da postagem é obrigatório'; // mesma mensagem do @NotBlank
-                if (texto.length < 15) return 'Conte um pouco mais sobre a ação (mínimo de 15 caracteres)';
-                return true;
-              },
-            })}
+            {...register('ctTexto', regrasTextoPostagem)}
           />
           {errors.ctTexto && (
             <p role="alert" className="mt-1 text-xs text-red-600">
@@ -180,14 +174,7 @@ export default function TelaNovaPostagem() {
             placeholder="https://..."
             aria-invalid={errors.ctUrl ? 'true' : 'false'}
             className={classeCampo}
-            {...register('ctUrl', {
-              validate: (valor) => {
-                const url = valor.trim();
-                if (!url) return 'A URL da evidência é obrigatória'; // mesma mensagem do @NotBlank
-                if (!/^https?:\/\/\S+\.\S+$/i.test(url)) return 'Informe um link começando com http:// ou https://';
-                return true;
-              },
-            })}
+            {...register('ctUrl', regrasUrlPostagem)}
           />
           {errors.ctUrl ? (
             <p role="alert" className="mt-1 text-xs text-red-600">
