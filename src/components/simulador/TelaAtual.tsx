@@ -11,6 +11,7 @@ import TelaNovaPostagem from './telas/TelaNovaPostagem';
 import TelaAtividades from './telas/TelaAtividades';
 import TelaFeedback from './telas/TelaFeedback';
 import TelaEditarPostagem from './telas/TelaEditarPostagem';
+import TelaPontos from './telas/TelaPontos';
 
 export default function TelaAtual() {
   const { telaAtual, loading, error, carregarDados } = useSimulador();
@@ -52,7 +53,9 @@ export default function TelaAtual() {
     case 'feedback':
       return <TelaFeedback />;
     case 'editar-postagem':
-      return <TelaEditarPostagem />;  
+      return <TelaEditarPostagem />;
+    case 'pontos':
+      return <TelaPontos />;  
     default:
       return <TelaEmConstrucao />;
   }
