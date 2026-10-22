@@ -21,6 +21,7 @@ import TelaContestacao from './telas/TelaContestacao';
 import TelaContestacoes from './telas/TelaContestacoes';
 import TelaRevisoes from './telas/TelaRevisoes';
 import TelaRevisao from './telas/TelaRevisao';
+import TelaComunidades from './telas/TelaComunidades';
 
 
 export default function TelaAtual() {
@@ -83,8 +84,11 @@ export default function TelaAtual() {
     case 'revisoes':
       return <TelaRevisoes />;
     case 'revisao':
-      return <TelaRevisao />; 
+      return <TelaRevisao />;
+    case 'comunidades':
+      return <TelaComunidades />; 
     default:
       return <TelaEmConstrucao />;
+      
   }
 }
