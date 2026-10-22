@@ -21,3 +21,55 @@
 .animate-fade-in {
   animation: fadeIn 0.3s ease-out forwards;
 }
+
+.video-reveal {
+  opacity: 0;
+  animation: fadeReveal 3s ease-in-out 0.3s forwards;
+}
+
+@keyframes fadeReveal {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+.onda-entrada {
+  background-color: #ffffff; 
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 100'%3E%3Cpath fill='%23D35400' d='M0,50 C40,20 60,80 100,50 C140,20 160,80 200,50 L200,200 L0,200 Z' /%3E%3C/svg%3E");
+  background-repeat: repeat-x;
+  background-size: 200px 200%;
+  
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  color: transparent !important;
+  
+  animation: subirOnda 3s ease-in-out forwards;
+}
+
+.onda-entrada span {
+  -webkit-text-fill-color: transparent !important;
+  color: transparent !important;
+  animation: devolverCor 0.1s 3s forwards;
+}
+
+@keyframes subirOnda {
+  0% {
+    background-position: 0px 150%;
+  }
+  80% {
+    background-position: -400px -20%;
+  }
+  100% {
+    background-image: none;
+    background-color: transparent;
+    -webkit-text-fill-color: white !important;
+    color: white !important;
+  }
+}
+
+@keyframes devolverCor {
+  100% {
+    -webkit-text-fill-color: #D35400 !important;
+    color: #D35400 !important;
+  }
+}

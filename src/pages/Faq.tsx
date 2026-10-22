@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { FaqItemType } from '../types/types';
 import FaqItem from '../components/FaqItem';
+import Reveal from '../components/Reveal';
 
 const listaFaq: FaqItemType[] = [
   {
@@ -30,25 +31,29 @@ export default function Faq() {
 
   return (
     <main className="max-w-4xl mx-auto px-4 py-8">
-      <div className="text-center mb-8">
-        <h1 className="text-3xl font-extrabold text-[#a84312] mb-2">
-          Perguntas Frequentes
-        </h1>
-        <p className="text-stone-600 text-sm">
-          Tire suas dúvidas sobre nossa plataforma e impacto sustentável.
-        </p>
-      </div>
+      <Reveal>
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-extrabold text-[#a84312] mb-2">
+            Perguntas Frequentes
+          </h1>
+          <p className="text-stone-600 text-sm">
+            Tire suas dúvidas sobre nossa plataforma e impacto sustentável.
+          </p>
+        </div>
+      </Reveal>
 
       <div className="space-y-4">
         {listaFaq.map((item, index) => (
-          <FaqItem
-            key={item.pergunta}
-            indice={index}
-            pergunta={item.pergunta}
-            resposta={item.resposta}
-            estaAberto={aberto === index}
-            aoAlternar={() => setAberto(aberto === index ? null : index)}
-          />
+          /* 3. Efeito escadinha (cascata) multiplicando o index */
+          <Reveal key={item.pergunta} delay={index * 150}>
+            <FaqItem
+              indice={index}
+              pergunta={item.pergunta}
+              resposta={item.resposta}
+              estaAberto={aberto === index}
+              aoAlternar={() => setAberto(aberto === index ? null : index)}
+            />
+          </Reveal>
         ))}
       </div>
     </main>

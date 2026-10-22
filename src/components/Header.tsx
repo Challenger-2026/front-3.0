@@ -1,8 +1,33 @@
-import { Link, NavLink } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Link, NavLink, useLocation } from 'react-router-dom';
 import logoGuara from '../assets/Guara.png';
 import type { CabecalhoProps, ItemMenu } from '../types/types';
 
 export default function Header({ titulo }: CabecalhoProps) {
+  const location = useLocation();
+  const isHome = location.pathname === '/';
+  
+  const [passouDoVideo, setPassouDoVideo] = useState(false);
+
+  useEffect(() => {
+    if (!isHome) return;
+
+    const handleScroll = () => {
+      if (window.scrollY > 100) {
+        setPassouDoVideo(true);
+      } else {
+        setPassouDoVideo(false);
+      }
+    };
+
+    handleScroll();
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [isHome]);
+
+  const mostrarHeader = !isHome || passouDoVideo;
+
   const itensMenu: ItemMenu[] = [
     { label: 'Início', path: '/' },
     { label: 'Sobre', path: '/sobre' },
@@ -12,12 +37,15 @@ export default function Header({ titulo }: CabecalhoProps) {
     { label: 'Contato', path: '/contato' },
   ];
 
-
   const efeitoOnda =
     "relative overflow-hidden after:content-[''] after:absolute after:inset-0 after:z-[1] after:pointer-events-none after:rounded-t-[45%] after:bg-amber-400/20 after:translate-y-full after:transition-transform after:duration-500 hover:after:translate-y-[10%] active:after:translate-y-[10%]";
 
   return (
-    <header className="sticky top-0 z-50 px-4 sm:px-6 py-3 sm:py-4 bg-[#fffbed]/95 border-b border-[#ead9b6] shadow-[0_4px_18px_rgba(120,78,35,0.08)]">
+    <header
+      className={`z-50 px-4 sm:px-6 py-3 sm:py-4 bg-[#fffbed]/95 border-b border-[#ead9b6] shadow-[0_4px_18px_rgba(120,78,35,0.08)] transition-transform duration-500 ${
+        isHome ? 'fixed top-0 left-0 w-full' : 'sticky top-0 w-full'
+      } ${mostrarHeader ? 'translate-y-0' : '-translate-y-full'}`}
+    >
       <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-3 sm:gap-4">
         
         <Link to="/" className="flex items-center gap-3 shrink-0">

@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import CardIntegrante from '../components/CardIntegrante';
 import Botao from '../components/Botao';
 import type { IntegranteProps } from '../types/types';
+import Reveal from '../components/Reveal'; 
 
 import foto1 from '../assets/Pic4.png';
 import foto2 from '../assets/Pic2.png';
@@ -99,102 +100,110 @@ export default function Integrantes() {
   }, [selecionado]);
 
   return (
-    <main className="w-full max-w-7xl mx-auto px-4 py-6 text-center">
-      <h1 className="text-3xl font-extrabold text-[#a84312] mb-3">Nossa Equipe</h1>
+    <main className="w-full max-w-7xl mx-auto px-4 py-6 text-center overflow-hidden">
+      
+      <Reveal>
+        <h1 className="text-3xl font-extrabold text-[#a84312] mb-3">Nossa Equipe</h1>
+      </Reveal>
 
-      <p className="max-w-3xl mx-auto mb-10 py-6 px-6 sm:px-8 bg-[#fffdf5]/95 rounded-2xl relative z-10 text-stone-700 text-sm leading-relaxed border border-[#ead9b6]/40 shadow-sm">
-        A Lobo-guará Tech nasceu com o propósito de unir a inovação tecnológica da Sociedade 5.0 à
-        urgência da preservação ambiental. Nosso objetivo é transformar hábitos ecológicos do dia a
-        dia em uma experiência engajadora e recompensadora através da gamificação. Acreditamos que o
-        desenvolvimento de sistemas deve servir ao bem-estar planetário, provando que linhas de
-        código podem ser ferramentas ativas para proteger nossa biodiversidade e construir um futuro
-        sustentável.
-      </p>
+      <Reveal delay={150}>
+        <p className="max-w-3xl mx-auto mb-10 py-6 px-6 sm:px-8 bg-[#fffdf5]/95 rounded-2xl relative z-10 text-stone-700 text-sm leading-relaxed border border-[#ead9b6]/40 shadow-sm">
+          A Lobo-guará Tech nasceu com o propósito de unir a inovação tecnológica da Sociedade 5.0 à
+          urgência da preservação ambiental. Nosso objetivo é transformar hábitos ecológicos do dia a
+          dia em uma experiência engajadora e recompensadora através da gamificação. Acreditamos que o
+          desenvolvimento de sistemas deve servir ao bem-estar planetário, provando que linhas de
+          código podem ser ferramentas ativas para proteger nossa biodiversidade e construir um futuro
+          sustentável.
+        </p>
+      </Reveal>
 
       {rm && !selecionado && (
-        <p role="status" className="mb-6 text-[#a84312] font-semibold">
-          Integrante não encontrado. Escolha uma pessoa da equipe abaixo.
-        </p>
+        <Reveal delay={200}>
+          <p role="status" className="mb-6 text-[#a84312] font-semibold">
+            Integrante não encontrado. Escolha uma pessoa da equipe abaixo.
+          </p>
+        </Reveal>
       )}
 
       {selecionado && (
-        <article className="max-w-xl mx-auto mb-12 p-6 sm:p-8 bg-white border-2 border-orange-500 rounded-2xl shadow-lg flex flex-col items-center transition-all duration-300 animate-fade-in text-center">
-          <span className="text-xs font-bold text-[#a84312] uppercase tracking-widest mb-3">
-            Integrante em Destaque
-          </span>
+        <Reveal delay={200}>
+          <article className="max-w-xl mx-auto mb-12 p-6 sm:p-8 bg-white border-2 border-orange-500 rounded-2xl shadow-lg flex flex-col items-center transition-all duration-300 animate-fade-in text-center">
+            <span className="text-xs font-bold text-[#a84312] uppercase tracking-widest mb-3">
+              Integrante em Destaque
+            </span>
 
-          <img
-            src={selecionado.foto}
-            alt={`Foto de ${selecionado.nome}`}
-            className="w-28 h-28 rounded-full object-cover border-4 border-orange-500 mb-3 shadow"
-          />
+            <img
+              src={selecionado.foto}
+              alt={`Foto de ${selecionado.nome}`}
+              className="w-28 h-28 rounded-full object-cover border-4 border-orange-500 mb-3 shadow"
+            />
 
-          <h2 className="text-2xl font-bold text-stone-900">{selecionado.nome}</h2>
+            <h2 className="text-2xl font-bold text-stone-900">{selecionado.nome}</h2>
 
-          <span className="text-xs font-semibold bg-orange-100 text-orange-800 px-3 py-1 rounded-full mt-1 mb-2">
-            {selecionado.funcao || 'Membro do Projeto'}
-          </span>
+            <span className="text-xs font-semibold bg-orange-100 text-orange-800 px-3 py-1 rounded-full mt-1 mb-2">
+              {selecionado.funcao || 'Membro do Projeto'}
+            </span>
 
-          <p className="text-stone-500 text-xs sm:text-sm mb-4">
-            <strong className="text-stone-700">RM:</strong> {selecionado.rm} &bull;{' '}
-            <strong className="text-stone-700">Turma:</strong> {selecionado.turma}
-          </p>
+            <p className="text-stone-500 text-xs sm:text-sm mb-4">
+              <strong className="text-stone-700">RM:</strong> {selecionado.rm} &bull;{' '}
+              <strong className="text-stone-700">Turma:</strong> {selecionado.turma}
+            </p>
 
-          {selecionado.contribuicao && (
-            <div className="bg-stone-50 border border-stone-200 rounded-xl p-4 mb-6 w-full text-stone-700 text-xs sm:text-sm text-left">
-              <strong className="text-stone-900 block mb-2 font-bold">
-                Contribuição no Projeto:
-              </strong>
-              <ul className="list-disc pl-5 space-y-2">
-                {selecionado.contribuicao.map((item) => (
-                  <li key={item}>{item}</li>
-                ))}
-              </ul>
+            {selecionado.contribuicao && (
+              <div className="bg-stone-50 border border-stone-200 rounded-xl p-4 mb-6 w-full text-stone-700 text-xs sm:text-sm text-left">
+                <strong className="text-stone-900 block mb-2 font-bold">
+                  Contribuição no Projeto:
+                </strong>
+                <ul className="list-disc pl-5 space-y-2">
+                  {selecionado.contribuicao.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            <div className="flex items-center justify-center gap-3 w-full mb-6">
+              <a
+                href={selecionado.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`GitHub de ${selecionado.nome}`}
+                className={`${efeitoOnda} flex-1 py-2.5 px-4 rounded-xl bg-stone-900 hover:bg-black text-white text-xs font-semibold transition-colors duration-200`}
+              >
+                GitHub
+              </a>
+              <a
+                href={selecionado.linkedin}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`LinkedIn de ${selecionado.nome}`}
+                className={`${efeitoOnda} flex-1 py-2.5 px-4 rounded-xl bg-[#0A66C2] hover:bg-[#084e96] text-white text-xs font-semibold transition-colors duration-200`}
+              >
+                LinkedIn
+              </a>
             </div>
-          )}
 
-          <div className="flex items-center justify-center gap-3 w-full mb-6">
-            <a
-              href={selecionado.github}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={`GitHub de ${selecionado.nome}`}
-              className={`${efeitoOnda} flex-1 py-2.5 px-4 rounded-xl bg-stone-900 hover:bg-black text-white text-xs font-semibold transition-colors duration-200`}
-            >
-              GitHub
-            </a>
-            <a
-              href={selecionado.linkedin}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={`LinkedIn de ${selecionado.nome}`}
-              className={`${efeitoOnda} flex-1 py-2.5 px-4 rounded-xl bg-[#0A66C2] hover:bg-[#084e96] text-white text-xs font-semibold transition-colors duration-200`}
-            >
-              LinkedIn
-            </a>
-          </div>
-
-          <Botao acao={() => navigate('/integrantes')} variante="secundario">
-            Limpar Destaque
-          </Botao>
-        </article>
+            <Botao acao={() => navigate('/integrantes')} variante="secundario">
+              Limpar Destaque
+            </Botao>
+          </article>
+        </Reveal>
       )}
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 justify-items-center items-stretch">
-        {listaIntegrantes.map((integrante) => (
-          <div
-            key={integrante.rm}
-            className="w-full max-w-[220px] h-full flex flex-col transition-transform duration-300 hover:-translate-y-2 rounded-xl"
-          >
-            <CardIntegrante
-              nome={integrante.nome}
-              rm={integrante.rm}
-              turma={integrante.turma}
-              foto={integrante.foto}
-              github={integrante.github}
-              linkedin={integrante.linkedin}
-            />
-          </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 justify-items-center items-stretch mt-8">
+        {listaIntegrantes.map((integrante, index) => (
+          <Reveal key={integrante.rm} delay={300 + index * 100}>
+            <div className="w-full max-w-[220px] h-full flex flex-col transition-transform duration-300 hover:-translate-y-2 rounded-xl">
+              <CardIntegrante
+                nome={integrante.nome}
+                rm={integrante.rm}
+                turma={integrante.turma}
+                foto={integrante.foto}
+                github={integrante.github}
+                linkedin={integrante.linkedin}
+              />
+            </div>
+          </Reveal>
         ))}
       </div>
     </main>

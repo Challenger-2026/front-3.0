@@ -6,7 +6,7 @@ export interface CardPilarProps {
 
 export default function CardPilar({ icone, titulo, descricao }: CardPilarProps) {
   return (
-    <article className="bg-white rounded-2xl shadow-md border-t-4 border-[#D35400] p-8 flex flex-col items-center text-center transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+    <article className="h-full bg-white rounded-2xl shadow-md border-t-4 border-[#D35400] p-8 flex flex-col items-center text-center transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
       <span className="text-4xl mb-5 select-none" aria-hidden="true">
         {icone}
       </span>
