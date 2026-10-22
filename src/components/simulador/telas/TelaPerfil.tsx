@@ -63,7 +63,7 @@ export default function TelaPerfil() {
 
         {criadas.length > 0 && (
           <p className="mt-2 text-[11px] text-slate-500">
-            Criadora de: <strong>{criadas.map((c) => c.nmComunidade).join(', ')}</strong>
+          Comunidades criadas: <strong>{criadas.map((c) => c.nmComunidade).join(', ')}</strong>
           </p>
         )}
 

@@ -23,6 +23,7 @@ import TelaRevisoes from './telas/TelaRevisoes';
 import TelaRevisao from './telas/TelaRevisao';
 import TelaComunidades from './telas/TelaComunidades';
 import TelaComunidade from './telas/TelaComunidade';
+import TelaCriarComunidade from './telas/TelaCriarComunidade';
 
 
 export default function TelaAtual() {
@@ -89,7 +90,9 @@ export default function TelaAtual() {
     case 'comunidades':
       return <TelaComunidades />;
     case 'comunidade':
-      return <TelaComunidade />; 
+      return <TelaComunidade />;
+    case 'criar-comunidade':
+      return <TelaCriarComunidade />; 
     default:
       return <TelaEmConstrucao />;
       
