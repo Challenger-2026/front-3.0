@@ -70,7 +70,15 @@ export type TelaId =
   | 'perfil'
   | 'ajustes'
   | 'dados'
-  | 'notificacoes';
+  | 'notificacoes'
+  | 'candidatura'
+  | 'moderacao'
+  | 'moderacao-analise'
+  | 'denuncias'
+  | 'contestacao'
+  | 'contestacoes'
+  | 'revisoes'
+  | 'revisao';
 
 export type Explicacao = {
   titulo: string;
@@ -150,6 +158,9 @@ export interface ErroApi {
   status: number;
 }
 
+// Erro lançado pelo api.ts: a mensagem da API + o status HTTP (ex.: 403 na fila de moderação)
+export type ErroComStatus = Error & Partial<Pick<ErroApi, 'status'>>;
+
 // Dados que a API não guarda e ficam fixos no front
 export interface ComplementoUsuario {
   bio: string;
@@ -207,6 +218,98 @@ export interface MetaAtividades {
   upgradeRecusado: boolean;
 }
 
+// ===== Moderação às cegas =====
+
+// Item de GET /moderacoes/fila (DTOPostagemFilaResponse): sem autor e sem comunidade
+export type PostagemFila = Pick<Postagem, 'id' | 'ctTexto' | 'ctUrl' | 'ptGerado'>;
+
+// POST /moderacoes (DTOModeracaoRequest): o Java converte o idUsuario no idModerador
+export interface ModeracaoCadastro {
+  decisao: DecisaoModeracao;
+  justificativa: string;
+  idUsuario: number;
+  idPostagem: number;
+}
+
+// Linha da coleção "moderadores" do db.json (imita a T_LGT_MODERADOR; o Java não tem rota para ela)
+export interface Moderador {
+  id: number; // id_moderador (é o idModerador gravado na moderação)
+  nvModerador: number;
+  rtModerador: string;
+  dtAdesao: string;
+  idUsuario: number;
+}
+
+// Reputação do moderador: só demonstração (o Java guarda só o rótulo rt_moderador)
+export interface ModeradorDemo {
+  idModerador: number;
+  idUsuario: number;
+  reputacao: number;
+}
+
+export type PerguntaQuiz = {
+  pergunta: string;
+  opcoes: string[];
+  correta: number; // posição da opção correta
+  comentario: string;
+};
+
+// ----- Denúncias (demonstração: a API não tem essa tabela) -----
+
+export type MotivoDenuncia =
+  | 'Informação falsa'
+  | 'Ação não realizada'
+  | 'Foto não corresponde à ação'
+  | 'Conteúdo repetido'
+  | 'Conteúdo ofensivo'
+  | 'Propaganda'
+  | 'Fora do tema da comunidade';
+
+export type PrioridadeDenuncia = 'Normal' | 'Alta' | 'Crítica';
+export type AcaoDenuncia = 'MANTER' | 'REMOVER';
+
+export interface Denuncia {
+  id: number;
+  idPostagem: number;
+  idUsuario: number; // quem denunciou
+  motivo: MotivoDenuncia;
+  detalhe: string;
+}
+
+// Decisão do moderador sobre as denúncias de uma postagem
+export interface RevisaoDenuncia {
+  idPostagem: number;
+  acao: AcaoDenuncia;
+  parecer: string;
+  idUsuario: number; // moderador que revisou
+}
+
+// ----- Contestação (demonstração: a API não tem essa tabela) -----
+
+export type StatusContestacao = 'EM_REVISAO' | 'MANTIDA' | 'REVERTIDA';
+export type DecisaoRevisao = 'MANTIDA' | 'REVERTIDA';
+
+export interface Contestacao {
+  id: number;
+  idPostagem: number;
+  idUsuario: number; // autor da postagem
+  motivo: string;
+  abertaEm: string; // "AAAA-MM-DD"
+  status: StatusContestacao;
+  idModeradorOriginal: number; // idModerador da moderação que rejeitou
+  reputacaoOriginal: number;
+  idRevisor?: number; // id de usuário do moderador revisor
+  reputacaoRevisor?: number;
+  parecer?: string;
+  decididaEm?: string;
+  deltaReputacao?: number; // bônus ou penalidade aplicada ao moderador original
+}
+
+// Perfil de teste mostrado ao lado do simulador (login rápido com a senha padrão do db.json)
+export type PerfilTeste = Pick<Usuario, 'username'> & {
+  demonstra: string;
+};
+
 // Usuário como fica guardado no db.json (o Java também guarda cpf e senha, mas não devolve)
 export type UsuarioDoBanco = Usuario & Pick<UsuarioCadastro, 'cpf' | 'senha'>;
 
@@ -245,4 +348,29 @@ export type AcoesPostagem = {
   encerrarMeta: () => void;
 };
 
-export type SimuladorContextType = NavegacaoSimulador & DadosSimulador & AcoesUsuario & AcoesPostagem;
+export type AcoesModeracao = {
+  // fila às cegas (API)
+  fila: PostagemFila[];
+  carregarFila: () => Promise<void>;
+  abrirAnalise: (idPostagem: number) => void; // usa o idPostagemAberta e vai para a análise
+  moderar: (dados: Omit<ModeracaoCadastro, 'idUsuario'>) => Promise<Moderacao>;
+  // demonstrações (só no estado do front)
+  impedidas: number[];
+  declararImpedimento: (idPostagem: number) => void;
+  reputacoes: Record<number, number>; // reputação por id de usuário moderador
+  denuncias: Denuncia[];
+  revisoesDenuncia: RevisaoDenuncia[];
+  denunciar: (idPostagem: number, motivo: MotivoDenuncia, detalhe: string) => void;
+  revisarDenuncias: (idPostagem: number, acao: AcaoDenuncia, parecer: string) => void;
+  contestacoes: Contestacao[];
+  idContestacaoAberta: number | null;
+  abrirContestacao: (id: number) => void; // vai para a revisão da contestação
+  contestar: (idPostagem: number, motivo: string) => void;
+  revisarContestacao: (id: number, decisao: DecisaoRevisao, parecer: string) => void;
+};
+
+export type SimuladorContextType = NavegacaoSimulador &
+  DadosSimulador &
+  AcoesUsuario &
+  AcoesPostagem &
+  AcoesModeracao;

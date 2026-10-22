@@ -47,3 +47,13 @@ export const regrasUrlPostagem = {
     return true;
   },
 };
+
+// Regras da moderação: justificativa de rejeição, parecer das denúncias e da revisão
+export const regrasParecer = {
+  validate: (valor: string) => valor.trim().length >= 10 || 'Escreva pelo menos 10 caracteres.',
+};
+
+// Motivo da contestação
+export const regrasMotivoContestacao = {
+  validate: (valor: string) => valor.trim().length >= 15 || 'Descreva sua contestação com pelo menos 15 caracteres.',
+};

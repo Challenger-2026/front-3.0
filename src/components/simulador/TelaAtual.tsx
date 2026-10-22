@@ -13,6 +13,15 @@ import TelaFeedback from './telas/TelaFeedback';
 import TelaEditarPostagem from './telas/TelaEditarPostagem';
 import TelaPontos from './telas/TelaPontos';
 import TelaMetas from './telas/TelaMetas';
+import TelaCandidatura from './telas/TelaCandidatura';
+import TelaModeracao from './telas/TelaModeracao';
+import TelaAnaliseModeracao from './telas/TelaAnaliseModeracao';
+import TelaDenuncias from './telas/TelaDenuncias';
+import TelaContestacao from './telas/TelaContestacao';
+import TelaContestacoes from './telas/TelaContestacoes';
+import TelaRevisoes from './telas/TelaRevisoes';
+import TelaRevisao from './telas/TelaRevisao';
+
 
 export default function TelaAtual() {
   const { telaAtual, loading, error, carregarDados } = useSimulador();
@@ -58,7 +67,23 @@ export default function TelaAtual() {
     case 'pontos':
       return <TelaPontos />;
     case 'metas':
-      return <TelaMetas />;  
+      return <TelaMetas />;
+    case 'candidatura':
+      return <TelaCandidatura />;
+    case 'moderacao':
+      return <TelaModeracao />;
+    case 'moderacao-analise':
+      return <TelaAnaliseModeracao />; 
+    case 'denuncias':
+      return <TelaDenuncias />;
+    case 'contestacao':
+      return <TelaContestacao />;
+    case 'contestacoes':
+      return <TelaContestacoes />;
+    case 'revisoes':
+      return <TelaRevisoes />;
+    case 'revisao':
+      return <TelaRevisao />; 
     default:
       return <TelaEmConstrucao />;
   }

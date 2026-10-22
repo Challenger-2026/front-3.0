@@ -3,6 +3,7 @@ import Celular from '../components/simulador/Celular';
 import AppSoulUp from '../components/simulador/AppSoulUp';
 import PainelExplicacao from '../components/simulador/PainelExplicacao';
 import TelaAtual from '../components/simulador/TelaAtual';
+import PerfisTeste from '../components/simulador/PerfisTeste';
 
 export default function Simulador() {
   return (
@@ -22,7 +23,10 @@ export default function Simulador() {
             </AppSoulUp>
           </Celular>
 
-          <PainelExplicacao/>
+          <div className="space-y-6">
+            <PainelExplicacao/>
+            <PerfisTeste/>
+          </div>
         </div>
       </div>
     </SimuladorProvider>

@@ -62,40 +62,16 @@
       "tipoPerfil": "COMUM"
     },
     {
-      "nmCompleto": "Ana Carolina",
-      "cpf": "12356789100",
-      "email": "abroba@gmail.com",
-      "username": "anabau",
-      "senha": "Abroba123",
-      "dtNascimento": "1999-09-02",
-      "sdPonto": 0,
+      "id": 6,
+      "nmCompleto": "Helena Prado",
+      "cpf": "66677788899",
+      "email": "helena@soulup.io",
+      "username": "helenap",
+      "senha": "soulup123",
+      "dtNascimento": "1985-02-08",
+      "sdPonto": 401.7,
       "nvUsuario": 1,
-      "tipoPerfil": "COMUM",
-      "id": 6
-    },
-    {
-      "nmCompleto": "Ana Abroba",
-      "cpf": "01234567891",
-      "email": "abroba@abroba.com",
-      "username": "abroba",
-      "senha": "Abroba123",
-      "dtNascimento": "1999-09-02",
-      "sdPonto": 0,
-      "nvUsuario": 1,
-      "tipoPerfil": "CRIADOR",
-      "id": 7
-    },
-    {
-      "nmCompleto": "Ana Abroba",
-      "cpf": "01234567890",
-      "email": "abroba1@gmail.com",
-      "username": "abroba1",
-      "senha": "Abroba123",
-      "dtNascimento": "1999-09-02",
-      "sdPonto": 0,
-      "nvUsuario": 1,
-      "tipoPerfil": "COMUM",
-      "id": 8
+      "tipoPerfil": "MODERADOR"
     }
   ],
   "comunidades": [
@@ -269,16 +245,66 @@
       "ptGerado": 6.6,
       "idUsuario": 5,
       "idComunidade": 4
+    },
+    {
+      "id": 9,
+      "ctTexto": "Troquei todas as lâmpadas de casa por LED e instalei temporizador no chuveiro.",
+      "ctUrl": "https://fotos.soulup.io/lampadas-led.jpg",
+      "stValidacao": "PENDENTE",
+      "ptGerado": 6.6,
+      "idUsuario": 5,
+      "idComunidade": 1
+    },
+    {
+      "id": 10,
+      "ctTexto": "Participei do mutirão de limpeza da nascente do Córrego Verde no sábado.",
+      "ctUrl": "https://fotos.soulup.io/mutirao-corrego-verde.jpg",
+      "stValidacao": "PENDENTE",
+      "ptGerado": 10.6,
+      "idUsuario": 4,
+      "idComunidade": 5
+    },
+    {
+      "id": 11,
+      "ctTexto": "Separei toda a reciclagem de casa durante o mês e levei à cooperativa do bairro.",
+      "ctUrl": "https://fotos.soulup.io/reciclagem-cooperativa.jpg",
+      "stValidacao": "PENDENTE",
+      "ptGerado": 1.6,
+      "idUsuario": 4,
+      "idComunidade": 3
+    },
+    {
+      "id": 12,
+      "ctTexto": "Levei sacolas retornáveis para as compras da semana inteira.",
+      "ctUrl": "https://fotos.soulup.io/sacolas-retornaveis.jpg",
+      "stValidacao": "PENDENTE",
+      "ptGerado": 1.6,
+      "idUsuario": 2,
+      "idComunidade": 2
+    },
+    {
+      "id": 13,
+      "ctTexto": "Organizei a coleta de 40 pilhas usadas no prédio e levei ao ponto de descarte certificado.",
+      "ctUrl": "https://fotos.soulup.io/coleta-pilhas.jpg",
+      "stValidacao": "REJEITADO",
+      "ptGerado": 10.6,
+      "idUsuario": 5,
+      "idComunidade": 1
     }
   ],
-    "moderacoes": [
+  "moderacoes": [
     { "id": 1, "decisao": "A", "justificativa": "Ação comprovada com fotos e registro diário.", "bnModerador": 0.66, "idModerador": 1, "idPostagem": 1 },
     { "id": 2, "decisao": "R", "justificativa": "O registro não traz evidência suficiente da atividade realizada.", "bnModerador": 0.16, "idModerador": 1, "idPostagem": 2 },
-    { "id": 3, "decisao": "A", "justificativa": "Ação de alto impacto comprovada com fotos e lista de presença.", "bnModerador": 1.06, "idModerador": 1, "idPostagem": 3 },
+    { "id": 3, "decisao": "A", "justificativa": "Ação de alto impacto comprovada com fotos e lista de presença.", "bnModerador": 1.06, "idModerador": 2, "idPostagem": 3 },
     { "id": 4, "decisao": "A", "justificativa": "Fotos das mudas e do mutirão.", "bnModerador": 1.06, "idModerador": 1, "idPostagem": 4 },
     { "id": 5, "decisao": "A", "justificativa": "Registro consistente com o histórico da comunidade.", "bnModerador": 0.66, "idModerador": 1, "idPostagem": 5 },
     { "id": 6, "decisao": "A", "justificativa": "Evidência consistente.", "bnModerador": 0.66, "idModerador": 1, "idPostagem": 6 },
-    { "id": 7, "decisao": "A", "justificativa": "Comprovação com fotos da instalação e conta de água.", "bnModerador": 0.66, "idModerador": 1, "idPostagem": 8 }
+    { "id": 7, "decisao": "A", "justificativa": "Comprovação com fotos da instalação e conta de água.", "bnModerador": 0.66, "idModerador": 2, "idPostagem": 8 },
+    { "id": 8, "decisao": "R", "justificativa": "Faltou comprovação do ponto de descarte utilizado.", "bnModerador": 1.06, "idModerador": 1, "idPostagem": 13 }
+  ],
+  "moderadores": [
+    { "id": 1, "nvModerador": 1, "rtModerador": "INICIANTE", "dtAdesao": "2026-04-01", "idUsuario": 3 },
+    { "id": 2, "nvModerador": 1, "rtModerador": "INICIANTE", "dtAdesao": "2026-02-20", "idUsuario": 6 }
   ],
   "$schema": "./node_modules/json-server/schema.json"
 }

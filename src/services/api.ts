@@ -12,8 +12,14 @@ import type {
   UsuarioAtualizacao,
   LoginRequest,
   UsuarioDoBanco,
+  ErroComStatus,
+  Moderador,
+  ModeracaoCadastro,
+  PostagemFila,
 } from '../types/types';
 import { buscarCategoriaPorImpacto } from '../data/categorias';
+import { bonusDoModerador } from '../data/moderacao';
+import { hojeIso } from '../data/metas';
 
 const JSON_SERVER_URL = 'http://localhost:5000';
 const BASE_URL = import.meta.env.VITE_API_URL ?? JSON_SERVER_URL;
@@ -21,6 +27,12 @@ const BASE_URL = import.meta.env.VITE_API_URL ?? JSON_SERVER_URL;
 // Apontando para a porta 5000, o front está usando o json-server (db.json)
 const USANDO_JSON_SERVER = BASE_URL === JSON_SERVER_URL;
 const HEADERS_JSON = { 'Content-Type': 'application/json' };
+
+// Erro com a mensagem e o status da API (a tela usa o status, ex.: 403 na fila de moderação)
+const erroDaApi = (mensagem: string, status: number): ErroComStatus => Object.assign(new Error(mensagem), { status });
+
+// Mesmas mensagens do ModeracaoService
+const SO_MODERADOR = 'Apenas usuários com perfil MODERADOR podem moderar postagens';
 
 // Se a resposta não for ok, repassa a mensagem "erro" da API Java
 const tratarResposta = async <T>(response: Response, mensagemPadrao: string): Promise<T> => {
@@ -32,7 +44,7 @@ const tratarResposta = async <T>(response: Response, mensagemPadrao: string): Pr
     } catch {
       // resposta sem JSON: fica a mensagem padrão
     }
-    throw new Error(mensagem);
+    throw erroDaApi(mensagem, response.status);
   }
   if (response.status === 204) return undefined as T; // 204 No Content: sem corpo (DELETE)
   return response.json();
@@ -57,6 +69,43 @@ const paraUsuario = (u: Usuario): Usuario => ({
 const buscarNoJsonServer = async <T>(caminho: string): Promise<T[]> => {
   const response = await fetch(`${BASE_URL}${caminho}`);
   return tratarResposta<T[]>(response, 'Erro ao consultar o json-server');
+};
+
+
+// Linha da T_LGT_MODERADOR do usuário (o buscarModeradorOuErro do Java); 403 se não for moderador
+const buscarModeradorNoJsonServer = async (idUsuario: number): Promise<Moderador> => {
+  const encontrados = await buscarNoJsonServer<Moderador>(`/moderadores?idUsuario=${idUsuario}`);
+  if (encontrados.length === 0) throw erroDaApi(SO_MODERADOR, 403);
+  return comIdNumerico(encontrados[0]);
+};
+
+// removerPerfil do Java: o moderador que já moderou não pode deixar o cargo (409)
+const conferirSaidaDoModerador = async (idUsuario: number): Promise<Moderador[]> => {
+  const moderadores = await buscarNoJsonServer<Moderador>(`/moderadores?idUsuario=${idUsuario}`);
+  for (const m of moderadores) {
+    const feitas = await buscarNoJsonServer<Moderacao>(`/moderacoes?idModerador=${m.id}`);
+    if (feitas.length > 0) {
+      throw erroDaApi('Moderador possui moderações registradas e não pode deixar de ser moderador', 409);
+    }
+  }
+  return moderadores;
+};
+
+// Apaga as linhas da T_LGT_MODERADOR do usuário
+const apagarModeradores = async (moderadores: Moderador[]) => {
+  for (const m of moderadores) {
+    await fetch(`${BASE_URL}/moderadores/${m.id}`, { method: 'DELETE' });
+  }
+};
+
+// PATCH no json-server (no lugar dos UPDATE que o Java faz direto no banco)
+const alterarNoJsonServer = async <T>(caminho: string, dados: object): Promise<T> => {
+  const response = await fetch(`${BASE_URL}${caminho}`, {
+    method: 'PATCH',
+    headers: HEADERS_JSON,
+    body: JSON.stringify(dados),
+  });
+  return tratarResposta<T>(response, 'Erro ao gravar no json-server');
 };
 
 export const api = {
@@ -167,8 +216,10 @@ export const api = {
   },
 
   // DELETE /usuarios/{id} — 409 quando há postagens, comunidades ou participações vinculadas
-  excluirUsuario: async (id: number): Promise<void> => {
+    excluirUsuario: async (id: number): Promise<void> => {
     if (USANDO_JSON_SERVER) {
+      const moderadores = await conferirSaidaDoModerador(id); // o Java confere o perfil antes do usuário
+
       const [postagens, criadas, participacoes] = await Promise.all([
         buscarNoJsonServer<Postagem>(`/postagens?idUsuario=${id}`),
         buscarNoJsonServer<Comunidade>(`/comunidades?idCriador=${id}`),
@@ -177,6 +228,7 @@ export const api = {
       if (postagens.length > 0 || criadas.length > 0 || participacoes.length > 0) {
         throw new Error('Usuário possui registros vinculados e não pode ser excluído');
       }
+      await apagarModeradores(moderadores);
     }
 
     const response = await fetch(`${BASE_URL}/usuarios/${id}`, { method: 'DELETE' });
@@ -191,6 +243,24 @@ export const api = {
       if (atual.tipoPerfil === 'CRIADOR') {
         const criadas = await buscarNoJsonServer<Comunidade>(`/comunidades?idCriador=${id}`);
         if (criadas.length > 0) throw new Error('Criador possui comunidades e não pode deixar de ser criador');
+      }
+      
+      if (atual.tipoPerfil === 'MODERADOR') await apagarModeradores(await conferirSaidaDoModerador(id));
+
+      // criarPerfil do Java: o novo moderador ganha a linha na T_LGT_MODERADOR (nível 1, INICIANTE)
+      if (tipoPerfil === 'MODERADOR') {
+        const novo: Omit<Moderador, 'id'> = {
+          nvModerador: 1,
+          rtModerador: 'INICIANTE',
+          dtAdesao: hojeIso(),
+          idUsuario: id,
+        };
+        const response = await fetch(`${BASE_URL}/moderadores`, {
+          method: 'POST',
+          headers: HEADERS_JSON,
+          body: JSON.stringify(novo),
+        });
+        await tratarResposta<Moderador>(response, 'Erro ao criar moderador');
       }
 
       const response = await fetch(`${BASE_URL}/usuarios/${id}`, {
@@ -283,5 +353,81 @@ export const api = {
     const response = await fetch(`${BASE_URL}/moderacoes`);
     const moderacoes = await tratarResposta<Moderacao[]>(response, 'Erro ao buscar moderações');
     return moderacoes.map(comIdNumerico);
+  },
+  
+  // GET /moderacoes/fila?idUsuario= — fila às cegas: sem as próprias postagens e sem as das comunidades dele
+  getFilaModeracao: async (idUsuario: number): Promise<PostagemFila[]> => {
+    if (USANDO_JSON_SERVER) {
+      await buscarModeradorNoJsonServer(idUsuario); // 403 se não for moderador
+      const [pendentes, membros] = await Promise.all([
+        buscarNoJsonServer<Postagem>('/postagens?stValidacao=PENDENTE'),
+        buscarNoJsonServer<Membro>(`/membros?idUsuario=${idUsuario}`),
+      ]);
+      const minhasComunidades = membros.map((m) => m.idComunidade);
+      return pendentes
+        .filter((p) => p.idUsuario !== idUsuario && !minhasComunidades.includes(p.idComunidade))
+        .map((p) => ({ id: Number(p.id), ctTexto: p.ctTexto, ctUrl: p.ctUrl, ptGerado: p.ptGerado }));
+    }
+
+    const response = await fetch(`${BASE_URL}/moderacoes/fila?idUsuario=${idUsuario}`);
+    const fila = await tratarResposta<PostagemFila[]>(response, 'Erro ao buscar a fila de moderação');
+    return fila.map(comIdNumerico);
+  },
+
+  // POST /moderacoes — aprova (A) ou reprova (R); se aprovar, o Java soma o ptGerado no sdPonto do autor
+  moderarPostagem: async (dados: ModeracaoCadastro): Promise<Moderacao> => {
+    if (USANDO_JSON_SERVER) {
+      // mesma ordem do moderar do ModeracaoService
+      const moderador = await buscarModeradorNoJsonServer(dados.idUsuario);
+      const [encontradas, jaModeradas] = await Promise.all([
+        buscarNoJsonServer<Postagem>(`/postagens?id=${dados.idPostagem}`),
+        buscarNoJsonServer<Moderacao>(`/moderacoes?idPostagem=${dados.idPostagem}`),
+      ]);
+      if (encontradas.length === 0) throw erroDaApi('Postagem não encontrada', 404);
+      const postagem = encontradas[0];
+      if (postagem.stValidacao !== 'PENDENTE' || jaModeradas.length > 0) {
+        throw erroDaApi('Esta postagem já foi moderada', 409);
+      }
+      if (postagem.idUsuario === dados.idUsuario) {
+        throw erroDaApi('O moderador não pode avaliar a própria postagem', 409);
+      }
+      const membro = await buscarNoJsonServer<Membro>(
+        `/membros?idUsuario=${dados.idUsuario}&idComunidade=${postagem.idComunidade}`,
+      );
+      if (membro.length > 0) {
+        throw erroDaApi('O moderador não pode avaliar postagens de comunidades de que participa', 409);
+      }
+
+      const nova: Omit<Moderacao, 'id'> = {
+        decisao: dados.decisao,
+        justificativa: dados.justificativa,
+        bnModerador: bonusDoModerador(postagem.ptGerado),
+        idModerador: moderador.id,
+        idPostagem: dados.idPostagem,
+      };
+      const response = await fetch(`${BASE_URL}/moderacoes`, {
+        method: 'POST',
+        headers: HEADERS_JSON,
+        body: JSON.stringify(nova),
+      });
+      const criada = comIdNumerico(await tratarResposta<Moderacao>(response, 'Erro ao moderar postagem'));
+
+      if (dados.decisao === 'A') {
+        await alterarNoJsonServer(`/postagens/${dados.idPostagem}`, { stValidacao: 'APROVADO' });
+        const autor = await api.getUsuario(postagem.idUsuario);
+        const sdPonto = Number((autor.sdPonto + postagem.ptGerado).toFixed(2)); // somarPontos do Java
+        await alterarNoJsonServer(`/usuarios/${autor.id}`, { sdPonto });
+      } else {
+        await alterarNoJsonServer(`/postagens/${dados.idPostagem}`, { stValidacao: 'REJEITADO' });
+      }
+      return criada;
+    }
+
+    const response = await fetch(`${BASE_URL}/moderacoes`, {
+      method: 'POST',
+      headers: HEADERS_JSON,
+      body: JSON.stringify(dados),
+    });
+    return comIdNumerico(await tratarResposta<Moderacao>(response, 'Erro ao moderar postagem'));
   },
 };

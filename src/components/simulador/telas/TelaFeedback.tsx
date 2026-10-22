@@ -2,6 +2,7 @@ import type { StatusValidacao } from '../../../types/types';
 import { useSimulador } from '../../../hooks/useSimulador';
 import { buscarCategoriaPorPontos } from '../../../data/categorias';
 import { formatarPontos } from '../../../utils/formatadores';
+import { PRAZO_CONTESTACAO_DIAS, nomesStatusContestacao } from '../../../data/moderacao';
 
 const coresStatus: Record<StatusValidacao, string> = {
   PENDENTE: 'bg-amber-50 text-amber-700 border-amber-200',
@@ -28,7 +29,7 @@ const rotulosPontos: Record<StatusValidacao, string> = {
 };
 
 export default function TelaFeedback() {
-  const { usuario, postagens, comunidades, moderacoes, idPostagemAberta, irPara } = useSimulador();
+  const { usuario, postagens, comunidades, moderacoes, contestacoes, idPostagemAberta, irPara } = useSimulador();
 
   const postagem = postagens.find((p) => p.id === idPostagemAberta);
 
@@ -48,6 +49,11 @@ export default function TelaFeedback() {
   const categoria = buscarCategoriaPorPontos(postagem.ptGerado);
   const comunidade = comunidades.find((c) => c.id === postagem.idComunidade);
   const podeEditar = postagem.stValidacao === 'PENDENTE' && postagem.idUsuario === usuario.id;
+
+    // Contestação (demonstração): só o autor, só rejeitada e uma por postagem
+  const contestacao = contestacoes.find((c) => c.idPostagem === postagem.id);
+  const podeContestar =
+    postagem.stValidacao === 'REJEITADO' && postagem.idUsuario === usuario.id && moderacao !== undefined && !contestacao;
 
   return (
     <>
@@ -101,6 +107,33 @@ export default function TelaFeedback() {
       </article>
 
       <div className="space-y-2">
+        {podeContestar && (
+          <>
+            <p className="rounded-2xl border border-[#4F46E5]/25 bg-[#4F46E5]/5 p-3 text-xs">
+              Não concorda com a rejeição? Você pode contestar em até {PRAZO_CONTESTACAO_DIAS} dias. Um moderador com
+              reputação maior fará a revisão.
+            </p>
+            <button
+              type="button"
+              onClick={() => irPara('contestacao')}
+              className="w-full rounded-full bg-[#4F46E5] py-3 text-sm font-bold text-white cursor-pointer"
+            >
+              Contestar rejeição
+            </button>
+          </>
+        )}
+        {contestacao && (
+          <p className="rounded-2xl border border-slate-200 bg-white p-3 text-xs text-slate-500">
+            Contestação registrada: <strong className="text-[#16173A]">{nomesStatusContestacao[contestacao.status]}</strong>.{' '}
+            <button
+              type="button"
+              onClick={() => irPara('contestacoes')}
+              className="font-semibold text-[#4F46E5] underline cursor-pointer"
+            >
+              Ver histórico
+            </button>
+          </p>
+        )}
         {podeEditar && (
           <button
             type="button"

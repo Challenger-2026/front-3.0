@@ -15,7 +15,7 @@ type OpcaoPerfil = {
 const opcoes: OpcaoPerfil[] = [
   { perfil: 'COMUM', titulo: 'Usuário comum', texto: 'Registrar ações, pontuar e resgatar benefícios.', icone: <FiCompass size={20} /> },
   { perfil: 'CRIADOR', titulo: 'Criador', texto: 'Cria e administra comunidades. Não modera a própria comunidade.', icone: <FiStar size={20} /> },
-  { perfil: 'MODERADOR', titulo: 'Moderador', texto: 'Avalia às cegas a fila global de postagens da Soul Up.', icone: <FiShield size={20} /> },
+  { perfil: 'MODERADOR', titulo: 'Moderador', texto: 'Avalia às cegas a fila global de postagens da Soul Up. Requer candidatura.', icone: <FiShield size={20} /> },
 ];
 
 export default function TelaAjustes() {
@@ -28,6 +28,11 @@ export default function TelaAjustes() {
 
   const escolher = async (perfil: TipoPerfil) => {
     if (perfil === usuario.tipoPerfil) return;
+    // Moderador não troca direto: passa pela candidatura (confidencialidade, requisitos e questionário)
+    if (perfil === 'MODERADOR') {
+      irPara('candidatura');
+      return;
+    }
     setErro('');
     setAviso('');
     setTrocando(perfil);
@@ -110,6 +115,16 @@ export default function TelaAjustes() {
           Interesses e sugestões para você
           <FiChevronRight className="text-slate-400" />
         </button>
+        {usuario.tipoPerfil === 'MODERADOR' && (
+          <button
+            type="button"
+            onClick={() => irPara('moderacao')}
+            className="flex w-full items-center justify-between rounded-2xl border border-slate-200 bg-white p-3 text-left text-sm font-semibold cursor-pointer"
+          >
+            Fila de moderação
+            <FiChevronRight className="text-slate-400" />
+          </button>
+        )}
         <button
           type="button"
           onClick={reiniciar}

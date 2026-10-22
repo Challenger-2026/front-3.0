@@ -23,7 +23,7 @@ export const explicacoes: Record<TelaId, Explicacao> = {
     ],
     proximaAcao: 'Preencha os dados para criar a conta.',
   },
-    onboarding: {
+  onboarding: {
     titulo: 'Onboarding',
     descricao:
       'Três perguntas rápidas logo depois do cadastro: momento, objetivo e temas de interesse. As respostas personalizam o Perfil e as sugestões do app.',
@@ -42,6 +42,7 @@ export const explicacoes: Record<TelaId, Explicacao> = {
       'Só aparecem postagens aprovadas: pendentes e rejeitadas ficam restritas ao autor',
       'Pontos liberados em cada ação aprovada',
       'Filtro entre "Minhas comunidades" e "Explorar tudo"',
+      'Demonstração: denunciar uma publicação (a denúncia vai para a fila de denúncias dos moderadores)',
     ],
     proximaAcao: 'Toque no botão + para registrar uma ação sustentável.',
   },
@@ -160,7 +161,8 @@ export const explicacoes: Record<TelaId, Explicacao> = {
       'Onde o usuário escolhe como participa do Soul Up: Comum, Criador ou Moderador. A troca é feita na API e vale na hora.',
     destaques: [
       'PUT /usuarios/{id}/perfil com o novo tipoPerfil',
-      'Criador com comunidades não pode deixar de ser Criador: a API responde 409',
+      'Moderador não troca direto: abre a candidatura com o questionário',
+      'Criador com comunidades ou moderador que já moderou não pode trocar: a API responde 409',
       'Acesso aos dados cadastrais e às respostas do onboarding',
     ],
     proximaAcao: 'Troque o tipo de perfil ou abra os dados cadastrais.',
@@ -175,5 +177,98 @@ export const explicacoes: Record<TelaId, Explicacao> = {
       'Excluir conta: DELETE /usuarios/{id}, recusado com 409 se houver postagens ou comunidades vinculadas',
     ],
     proximaAcao: 'Altere seus dados e salve, ou teste a exclusão da conta.',
+  },
+  candidatura: {
+    titulo: 'Candidatura a moderador',
+    descricao:
+      'Antes de moderar, o usuário aceita o aviso de confidencialidade, confere os requisitos e responde a 5 perguntas sobre a moderação às cegas. Com 4 acertos, o perfil vira Moderador.',
+    destaques: [
+      'Aprovado no questionário: PUT /usuarios/{id}/perfil com MODERADOR (o Java cria a linha na T_LGT_MODERADOR)',
+      'Taxa de rejeição: postagens do GET /postagens + um histórico de demonstração fixo no front',
+      'Criador com comunidades passa no questionário, mas a API recusa a troca com 409',
+      'Demonstração: o tempo mínimo de 3 meses usa uma data de cadastro fixa no front (a API não guarda essa data)',
+      'Demonstração: o aceite da confidencialidade e o questionário ficam só no front',
+    ],
+    proximaAcao: 'diegoa vira moderador; dudalopes não é elegível; anacarol passa no questionário e recebe o 409 da API.',
+  },
+  moderacao: {
+    titulo: 'Fila global de moderação',
+    descricao:
+      'Fila às cegas, no modelo da correção da redação do ENEM: o moderador vê só o texto, a evidência e os pontos, sem o autor. Postagens dele e das comunidades de que participa não aparecem.',
+    destaques: [
+      'GET /moderacoes/fila?idUsuario= devolve id, ctTexto, ctUrl e ptGerado',
+      'Quem não é moderador recebe 403 e vê o convite para a candidatura',
+      'Demonstração: "Declarar impedimento" tira a postagem da fila só nesta sessão',
+      'Demonstração: limite de 20 moderações por dia e perda do cargo após 30 dias sem moderar',
+    ],
+    proximaAcao: 'Entre como carlam ou helenap (senha soulup123) e escolha uma postagem.',
+  },
+  'moderacao-analise': {
+    titulo: 'Analisar postagem',
+    descricao:
+      'O moderador responde à rubrica de 4 critérios e decide: aprovar ou rejeitar. Cada postagem recebe uma única decisão.',
+    destaques: [
+      'POST /moderacoes com decisao (A ou R), justificativa, idUsuario e idPostagem',
+      'Aprovar: o Java muda para APROVADO e soma o ptGerado no sdPonto do autor; rejeitar: REJEITADO',
+      'Bônus do moderador: 10% do ptGerado, gravado em bnModerador',
+      'Rubrica fica no front: o Java recebe só a decisão e a justificativa',
+      'A API não deixa corrigir o tipo de impacto nem fazer dupla avaliação (id_postagem é UNIQUE na moderação)',
+    ],
+    proximaAcao: 'Responda à rubrica, escolha a decisão e confirme.',
+  },
+  denuncias: {
+    titulo: 'Denúncias (demonstração)',
+    descricao:
+      'Publicações aprovadas que a comunidade denunciou, ordenadas pelo número de denúncias. Segue as regras da fila às cegas e não mostra as denúncias feitas pelo próprio moderador.',
+    destaques: [
+      'Demonstração: a API ainda não tem a tabela de denúncias, tudo fica no estado do front',
+      'Prioridade: 1 denúncia = Normal, 2 ou 3 = Alta, 4 ou mais = Crítica',
+      'Manter = denúncia improcedente; Remover = a publicação sai do feed',
+      'Parecer obrigatório, com no mínimo 10 caracteres',
+    ],
+    proximaAcao: 'Abra uma publicação denunciada e registre o parecer.',
+  },
+  contestacao: {
+    titulo: 'Contestar rejeição (demonstração)',
+    descricao:
+      'O autor de uma postagem rejeitada pode pedir uma nova análise. A revisão é feita por um moderador com reputação maior que a de quem rejeitou.',
+    destaques: [
+      'Demonstração: a API ainda não tem a tabela de contestações, fica no estado do front',
+      'Só o autor contesta, só postagens rejeitadas e uma contestação por postagem',
+      'Prazo de 7 dias: a API não guarda a data da moderação, então o prazo aparece só como regra',
+      'Motivo obrigatório, com no mínimo 15 caracteres',
+    ],
+    proximaAcao: 'Descreva o motivo e envie a contestação.',
+  },
+  contestacoes: {
+    titulo: 'Histórico de contestações (demonstração)',
+    descricao:
+      'Trilha de auditoria de cada contestação: decisão original, motivo do autor, decisão final e efeito na reputação do moderador original.',
+    destaques: [
+      'O autor vê só as próprias contestações; o moderador vê todas',
+      'Para o autor, o moderador aparece só como "um moderador da Soul Up"',
+      'A justificativa original vem do GET /moderacoes',
+    ],
+  },
+  revisoes: {
+    titulo: 'Fila de contestações (demonstração)',
+    descricao:
+      'Segunda instância da moderação: contestações em aberto, que só um moderador com reputação maior que a do moderador original pode revisar.',
+    destaques: [
+      'Não revisa quem é o autor nem quem rejeitou a postagem',
+      'Reputação: demonstração, fixa no front (o Java guarda só o rótulo rt_moderador)',
+    ],
+    proximaAcao: 'Entre como helenap para revisar as contestações em aberto.',
+  },
+  revisao: {
+    titulo: 'Revisar contestação (demonstração)',
+    descricao:
+      'O revisor mantém ou reverte a rejeição. Manter dá bônus de reputação ao moderador original; reverter aplica penalidade.',
+    destaques: [
+      'Manter: +3 de reputação para quem rejeitou; reverter: −5',
+      'Parecer obrigatório, registrado no histórico',
+      'Demonstração: reverter não muda a postagem na API (o Java só aceita moderar postagem PENDENTE)',
+    ],
+    proximaAcao: 'Escolha manter ou reverter e escreva o parecer.',
   },
 };

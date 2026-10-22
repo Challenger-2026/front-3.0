@@ -16,16 +16,39 @@ import type {
   UsuarioCadastro,
   UsuarioAtualizacao,
   TipoPerfil,
+  PostagemFila,
+  ModeracaoCadastro,
+  StatusValidacao,
+  Denuncia,
+  MotivoDenuncia,
+  RevisaoDenuncia,
+  AcaoDenuncia,
+  Contestacao,
+  DecisaoRevisao,
 } from '../types/types';
 import { api } from '../services/api';
 import { complementosUsuario } from '../data/complementosUsuario';
 import { mensagemDoErro } from '../utils/erros';
 import { hojeIso, proximaMetrica } from '../data/metas';
 import { buscarCategoriaPorImpacto } from '../data/categorias';
+import {
+  BONUS_REPUTACAO,
+  PENALIDADE_REPUTACAO,
+  REPUTACAO_INICIAL,
+  buscarModeradorDemo,
+  contestacoesIniciais,
+  denunciasIniciais,
+  motivoImpedimentoRevisao,
+  reputacaoDe,
+  reputacoesIniciais,
+} from '../data/moderacao';
 
 // Dados públicos do app, carregados ao abrir o simulador (antes do login)
 const buscarDados = () =>
   Promise.all([api.getUsuarios(), api.getComunidades(), api.getPostagens(), api.getModeracoes()]);
+
+// Próximo id das listas que ficam só no front (denúncias e contestações)
+const proximoId = (itens: { id: number }[]) => itens.reduce((maior, item) => Math.max(maior, item.id), 0) + 1;
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const SimuladorContext = createContext<SimuladorContextType | undefined>(undefined);
@@ -68,6 +91,18 @@ export const SimuladorProvider = ({ children }: { children: ReactNode }) => {
   // Postagem aberta na tela de feedback
   const [idPostagemAberta, setIdPostagemAberta] = useState<number | null>(null);
 
+  
+  // ----- Moderação -----
+  const [fila, setFila] = useState<PostagemFila[]>([]); // fila às cegas do moderador logado
+
+  // Demonstrações (a API não tem essas tabelas): valem só nesta sessão do simulador
+  const [impedidas, setImpedidas] = useState<number[]>([]);
+  const [reputacoes, setReputacoes] = useState<Record<number, number>>(reputacoesIniciais);
+  const [denuncias, setDenuncias] = useState<Denuncia[]>(denunciasIniciais);
+  const [revisoesDenuncia, setRevisoesDenuncia] = useState<RevisaoDenuncia[]>([]);
+  const [contestacoes, setContestacoes] = useState<Contestacao[]>(contestacoesIniciais);
+  const [idContestacaoAberta, setIdContestacaoAberta] = useState<number | null>(null);
+
   // Usado pelo botão "Tentar novamente"
   const carregarDados = useCallback(async () => {
     setLoading(true);
@@ -78,9 +113,6 @@ export const SimuladorProvider = ({ children }: { children: ReactNode }) => {
       setComunidades(dadosComunidades);
       setPostagens(dadosPostagens);
       setModeracoes(dadosModeracoes);
-      setUsuarios(dadosUsuarios);
-      setComunidades(dadosComunidades);
-      setPostagens(dadosPostagens);
     } catch (err) {
       setError(mensagemDoErro(err));
       console.error(err);
@@ -93,10 +125,11 @@ export const SimuladorProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [dadosUsuarios, dadosComunidades, dadosPostagens] = await buscarDados();
+        const [dadosUsuarios, dadosComunidades, dadosPostagens, dadosModeracoes] = await buscarDados();
         setUsuarios(dadosUsuarios);
         setComunidades(dadosComunidades);
         setPostagens(dadosPostagens);
+        setModeracoes(dadosModeracoes);
       } catch (err) {
         setError(mensagemDoErro(err));
         console.error(err);
@@ -272,6 +305,139 @@ export const SimuladorProvider = ({ children }: { children: ReactNode }) => {
     alterarMeta(() => null);
   }, [alterarMeta]);
 
+  
+  // ----- Moderação às cegas (API) -----
+
+  // Sem try/catch: a tela trata o 403 (não é moderador) mostrando a candidatura
+  const carregarFila = useCallback(async () => {
+    if (!usuario) return;
+    setFila(await api.getFilaModeracao(usuario.id));
+  }, [usuario]);
+
+  const abrirAnalise = useCallback(
+    (idPostagem: number) => {
+      setIdPostagemAberta(idPostagem);
+      irPara('moderacao-analise');
+    },
+    [irPara],
+  );
+
+  // Sem try/catch: a tela mostra o erro (ex.: 409 "Esta postagem já foi moderada")
+  const moderar = useCallback(
+    async (dados: Omit<ModeracaoCadastro, 'idUsuario'>) => {
+      if (!usuario) throw new Error('Entre na sua conta para moderar');
+      const moderacao = await api.moderarPostagem({ ...dados, idUsuario: usuario.id });
+
+      const novoStatus: StatusValidacao = dados.decisao === 'A' ? 'APROVADO' : 'REJEITADO';
+      setModeracoes((anteriores) => [...anteriores, moderacao]);
+      setPostagens((anteriores) =>
+        anteriores.map((p) => (p.id === dados.idPostagem ? { ...p, stValidacao: novoStatus } : p)),
+      );
+      setFila((anteriores) => anteriores.filter((p) => p.id !== dados.idPostagem));
+
+      // Na aprovação o Java soma o ptGerado no sdPonto do autor: busca o saldo atualizado
+      const postagem = postagens.find((p) => p.id === dados.idPostagem);
+      if (dados.decisao === 'A' && postagem) {
+        const autor = await api.getUsuario(postagem.idUsuario);
+        setUsuarios((anteriores) => anteriores.map((u) => (u.id === autor.id ? autor : u)));
+      }
+      return moderacao;
+    },
+    [usuario, postagens],
+  );
+
+  // ----- Demonstrações da moderação (só no estado do front) -----
+
+  const declararImpedimento = useCallback((idPostagem: number) => {
+    setImpedidas((anteriores) => [...anteriores, idPostagem]);
+  }, []);
+
+  const denunciar = useCallback(
+    (idPostagem: number, motivo: MotivoDenuncia, detalhe: string) => {
+      if (!usuario) return;
+      setDenuncias((anteriores) => [
+        ...anteriores,
+        { id: proximoId(anteriores), idPostagem, idUsuario: usuario.id, motivo, detalhe },
+      ]);
+    },
+    [usuario],
+  );
+
+  const revisarDenuncias = useCallback(
+    (idPostagem: number, acao: AcaoDenuncia, parecer: string) => {
+      if (!usuario) return;
+      setRevisoesDenuncia((anteriores) => [...anteriores, { idPostagem, acao, parecer, idUsuario: usuario.id }]);
+    },
+    [usuario],
+  );
+
+  const abrirContestacao = useCallback(
+    (id: number) => {
+      setIdContestacaoAberta(id);
+      irPara('revisao');
+    },
+    [irPara],
+  );
+
+  // A contestação guarda quem rejeitou (idModerador da moderação) e a reputação dele naquele momento
+  const contestar = useCallback(
+    (idPostagem: number, motivo: string) => {
+      if (!usuario) return;
+      const moderacao = moderacoes.find((m) => m.idPostagem === idPostagem);
+      if (!moderacao) return;
+      const original = buscarModeradorDemo(moderacao.idModerador);
+      setContestacoes((anteriores) => [
+        ...anteriores,
+        {
+          id: proximoId(anteriores),
+          idPostagem,
+          idUsuario: usuario.id,
+          motivo,
+          abertaEm: hojeIso(),
+          status: 'EM_REVISAO',
+          idModeradorOriginal: moderacao.idModerador,
+          reputacaoOriginal: original ? reputacaoDe(original.idUsuario, reputacoes) : REPUTACAO_INICIAL,
+        },
+      ]);
+    },
+    [usuario, moderacoes, reputacoes],
+  );
+
+  // Mantida: bônus de reputação para o moderador original; revertida: penalidade
+  const revisarContestacao = useCallback(
+    (id: number, decisao: DecisaoRevisao, parecer: string) => {
+      if (!usuario) return;
+      const contestacao = contestacoes.find((c) => c.id === id);
+      if (!contestacao || contestacao.status !== 'EM_REVISAO') return;
+      if (motivoImpedimentoRevisao(usuario, contestacao, reputacoes)) return;
+
+      const delta = decisao === 'MANTIDA' ? BONUS_REPUTACAO : -PENALIDADE_REPUTACAO;
+      setContestacoes((anteriores) =>
+        anteriores.map((c) =>
+          c.id === id
+            ? {
+                ...c,
+                status: decisao,
+                idRevisor: usuario.id,
+                reputacaoRevisor: reputacaoDe(usuario.id, reputacoes),
+                parecer,
+                decididaEm: hojeIso(),
+                deltaReputacao: delta,
+              }
+            : c,
+        ),
+      );
+      const original = buscarModeradorDemo(contestacao.idModeradorOriginal);
+      if (original) {
+        setReputacoes((anteriores) => ({
+          ...anteriores,
+          [original.idUsuario]: reputacaoDe(original.idUsuario, anteriores) + delta,
+        }));
+      }
+    },
+    [usuario, contestacoes, reputacoes],
+  );
+
   return (
     <SimuladorContext.Provider
       value={{
@@ -307,6 +473,22 @@ export const SimuladorProvider = ({ children }: { children: ReactNode }) => {
         subirMetrica,
         recusarUpgrade,
         encerrarMeta,
+        fila,
+        carregarFila,
+        abrirAnalise,
+        moderar,
+        impedidas,
+        declararImpedimento,
+        reputacoes,
+        denuncias,
+        revisoesDenuncia,
+        denunciar,
+        revisarDenuncias,
+        contestacoes,
+        idContestacaoAberta,
+        abrirContestacao,
+        contestar,
+        revisarContestacao,
       }}
     >
       {children}
