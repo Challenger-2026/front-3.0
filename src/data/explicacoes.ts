@@ -156,8 +156,9 @@ export const explicacoes: Record<TelaId, Explicacao> = {
       'Resumo do impacto do usuário: tipo de perfil (Comum, Moderador ou Criador), pontos, ações validadas e quanto CO₂ ele já evitou.',
     destaques: [
       'CO₂ evitado calculado pela categoria de cada ação aprovada',
-      'Ações aguardando validação da moderação às cegas',
-      'Comunidades criadas, quando o perfil é Criador',
+      'Atividades registradas: aprovadas e aguardando validação da moderação às cegas',
+      'Comunidades criadas, quando o perfil é Criador (abre o perfil da comunidade)',
+      'Demonstração: distintivo do mês em disputa (a API não tem ranking)',
     ],
   },
   notificacoes: {
