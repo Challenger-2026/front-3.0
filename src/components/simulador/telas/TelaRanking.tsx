@@ -7,7 +7,7 @@ import LigaSemanal from '../LigaSemanal';
 import DisputaMensal from '../DisputaMensal';
 
 export default function TelaRanking() {
-  const { usuario, usuarios, postagens, comunidades, ocultoEntreAmigos } = useSimulador();
+  const { usuario, usuarios, postagens, comunidades, ocultoEntreAmigos, irPara } = useSimulador();
   const [intervalo, setIntervalo] = useState<IntervaloRanking>('Mensal');
   const [idComunidade, setIdComunidade] = useState<number | null>(null); // null = todas
 
@@ -76,6 +76,18 @@ export default function TelaRanking() {
             Demonstração: a API não tem a opção de seguir. Aqui aparecem {ocultoEntreAmigos ? '' : 'você e '}
             {QUANTIDADE_AMIGOS_DEMO} pessoas cadastradas, com o saldo real da API.
           </p>
+          {ocultoEntreAmigos && (
+            <p className="flex items-center justify-between gap-2 rounded-xl bg-slate-100 px-3 py-2 text-[11px] text-slate-500">
+              Seu perfil está oculto deste ranking.
+              <button
+                type="button"
+                onClick={() => irPara('privacidade')}
+                className="shrink-0 font-bold text-[#4F46E5] underline cursor-pointer"
+              >
+                Mudar na Privacidade
+              </button>
+            </p>
+          )}
           <ol className="space-y-2">
             {amigos.map((p, i) => (
               <LinhaRanking key={p.chave} posicao={i + 1} participante={p} />
