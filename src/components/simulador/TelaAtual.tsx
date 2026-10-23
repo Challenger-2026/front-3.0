@@ -29,6 +29,7 @@ import TelaNotificacoes from './telas/TelaNotificacoes';
 import TelaRanking from './telas/TelaRanking';
 import TelaCarteira from './telas/TelaCarteira';
 import TelaBeneficios from './telas/TelaBeneficios';
+import TelaPrivacidade from './telas/TelaPrivacidade';
 
 
 export default function TelaAtual() {
@@ -108,6 +109,8 @@ export default function TelaAtual() {
       return <TelaCarteira />;
     case 'beneficios':
       return <TelaBeneficios />;
+    case 'privacidade':
+      return <TelaPrivacidade />;
     default:
       return <TelaEmConstrucao />;
       
