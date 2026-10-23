@@ -4,6 +4,7 @@ import { useSimulador } from '../../../hooks/useSimulador';
 import { INTERVALOS_RANKING, QUANTIDADE_AMIGOS_DEMO, rankingEntreAmigos, rankingGeral } from '../../../data/liga';
 import LinhaRanking from '../LinhaRanking';
 import LigaSemanal from '../LigaSemanal';
+import DisputaMensal from '../DisputaMensal';
 
 export default function TelaRanking() {
   const {usuario, usuarios, postagens, comunidades } = useSimulador();
@@ -36,7 +37,8 @@ export default function TelaRanking() {
           </button>
         ))}
       </div>
-    {intervalo === 'Semanal' && <LigaSemanal />}
+    {intervalo === 'Semanal' && <LigaSemanal />}  
+    {intervalo === 'Mensal' && <DisputaMensal />}
       {intervalo === 'Geral' && (
         <section className="space-y-3">
           <label htmlFor="ranking-comunidade" className="sr-only">
