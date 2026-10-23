@@ -49,13 +49,14 @@ export const explicacoes: Record<TelaId, Explicacao> = {
   comunidades: {
     titulo: 'Comunidades',
     descricao:
-      'Lista as comunidades de que o usuário participa e as que ele pode conhecer. Toda postagem é feita dentro de uma comunidade.',
+      'Todas as comunidades do Soul Up, com as Premium em destaque. Toda postagem é feita dentro de uma comunidade, e só os membros publicam nela.',
     destaques: [
-      'Comunidades free e premium (parceiras e ONGs)',
-      'Entrar e sair de uma comunidade',
-      'Missões criadas pelo Criador da comunidade',
+      'GET /comunidades e, para cada uma, GET /comunidades/{id}/membros/total',
+      'Entrar: POST /comunidades/{id}/membros?idUsuario= (409 se já for membro)',
+      'Só o Criador vê o botão "Criar nova comunidade"',
+      'Demonstração: plano Free/Premium, selo de verificada e temas ficam no front (a API não tem esses campos)',
     ],
-    proximaAcao: 'Escolha uma comunidade para ver os detalhes.',
+    proximaAcao: 'Entre em uma comunidade ou abra os detalhes dela.',
   },
     'nova-postagem': {
     titulo: 'Registrar ação sustentável',
@@ -270,5 +271,41 @@ export const explicacoes: Record<TelaId, Explicacao> = {
       'Demonstração: reverter não muda a postagem na API (o Java só aceita moderar postagem PENDENTE)',
     ],
     proximaAcao: 'Escolha manter ou reverter e escreva o parecer.',
+  },
+  comunidade: {
+    titulo: 'Perfil da comunidade',
+    descricao:
+      'Detalhes da comunidade, publicações aprovadas e missões. O Criador dela edita o nome, a descrição e as regras, cria missões e pode excluí-la.',
+    destaques: [
+      'Sair: DELETE /comunidades/{id}/membros?idUsuario= (o criador não sai da própria comunidade: 409)',
+      'Editar: PUT /comunidades/{id} com nome e descrição; só o criador da comunidade (403 para os outros)',
+      'Excluir: DELETE /comunidades/{id}?idUsuario=, recusado com 409 se houver outros membros ou postagens',
+      'Demonstração: regras, missões e painel de impacto ficam no front; o painel soma desde a criação (a postagem da API não tem data)',
+    ],
+    proximaAcao: 'Entre como brunot para administrar o Pedala Sampa, o Greenpeace Brasil ou o WWF-Brasil.',
+  },
+  'criar-comunidade': {
+    titulo: 'Criar comunidade',
+    descricao:
+      'O Criador dá nome e propósito à comunidade. Ele administra a comunidade, mas não modera as postagens dela: a validação é às cegas, por moderadores de fora.',
+    destaques: [
+      'POST /comunidades com nmComunidade, descricao e idUsuario; só quem tem linha na T_LGT_CRIADOR (403 para os outros)',
+      'Quem cria já entra como membro',
+      'Nome obrigatório com até 150 caracteres; descrição obrigatória',
+      'Demonstração: regras, organização (ONG) e plano Free/Premium ficam no front',
+    ],
+    proximaAcao: 'Preencha o nome e a descrição e crie a comunidade.',
+  },
+  'para-voce': {
+    titulo: 'Para você',
+    descricao:
+      'Sugestões montadas com as respostas do onboarding: meta, missões e comunidades nos temas de interesse, pessoas com temas em comum e o próximo papel no app.',
+    destaques: [
+      'Cruza os interesses do usuário com os temas das comunidades e das pessoas',
+      'Entrar direto pela sugestão: POST /comunidades/{id}/membros?idUsuario=',
+      '"Registrar ação desta missão" abre a nova postagem já preenchida',
+      'Demonstração: temas, respostas do onboarding e missões ficam no front',
+    ],
+    proximaAcao: 'Entre em uma comunidade sugerida ou registre uma missão.',
   },
 };

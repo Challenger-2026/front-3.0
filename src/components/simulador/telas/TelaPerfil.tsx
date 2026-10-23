@@ -23,7 +23,7 @@ export default function TelaPerfil() {
     .sort((a, b) => b.id - a.id);
   const aprovadas = minhas.filter((p) => p.stValidacao === 'APROVADO');
   const pendentes = minhas.filter((p) => p.stValidacao === 'PENDENTE');
-  const criadas = comunidades.filter((c) => c.idCriador === usuario.id);
+  const criadas = comunidades.filter((c) => c.idUsuarioCriador === usuario.id);
 
   // CO₂ evitado = soma do fator de cada ação aprovada
   const co2Evitado = aprovadas.reduce(
@@ -63,7 +63,7 @@ export default function TelaPerfil() {
 
         {criadas.length > 0 && (
           <p className="mt-2 text-[11px] text-slate-500">
-            Criadora de: <strong>{criadas.map((c) => c.nmComunidade).join(', ')}</strong>
+          Comunidades criadas: <strong>{criadas.map((c) => c.nmComunidade).join(', ')}</strong>
           </p>
         )}
 

@@ -21,6 +21,10 @@ import TelaContestacao from './telas/TelaContestacao';
 import TelaContestacoes from './telas/TelaContestacoes';
 import TelaRevisoes from './telas/TelaRevisoes';
 import TelaRevisao from './telas/TelaRevisao';
+import TelaComunidades from './telas/TelaComunidades';
+import TelaComunidade from './telas/TelaComunidade';
+import TelaCriarComunidade from './telas/TelaCriarComunidade';
+import TelaParaVoce from './telas/TelaParaVoce';
 
 
 export default function TelaAtual() {
@@ -83,8 +87,17 @@ export default function TelaAtual() {
     case 'revisoes':
       return <TelaRevisoes />;
     case 'revisao':
-      return <TelaRevisao />; 
+      return <TelaRevisao />;
+    case 'comunidades':
+      return <TelaComunidades />;
+    case 'comunidade':
+      return <TelaComunidade />;
+    case 'criar-comunidade':
+      return <TelaCriarComunidade />;
+    case 'para-voce':
+      return <TelaParaVoce />; 
     default:
       return <TelaEmConstrucao />;
+      
   }
 }

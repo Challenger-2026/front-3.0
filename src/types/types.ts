@@ -78,7 +78,10 @@ export type TelaId =
   | 'contestacao'
   | 'contestacoes'
   | 'revisoes'
-  | 'revisao';
+  | 'revisao'
+  | 'comunidade'
+  | 'criar-comunidade'
+  | 'para-voce';
 
 export type Explicacao = {
   titulo: string;
@@ -119,8 +122,9 @@ export interface Comunidade {
   nmComunidade: string;
   descricao: string;
   dtCriacao: string;
-  idCriador: number;
+  idCriador: number; // id da T_LGT_CRIADOR (não é o id do usuário)
   idRanking: number | null; // null enquanto a comunidade não tem ranking
+  idUsuarioCriador: number; // id do usuário dono (JOIN com a T_LGT_CRIADOR)
 }
 
 export interface Postagem {
@@ -240,6 +244,15 @@ export interface Moderador {
   idUsuario: number;
 }
 
+// Linha da coleção "criadores" do db.json (imita a T_LGT_CRIADOR; o Java não tem rota para ela)
+export interface Criador {
+  id: number; // id_criador (é o idCriador gravado na comunidade)
+  nvCriador: number;
+  rtCriador: string;
+  dtAdesao: string;
+  idUsuario: number;
+}
+
 // Reputação do moderador: só demonstração (o Java guarda só o rótulo rt_moderador)
 export interface ModeradorDemo {
   idModerador: number;
@@ -305,6 +318,53 @@ export interface Contestacao {
   deltaReputacao?: number; // bônus ou penalidade aplicada ao moderador original
 }
 
+// ===== Comunidades e missões =====
+
+// POST e PUT /comunidades (DTOComunidadeRequest): idUsuario é quem faz a requisição
+export interface ComunidadeCadastro {
+  nmComunidade: string;
+  descricao: string;
+  idUsuario: number;
+}
+
+// Campos do formulário de criar e editar (o idUsuario vem do usuário logado, no contexto)
+export type ComunidadeEdicao = Omit<ComunidadeCadastro, 'idUsuario'>;
+
+export type PlanoComunidade = 'Free' | 'Premium';
+
+// Dados que a API não guarda: ficam no front, pelo id da comunidade (demonstração)
+export interface ComplementoComunidade {
+  temas: string[]; // mesmos labels dos temas do onboarding
+  plano: PlanoComunidade;
+  verificada: boolean;
+  verificacaoPendente?: boolean; // organização aguardando verificação
+  parceriaProposta?: boolean; // ONG com parceria proposta (não oficial)
+  organizacao?: string;
+  regras?: string;
+}
+
+// O que a tela de criar envia além do DTO
+export type ComplementoNovaComunidade = Pick<ComplementoComunidade, 'plano' | 'organizacao' | 'regras'>;
+
+// Missão: sugestão do Criador. Não dá pontos extras (demonstração: a API não tem essa tabela)
+export interface Missao {
+  id: number;
+  idComunidade: number;
+  titulo: string;
+  descricao: string;
+  impacto: Impacto; // tipo de impacto sugerido
+  prazo?: string; // "AAAA-MM-DD"
+  encerrada: boolean;
+  criadaEm: string;
+}
+
+export type MissaoCadastro = Pick<Missao, 'titulo' | 'descricao' | 'impacto' | 'prazo'>;
+
+// Sugestão que uma tela deixa para a próxima (missão → nova postagem; Para você → metas)
+export type Sugestao =
+  | { tela: 'nova-postagem'; idComunidade: number; impacto: Impacto; missao: string }
+  | { tela: 'metas'; periodoDias: PeriodoMeta };
+
 // Perfil de teste mostrado ao lado do simulador (login rápido com a senha padrão do db.json)
 export type PerfilTeste = Pick<Usuario, 'username'> & {
   demonstra: string;
@@ -369,8 +429,30 @@ export type AcoesModeracao = {
   revisarContestacao: (id: number, decisao: DecisaoRevisao, parecer: string) => void;
 };
 
+export type AcoesComunidade = {
+  // API
+  idComunidadeAberta: number | null;
+  abrirComunidade: (id: number) => void; // vai para o detalhe
+  totalMembros: Record<number, number>; // por id de comunidade
+  carregarTotaisMembros: () => Promise<void>;
+  criarComunidade: (dados: ComunidadeEdicao, complemento: ComplementoNovaComunidade) => Promise<Comunidade>;
+  editarComunidade: (id: number, dados: ComunidadeEdicao, regras: string) => Promise<void>;
+  excluirComunidade: (id: number) => Promise<void>;
+  entrarComunidade: (id: number) => Promise<void>;
+  sairComunidade: (id: number) => Promise<void>;
+  // demonstrações (só no estado do front)
+  complementosComunidade: Record<number, ComplementoComunidade>;
+  missoes: Missao[];
+  criarMissao: (idComunidade: number, dados: MissaoCadastro) => void;
+  editarMissao: (id: number, dados: MissaoCadastro) => void;
+  encerrarMissao: (id: number) => void;
+  sugestao: Sugestao | null;
+  seguirSugestao: (sugestao: Sugestao) => void; // guarda a sugestão e abre a tela dela
+};
+
 export type SimuladorContextType = NavegacaoSimulador &
   DadosSimulador &
   AcoesUsuario &
   AcoesPostagem &
-  AcoesModeracao;
+  AcoesModeracao &
+  AcoesComunidade;

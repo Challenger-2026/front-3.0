@@ -80,16 +80,18 @@
       "nmComunidade": "Ciclo Zero Resíduo",
       "descricao": "Pessoas reduzindo lixo doméstico com compostagem e reuso criativo.",
       "dtCriacao": "2026-03-10",
-      "idCriador": 1,
-      "idRanking": null
+      "idCriador": 2,
+      "idRanking": null,
+      "idUsuarioCriador": 1
     },
     {
       "id": 2,
       "nmComunidade": "Pedala Sampa",
       "descricao": "Trocar o carro pela bike nos deslocamentos do dia a dia.",
       "dtCriacao": "2026-04-02",
-      "idCriador": 2,
-      "idRanking": null
+      "idCriador": 1,
+      "idRanking": null,
+      "idUsuarioCriador": 2
     },
     {
       "id": 3,
@@ -97,7 +99,8 @@
       "descricao": "Plantio, recuperação de nascentes e mutirões de limpeza em áreas verdes.",
       "dtCriacao": "2026-04-21",
       "idCriador": 3,
-      "idRanking": null
+      "idRanking": null,
+      "idUsuarioCriador": 3
     },
     {
       "id": 4,
@@ -105,15 +108,35 @@
       "descricao": "Metas semanais de economia de água em casa e no trabalho.",
       "dtCriacao": "2026-06-08",
       "idCriador": 3,
-      "idRanking": null
+      "idRanking": null,
+      "idUsuarioCriador": 3
     },
     {
       "id": 5,
       "nmComunidade": "SOS Mata Atlântica",
       "descricao": "Restauração da Mata Atlântica, plantio de nativas e monitoramento de rios.",
       "dtCriacao": "2026-07-15",
-      "idCriador": 2,
-      "idRanking": null
+      "idCriador": 1,
+      "idRanking": null,
+      "idUsuarioCriador": 2
+    },
+    {
+      "id": 6,
+      "nmComunidade": "Greenpeace Brasil",
+      "descricao": "Mobilização por clima, oceanos e florestas, com ações individuais e coletivas.",
+      "dtCriacao": "2026-09-01",
+      "idCriador": 1,
+      "idRanking": null,
+      "idUsuarioCriador": 2
+    },
+    {
+      "id": 7,
+      "nmComunidade": "WWF-Brasil",
+      "descricao": "Conservação da fauna, da água e do clima com hábitos do dia a dia.",
+      "dtCriacao": "2026-09-01",
+      "idCriador": 1,
+      "idRanking": null,
+      "idUsuarioCriador": 2
     }
   ],
   "membros": [
@@ -171,6 +194,16 @@
       "id": 11,
       "idUsuario": 5,
       "idComunidade": 1
+    },
+    {
+      "id": 12,
+      "idUsuario": 2,
+      "idComunidade": 6
+    },
+    {
+      "id": 13,
+      "idUsuario": 2,
+      "idComunidade": 7
     }
   ],
   "postagens": [
@@ -305,6 +338,11 @@
   "moderadores": [
     { "id": 1, "nvModerador": 1, "rtModerador": "INICIANTE", "dtAdesao": "2026-04-01", "idUsuario": 3 },
     { "id": 2, "nvModerador": 1, "rtModerador": "INICIANTE", "dtAdesao": "2026-02-20", "idUsuario": 6 }
+  ],
+  "criadores": [
+    { "id": 1, "nvCriador": 1, "rtCriador": "INICIANTE", "dtAdesao": "2026-02-15", "idUsuario": 2 },
+    { "id": 2, "nvCriador": 1, "rtCriador": "INICIANTE", "dtAdesao": "2026-03-05", "idUsuario": 1 },
+    { "id": 3, "nvCriador": 1, "rtCriador": "INICIANTE", "dtAdesao": "2026-04-15", "idUsuario": 3 }
   ],
   "$schema": "./node_modules/json-server/schema.json"
 }
