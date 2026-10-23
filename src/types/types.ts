@@ -165,6 +165,29 @@ export interface ErroApi {
 // Erro lançado pelo api.ts: a mensagem da API + o status HTTP (ex.: 403 na fila de moderação)
 export type ErroComStatus = Error & Partial<Pick<ErroApi, 'status'>>;
 
+// ===== Requisições à API (services/http.ts) =====
+
+// PATCH só aparece com o json-server (no lugar dos UPDATE que o Java faz no banco)
+export type MetodoRequisicao = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
+
+export interface OpcoesRequisicao {
+  corpo?: object; // vira JSON; nunca entra no registro
+  mensagemErro: string; // usada quando a resposta de erro não traz { erro }
+  apoio?: boolean; // true: chamada extra do json-server para imitar uma regra do Java
+}
+
+// O que fica registrado de cada chamada (para o painel de requisições ao vivo)
+export interface RegistroRequisicao {
+  id: number;
+  metodo: MetodoRequisicao;
+  rota: string; // sem a URL base e com senha, CPF e e-mail mascarados
+  status: number | null; // null: não houve resposta (API fora do ar, sem rede ou CORS)
+  tempoMs: number;
+  horario: string; // ISO, hora em que a chamada começou
+  erro?: string; // mensagem mostrada ao usuário quando falha
+  apoio: boolean;
+}
+
 // Dados que a API não guarda e ficam fixos no front
 export interface ComplementoUsuario {
   bio: string;
