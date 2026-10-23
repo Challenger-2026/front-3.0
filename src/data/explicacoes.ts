@@ -112,6 +112,7 @@ export const explicacoes: Record<TelaId, Explicacao> = {
       'CO₂ evitado: fator da categoria de cada ação aprovada',
       'Extrato com as ações aprovadas e os pontos a liberar das pendentes',
       'Teto diário de 15 pts com redução progressiva: demonstração, a API ainda paga o valor cheio',
+      'Distintivos da fauna brasileira em risco de extinção: demonstração, a API não tem distintivos',
     ],
     proximaAcao: 'Abra "Minha meta de atividades" para definir uma meta.',
   },
