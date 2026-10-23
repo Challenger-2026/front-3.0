@@ -25,6 +25,7 @@ import TelaComunidades from './telas/TelaComunidades';
 import TelaComunidade from './telas/TelaComunidade';
 import TelaCriarComunidade from './telas/TelaCriarComunidade';
 import TelaParaVoce from './telas/TelaParaVoce';
+import TelaNotificacoes from './telas/TelaNotificacoes';
 
 
 export default function TelaAtual() {
@@ -96,6 +97,8 @@ export default function TelaAtual() {
       return <TelaCriarComunidade />;
     case 'para-voce':
       return <TelaParaVoce />; 
+    case 'notificacoes':
+      return <TelaNotificacoes />;
     default:
       return <TelaEmConstrucao />;
       
