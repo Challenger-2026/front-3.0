@@ -475,7 +475,6 @@ export const SimuladorProvider = ({ children }: { children: ReactNode }) => {
     [irPara],
   );
 
-  // Uma chamada de GET /comunidades/{id}/membros/total por comunidade
   // GET /comunidades/{id}/membros/total só das comunidades que ainda não têm total (carrega uma vez e reaproveita)
   const carregarTotaisMembros = useCallback(async () => {
     const semTotal = comunidades.filter((c) => totalMembros[c.id] === undefined);
@@ -487,7 +486,7 @@ export const SimuladorProvider = ({ children }: { children: ReactNode }) => {
     }));
   }, [comunidades, totalMembros]);
 
-  // GET /comunidades/{id}/membros/total só da comunidade aaberta (detalhe)
+  // GET /comunidades/{id}/membros/total só da comunidade aberta (detalhe)
   const carregarTotalMembros = useCallback(async (id: number) => {
     const total = await api.getTotalMembros(id);
     setTotalMembros((anteriores) => ({ ...anteriores, [id]: total }));

@@ -30,7 +30,7 @@ export default function TelaComunidade() {
   const [enviando, setEnviando] = useState(false);
   const [erro, setErro] = useState('');
 
-// Total de membros atualizado ao abrir a tela: só o da comunidade aberta (GET /comunidades/{id}/membros/total)
+  // Total de membros atualizado ao abrir a tela: só o da comunidade aberta (GET /comunidades/{id}/membros/total)
   useEffect(() => {
     if (idComunidadeAberta === null) return;
     const buscarTotal = async () => {
