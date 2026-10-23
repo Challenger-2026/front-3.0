@@ -57,9 +57,14 @@ export const rankingGeral = (
 // Entre amigos (demonstração: a API não tem "seguir"): o logado e os 3 primeiros outros usuários, pelo sdPonto
 export const QUANTIDADE_AMIGOS_DEMO = 3;
 
-export const rankingEntreAmigos = (usuarios: Usuario[], idUsuarioLogado: number): ParticipanteRanking[] => {
+// oculto = true: o logado escolheu, na Privacidade, não aparecer nesse ranking
+export const rankingEntreAmigos = (
+  usuarios: Usuario[],
+  idUsuarioLogado: number,
+  oculto = false,
+): ParticipanteRanking[] => {
   const amigos = usuarios.filter((u) => u.id !== idUsuarioLogado).slice(0, QUANTIDADE_AMIGOS_DEMO);
-  const eu = usuarios.filter((u) => u.id === idUsuarioLogado);
+  const eu = oculto ? [] : usuarios.filter((u) => u.id === idUsuarioLogado);
   return ordenar(
     [...amigos, ...eu].map((u) => ({
       chave: String(u.id),

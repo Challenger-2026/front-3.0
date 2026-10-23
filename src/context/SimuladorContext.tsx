@@ -648,6 +648,28 @@ export const SimuladorProvider = ({ children }: { children: ReactNode }) => {
     [usuario, resgatesPorUsuario],
   );
 
+  // ----- Privacidade (demonstração: a API não guarda consentimento nem pedido de exclusão) -----
+
+  // Quem escolheu sair do ranking Entre amigos, por id de usuário (só no front)
+  const [ocultosEntreAmigos, setOcultosEntreAmigos] = useState<Record<number, boolean>>({});
+  // Data do pedido de exclusão dos dados de gamificação, por id de usuário (só no front)
+  const [pedidosExclusao, setPedidosExclusao] = useState<Record<number, string>>({});
+
+  const ocultoEntreAmigos = usuario ? (ocultosEntreAmigos[usuario.id] ?? false) : false;
+  const pedidoExclusaoEm = usuario ? (pedidosExclusao[usuario.id] ?? null) : null;
+
+  const alternarOcultoEntreAmigos = useCallback(() => {
+    if (!usuario) return;
+    setOcultosEntreAmigos((anteriores) => ({ ...anteriores, [usuario.id]: !anteriores[usuario.id] }));
+  }, [usuario]);
+
+  const pedirExclusaoGamificacao = useCallback(() => {
+    if (!usuario) return;
+    setPedidosExclusao((anteriores) =>
+      anteriores[usuario.id] ? anteriores : { ...anteriores, [usuario.id]: hojeIso() },
+    );
+  }, [usuario]);
+
   // ----- Notificações -----
 
   // Ids das notificações já lidas, por id de usuário (só no front)
@@ -752,6 +774,10 @@ export const SimuladorProvider = ({ children }: { children: ReactNode }) => {
         resgates,
         saldoDisponivel,
         resgatar,
+        ocultoEntreAmigos,
+        alternarOcultoEntreAmigos,
+        pedidoExclusaoEm,
+        pedirExclusaoGamificacao,
       }}
     >
       {children}

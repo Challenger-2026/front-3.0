@@ -83,7 +83,8 @@ export type TelaId =
   | 'criar-comunidade'
   | 'para-voce'
   | 'ranking'
-  | 'beneficios';
+  | 'beneficios'
+  | 'privacidade';
 
 export type Explicacao = {
   titulo: string;
@@ -527,6 +528,24 @@ export type AcoesCarteira = {
   resgatar: (idBeneficio: number) => Resgate | null; // null: sem saldo
 };
 
+// ===== Privacidade (bloco 8: demonstração, a API não tem consentimento nem pedido de exclusão) =====
+
+export type IconePrivacidade = 'dados' | 'olho' | 'cadeado' | 'lei' | 'direitos';
+
+// Cartão explicativo da tela de privacidade (LGPD)
+export interface SecaoPrivacidade {
+  icone: IconePrivacidade;
+  titulo: string;
+  texto: string;
+}
+
+export type AcoesPrivacidade = {
+  ocultoEntreAmigos: boolean; // do usuário logado
+  alternarOcultoEntreAmigos: () => void;
+  pedidoExclusaoEm: string | null; // "AAAA-MM-DD" do pedido de exclusão dos dados de gamificação
+  pedirExclusaoGamificacao: () => void;
+};
+
 export type DadosSimulador = {
   usuario: Usuario | null; // usuário logado (null antes do login)
   usuarios: Usuario[];
@@ -612,4 +631,5 @@ export type SimuladorContextType = NavegacaoSimulador &
   AcoesModeracao &
   AcoesComunidade &
   AcoesNotificacao &
-  AcoesCarteira;
+  AcoesCarteira &
+  AcoesPrivacidade;

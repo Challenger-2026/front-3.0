@@ -179,6 +179,7 @@ export const explicacoes: Record<TelaId, Explicacao> = {
       'Geral: sdPonto do GET /usuarios; com uma comunidade escolhida, soma o ptGerado das postagens aprovadas dela (GET /postagens)',
       'Liga semanal: divisões Tatu, Tamanduá, Onça-pintada e Lobo-guará; os 3 primeiros sobem e os 3 últimos descem',
       'Disputa mensal: o top 10 ganha o distintivo do mês, um animal da fauna brasileira em risco de extinção',
+      'Entre amigos: some da lista quando a pessoa escolhe "Ocultar meu perfil" na Privacidade',
       'Demonstração: a API não tem tabela de ranking nem data nas postagens',
     ],
     proximaAcao: 'Troque a aba ou escolha uma comunidade.',
@@ -191,9 +192,9 @@ export const explicacoes: Record<TelaId, Explicacao> = {
       'PUT /usuarios/{id}/perfil com o novo tipoPerfil',
       'Moderador não troca direto: abre a candidatura com o questionário',
       'Criador com comunidades ou moderador que já moderou não pode trocar: a API responde 409',
-      'Acesso aos dados cadastrais e às respostas do onboarding',
+      'Acesso aos dados cadastrais, às respostas do onboarding, à meta de atividades e à privacidade',
     ],
-    proximaAcao: 'Troque o tipo de perfil ou abra os dados cadastrais.',
+    proximaAcao: 'Troque o tipo de perfil ou abra a privacidade.',
   },
   dados: {
     titulo: 'Dados cadastrais',
@@ -203,6 +204,7 @@ export const explicacoes: Record<TelaId, Explicacao> = {
       'PUT /usuarios/{id}: a API só aceita nome, username e senha',
       'Username repetido é recusado com 409',
       'Excluir conta: DELETE /usuarios/{id}, recusado com 409 se houver postagens ou comunidades vinculadas',
+      'Exclusão em duas etapas: "Continuar exclusão" e depois "Confirmar exclusão"',
     ],
     proximaAcao: 'Altere seus dados e salve, ou teste a exclusão da conta.',
   },
@@ -336,5 +338,16 @@ export const explicacoes: Record<TelaId, Explicacao> = {
       'Demonstração: temas, respostas do onboarding e missões ficam no front',
     ],
     proximaAcao: 'Entre em uma comunidade sugerida ou registre uma missão.',
+  },
+  privacidade: {
+    titulo: 'Privacidade',
+    descricao:
+      'Explica, sem juridiquês, como a Soul Up usa os dados e quais são os direitos da pessoa pela LGPD. Reúne as ações de privacidade da conta.',
+    destaques: [
+      'Moderação às cegas e ranking só com @usuário (pseudonimização, LGPD art. 13, § 4º)',
+      'Demonstração: "Ocultar meu perfil do ranking Entre amigos" fica só no front (consentimento, art. 7º, I)',
+      'Demonstração: o pedido de exclusão dos dados de gamificação só é registrado; a API não tem rota que apague pontos e postagens sem excluir a conta',
+    ],
+    proximaAcao: 'Ative "Ocultar meu perfil" e confira o ranking Entre amigos.',
   },
 };
