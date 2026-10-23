@@ -84,7 +84,8 @@ export type TelaId =
   | 'para-voce'
   | 'ranking'
   | 'beneficios'
-  | 'privacidade';
+  | 'privacidade'
+  | 'parametros';
 
 export type Explicacao = {
   titulo: string;
@@ -546,6 +547,44 @@ export type AcoesPrivacidade = {
   pedirExclusaoGamificacao: () => void;
 };
 
+// ===== Parâmetros de pontuação e Temporizador (bloco 9: demonstração, a API não tem agendador) =====
+
+// Referência do fator de CO₂ de uma categoria
+export interface ReferenciaCo2 {
+  acao: string;
+  premissa: string;
+  fonte: string;
+}
+
+export type IdProcesso = 'liga' | 'distintivo' | 'inatividade';
+
+// Processo periódico executado pelo ator Temporizador
+export interface ProcessoAutomatico {
+  id: IdProcesso;
+  nome: string;
+  frequencia: string;
+  descricao: string;
+  proximaExecucao: Date;
+}
+
+// Liga e distintivos de um usuário (só no front)
+export interface SituacaoLiga {
+  divisao: Divisao;
+  pontosSemana: number;
+  semana: number; // muda o grupo de participantes da liga
+  distintivos: DistintivoConquistado[];
+}
+
+export type AcoesTemporizador = {
+  divisao: Divisao; // do usuário logado
+  pontosSemana: number;
+  semanaLiga: number;
+  pontosMes: number;
+  distintivosConquistados: DistintivoConquistado[];
+  simularFechamentoLiga: () => void; // muda a divisão, zera a semana e gera notificação
+  simularEntregaDistintivo: () => void; // top 10 do mês ganha o distintivo e gera notificação
+};
+
 export type DadosSimulador = {
   usuario: Usuario | null; // usuário logado (null antes do login)
   usuarios: Usuario[];
@@ -632,4 +671,5 @@ export type SimuladorContextType = NavegacaoSimulador &
   AcoesComunidade &
   AcoesNotificacao &
   AcoesCarteira &
-  AcoesPrivacidade;
+  AcoesPrivacidade &
+  AcoesTemporizador;
