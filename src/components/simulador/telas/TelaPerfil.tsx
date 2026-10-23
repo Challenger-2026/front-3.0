@@ -108,7 +108,6 @@ export default function TelaPerfil() {
         </p>
       </section>
       
-      <div className="grid grid-cols-2 gap-2">
        <button
         type="button"
         onClick={() => irPara('atividades')}
@@ -122,7 +121,6 @@ export default function TelaPerfil() {
         </span>
         <FiChevronRight className="shrink-0 text-slate-400" />
       </button>
-      </div>
 
       <h2 className="pt-1 text-sm font-bold uppercase tracking-wider text-slate-500">Minhas publicações</h2>
       <div className="space-y-3">
