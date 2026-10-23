@@ -189,6 +189,45 @@ export interface RegistroRequisicao {
   simulado: boolean; // true: linha "como o Java responderia" (só no modo json-server)
 }
 
+// ===== Painel de requisições e página de status (bloco 5.2) =====
+
+// Os 4 controllers da API Java (Guara/controller)
+export type ControllerJava = 'UsuarioController' | 'ComunidadeController' | 'PostagemController' | 'ModeracaoController';
+
+// Um endpoint do Java e as telas do simulador que o chamam (catálogo em data/endpoints.ts)
+export interface EndpointJava {
+  metodo: Exclude<MetodoRequisicao, 'PATCH'>; // o Java não tem PATCH
+  rota: string; // como está no controller, ex.: /usuarios/{id}
+  controller: ControllerJava;
+  descricao: string;
+  telas: TelaId[]; // vazio: o simulador não usa
+  aoAbrir?: boolean; // true: carregado ao abrir o simulador (dados de todas as telas)
+}
+
+// Situação de um controller na página de status
+export type SituacaoApi = 'operacional' | 'lenta' | 'fora';
+
+// Resultado do GET de um controller em uma verificação
+export type ResultadoVerificacao = Pick<RegistroRequisicao, 'status' | 'tempoMs' | 'erro'> & {
+  controller: ControllerJava;
+  rota: string;
+  situacao: SituacaoApi;
+};
+
+// Uma verificação (os 4 controllers de uma vez)
+export type VerificacaoApi = Pick<RegistroRequisicao, 'id' | 'horario'> & {
+  resultados: ResultadoVerificacao[];
+};
+
+// Contexto do painel e da página de status (fica no layout do Simulador)
+export interface RequisicoesContextType {
+  requisicoes: RegistroRequisicao[]; // mais novas primeiro: até 20 do Java e até 20 de apoio do json-server
+  limparRequisicoes: () => void;
+  verificacoes: VerificacaoApi[]; // últimas 20 da sessão, mais nova primeiro
+  verificando: boolean;
+  verificarAgora: () => Promise<void>;
+}
+
 // Dados que a API não guarda e ficam fixos no front
 export interface ComplementoUsuario {
   bio: string;

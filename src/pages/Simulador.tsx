@@ -1,34 +1,43 @@
+import { NavLink, Outlet } from 'react-router-dom';
+import { RequisicoesProvider } from '../context/RequisicoesContext';
 import { SimuladorProvider } from '../context/SimuladorContext';
-import Celular from '../components/simulador/Celular';
-import AppSoulUp from '../components/simulador/AppSoulUp';
-import PainelExplicacao from '../components/simulador/PainelExplicacao';
-import TelaAtual from '../components/simulador/TelaAtual';
-import PerfisTeste from '../components/simulador/PerfisTeste';
+import PainelRequisicoes from '../components/simulador/PainelRequisicoes';
 
+// Abas do simulador: o celular e a página de status da API
+const abas = [
+  { para: '/simulador', texto: 'Celular' },
+  { para: '/simulador/status', texto: 'Status da API' },
+];
+
+// Layout do simulador: os contextos ficam aqui para o estado continuar ao trocar de aba
+// (o RequisicoesProvider por fora, para ouvir as chamadas desde a abertura)
 export default function Simulador() {
   return (
-    <SimuladorProvider>
-      <div className="space-y-8">
-        <div className="text-center">
-          <h1 className="text-3xl font-extrabold text-[#a84312]">Simulador do Soul Up</h1>
-          <p className="mt-2 text-stone-700">
-            Navegue pelo app no celular. A explicação ao lado muda a cada tela.
-          </p>
+    <RequisicoesProvider>
+      <SimuladorProvider>
+        <div className="space-y-4">
+          <h1 className="text-center text-3xl font-extrabold text-[#a84312]">Simulador do Soul Up</h1>
+        
+          <nav aria-label="Abas do simulador" className="flex justify-center gap-2">
+            {abas.map((aba) => (
+              <NavLink
+                key={aba.para}
+                to={aba.para}
+                end
+                className={({ isActive }) =>
+                  `rounded-full px-4 py-2 text-sm font-bold transition-colors ${
+                    isActive ? 'bg-[#35685b] text-white' : 'border border-[#ead9b6] bg-[#fffbed] text-stone-700 hover:border-[#35685b]'
+                  }`
+                }
+              >
+                {aba.texto}
+              </NavLink>
+            ))}
+          </nav>
+          <Outlet />
         </div>
-
-        <div className="grid items-start gap-8 lg:grid-cols-2">
-          <Celular>
-            <AppSoulUp>
-              <TelaAtual/>
-            </AppSoulUp>
-          </Celular>
-
-          <div className="space-y-6">
-            <PainelExplicacao/>
-            <PerfisTeste/>
-          </div>
-        </div>
-      </div>
-    </SimuladorProvider>
+        <PainelRequisicoes />
+      </SimuladorProvider>
+    </RequisicoesProvider>
   );
 }
