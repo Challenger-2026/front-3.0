@@ -313,11 +313,12 @@ export const explicacoes: Record<TelaId, Explicacao> = {
   'para-voce': {
     titulo: 'Para você',
     descricao:
-      'Sugestões montadas com as respostas do onboarding: meta, missões e comunidades nos temas de interesse, pessoas com temas em comum e o próximo papel no app.',
+        'Sugestões montadas com as respostas do onboarding: meta, missões e comunidades nos temas de interesse, pessoas com temas em comum, o impacto (para quem quer medir) e o próximo papel no app.',
     destaques: [
       'Cruza os interesses do usuário com os temas das comunidades e das pessoas',
       'Entrar direto pela sugestão: POST /comunidades/{id}/membros?idUsuario=',
       '"Registrar ação desta missão" abre a nova postagem já preenchida',
+      'Seu impacto: CO₂ evitado das ações aprovadas na API e o distintivo do mês (demonstração), com atalho para o ranking',
       'Demonstração: temas, respostas do onboarding e missões ficam no front',
     ],
     proximaAcao: 'Entre em uma comunidade sugerida ou registre uma missão.',
