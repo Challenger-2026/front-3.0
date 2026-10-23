@@ -146,6 +146,14 @@ export default function TelaAjustes() {
         </button>
         <button
           type="button"
+          onClick={() => irPara('parametros')}
+          className="flex w-full items-center justify-between rounded-2xl border border-slate-200 bg-white p-3 text-left text-sm font-semibold cursor-pointer"
+        >
+          Parâmetros de pontuação
+          <FiChevronRight className="text-slate-400" />
+        </button>
+        <button
+          type="button"
           onClick={() => irPara('privacidade')}
           className="flex w-full items-center justify-between rounded-2xl border border-slate-200 bg-white p-3 text-left text-sm font-semibold cursor-pointer"
         >
