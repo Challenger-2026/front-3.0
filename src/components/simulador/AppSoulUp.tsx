@@ -95,7 +95,7 @@ export default function AppSoulUp({ children }: AppSoulUpProps) {
 
       {/* Barra inferior */}
       {!naEntrada && (
-        <nav className="border-t border-slate-200 bg-white px-3 pt-2 pb-4">
+      <nav className="border-t border-slate-200 bg-white px-3 pt-2 pb-4">
         <div className="grid grid-cols-5 items-end">
           {abasEsquerda.map(renderAba)}
           <div className="flex justify-center">
