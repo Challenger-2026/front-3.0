@@ -5,6 +5,7 @@ import { useSimulador } from '../../../hooks/useSimulador';
 import { mensagemDoErro } from '../../../utils/erros';
 import { formatarData } from '../../../utils/formatadores';
 import { regrasNome, regrasSenha, regrasUsername } from '../../../utils/validacoes';
+import ConfirmacaoExclusao from '../ConfirmacaoExclusao';
 
 const classeCampo =
   'w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:border-[#4F46E5]';
@@ -13,7 +14,6 @@ export default function TelaDados() {
   const { usuario, atualizarDados, excluirConta } = useSimulador();
   const [erroApi, setErroApi] = useState('');
   const [salvo, setSalvo] = useState(false);
-  const [confirmandoExclusao, setConfirmandoExclusao] = useState(false);
   const [excluindo, setExcluindo] = useState(false);
   const [erroExclusao, setErroExclusao] = useState('');
 
@@ -154,49 +154,18 @@ export default function TelaDados() {
         </button>
       </form>
 
-      <section className="rounded-2xl border border-red-200 bg-white p-3">
-        {!confirmandoExclusao ? (
-          <button
-            type="button"
-            onClick={() => setConfirmandoExclusao(true)}
-            className="w-full py-1 text-center text-sm font-semibold text-red-600 cursor-pointer"
-          >
-            Excluir minha conta
-          </button>
-        ) : (
-          <div className="space-y-2">
-            <p className="text-sm font-semibold">Excluir sua conta?</p>
-            <p className="text-xs text-slate-500">
-              A conta e os dados de gamificação são apagados e não podem ser recuperados (LGPD, art. 18, VI).
-            </p>
-            {erroExclusao && (
-              <p role="alert" className="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-600">
-                {erroExclusao}
-              </p>
-            )}
-            <div className="grid grid-cols-2 gap-2">
-              <button
-                type="button"
-                onClick={() => {
-                  setConfirmandoExclusao(false);
-                  setErroExclusao('');
-                }}
-                className="rounded-full border border-slate-200 py-2 text-sm font-semibold cursor-pointer"
-              >
-                Cancelar
-              </button>
-              <button
-                type="button"
-                onClick={confirmarExclusao}
-                disabled={excluindo}
-                className="rounded-full bg-red-600 py-2 text-sm font-bold text-white cursor-pointer disabled:opacity-60"
-              >
-                {excluindo ? 'Excluindo…' : 'Confirmar'}
-              </button>
-            </div>
-          </div>
-        )}
-      </section>
+      <ConfirmacaoExclusao
+        rotulo="Excluir minha conta"
+        texto="A conta e os dados de gamificação são apagados e não podem ser recuperados (LGPD, art. 18, VI)."
+        onConfirmar={confirmarExclusao}
+        ocupado={excluindo}
+      />
+
+      {erroExclusao && (
+        <p role="alert" className="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-600">
+          {erroExclusao}
+        </p>
+      )}
     </>
   );
 }
