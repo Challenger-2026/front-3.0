@@ -9,6 +9,7 @@ import {
 } from '../../../data/categorias';
 import { FAIXAS_META, pontosSequencia } from '../../../data/metas';
 import { formatarPontos } from '../../../utils/formatadores';
+import { DISTINTIVOS_CONQUISTADOS_DEMO, FONTE_DISTINTIVOS } from '../../../data/liga';
 
 export default function TelaPontos() {
   const { usuario, postagens, irPara } = useSimulador();
@@ -123,6 +124,27 @@ export default function TelaPontos() {
         <p className="mt-2 text-[11px] text-slate-500">
           Depois do teto você continua pontuando, com {Math.round(REDUCAO_PROGRESSIVA * 100)}% do valor normal no
           primeiro bloco acima dele, e menos a cada novo bloco.
+        </p>
+      </section>
+
+      {/* Distintivos da fauna: demonstração */}
+      <section className="space-y-3">
+        <h2 className="text-sm font-bold uppercase tracking-wider text-slate-500">Distintivos da fauna</h2>
+        <div className="grid grid-cols-3 gap-3">
+          {DISTINTIVOS_CONQUISTADOS_DEMO.map((d) => (
+            <div key={d.mes} className="rounded-3xl border border-slate-200 bg-slate-100 p-3 text-center">
+              <span className="mx-auto grid h-11 w-11 place-items-center rounded-full bg-[#4F46E5]/10 text-xl">
+                {d.emoji}
+              </span>
+              <p className="mt-2 text-[11px] font-bold">{d.animal}</p>
+              <p className="text-[10px] text-slate-500">{d.mes}</p>
+              <p className="text-[10px] font-semibold">{d.status}</p>
+            </div>
+          ))}
+        </div>
+        <p className="text-[10px] text-slate-500">Fonte do status: {FONTE_DISTINTIVOS}</p>
+        <p className="rounded-xl bg-amber-50 px-3 py-2 text-[11px] text-amber-700">
+          Demonstração: a API não tem distintivos. Os conquistados são fixos (junho a setembro, como no protótipo).
         </p>
       </section>
 

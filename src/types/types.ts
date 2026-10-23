@@ -81,7 +81,8 @@ export type TelaId =
   | 'revisao'
   | 'comunidade'
   | 'criar-comunidade'
-  | 'para-voce';
+  | 'para-voce'
+  | 'ranking';
 
 export type Explicacao = {
   titulo: string;
@@ -436,6 +437,63 @@ export type PerfilTeste = Pick<Usuario, 'username'> & {
 // Usuário como fica guardado no db.json (o Java também guarda cpf e senha, mas não devolve)
 export type UsuarioDoBanco = Usuario & Pick<UsuarioCadastro, 'cpf' | 'senha'>;
 
+// ===== Ranking, liga e distintivos (bloco 6) =====
+
+// Abas do ranking: a Geral vem da API; as outras são demonstração
+export type IntervaloRanking = 'Semanal' | 'Mensal' | 'Geral' | 'Entre amigos';
+
+// Divisões da liga semanal, da mais baixa para a mais alta
+export type Divisao = 'Tatu' | 'Tamanduá' | 'Onça-pintada' | 'Lobo-guará';
+
+// Faixa da posição na liga: os 3 primeiros sobem, os 3 últimos descem
+export type Zona = 'subida' | 'descida' | 'neutra';
+
+// Linha do ranking (chave: id do usuário da API ou nome de demonstração)
+export interface ParticipanteRanking {
+  chave: string;
+  username: string;
+  pontos: number;
+  eu: boolean;
+}
+
+// Distintivo mensal: animal da fauna brasileira em risco de extinção
+export interface Distintivo {
+  mes: string;
+  animal: string;
+  status: string; // categoria de ameaça
+  emoji: string;
+  texto: string;
+}
+
+// Como aparece na Pontuação (sem o texto)
+export type DistintivoConquistado = Omit<Distintivo, 'texto'>;
+
+// ===== Notificações (bloco 6) =====
+
+export type TipoNotificacao = 'moderacao' | 'contestacao' | 'liga' | 'distintivo' | 'meta' | 'inatividade';
+
+export interface Notificacao {
+  id: string; // "post-12" (vem da API) ou "demo-liga" (demonstração)
+  tipo: TipoNotificacao;
+  titulo: string;
+  texto: string;
+  em?: string; // "AAAA-MM-DD"; as da API não têm data (a postagem não guarda data)
+  demonstracao: boolean;
+  lida: boolean;
+  idPostagem?: number; // abre o feedback dessa postagem
+  tela?: TelaId; // ou abre esta tela
+}
+
+// Montada pelo data/liga.ts; o "lida" é colocado pelo contexto
+export type NotificacaoBase = Omit<Notificacao, 'lida'>;
+
+export type AcoesNotificacao = {
+  notificacoes: Notificacao[];
+  naoLidas: number;
+  marcarLida: (id: string) => void;
+  marcarTodasLidas: () => void;
+};
+
 export type DadosSimulador = {
   usuario: Usuario | null; // usuário logado (null antes do login)
   usuarios: Usuario[];
@@ -519,4 +577,5 @@ export type SimuladorContextType = NavegacaoSimulador &
   AcoesUsuario &
   AcoesPostagem &
   AcoesModeracao &
-  AcoesComunidade;
+  AcoesComunidade &
+  AcoesNotificacao;

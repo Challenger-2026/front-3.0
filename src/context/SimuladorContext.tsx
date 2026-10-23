@@ -31,6 +31,7 @@ import type {
   Missao,
   MissaoCadastro,
   Sugestao,
+  Notificacao,
 } from '../types/types';
 import { api } from '../services/api';
 import { complementosUsuario } from '../data/complementosUsuario';
@@ -49,6 +50,7 @@ import {
   reputacoesIniciais,
 } from '../data/moderacao';
 import { complementoDe, complementosComunidadeIniciais, ehDono, missoesIniciais } from '../data/comunidades';
+import { notificacoesDoUsuario } from '../data/liga';
 
 // Dados públicos do app, carregados ao abrir o simulador (antes do login)
 const buscarDados = () =>
@@ -612,6 +614,35 @@ export const SimuladorProvider = ({ children }: { children: ReactNode }) => {
     [missoes, podeAdministrar],
   );
 
+    // ----- Notificações -----
+
+  // Ids das notificações já lidas, por id de usuário (só no front)
+  const [lidas, setLidas] = useState<Record<number, string[]>>({});
+
+  // Aprovadas e rejeitadas vêm das postagens da API; liga, distintivo, contestação, meta e inatividade são demonstração
+  const lidasDoUsuario = usuario ? (lidas[usuario.id] ?? []) : [];
+  const notificacoes: Notificacao[] = usuario
+    ? notificacoesDoUsuario(postagens, usuario).map((n) => ({ ...n, lida: lidasDoUsuario.includes(n.id) }))
+    : [];
+  const naoLidas = notificacoes.filter((n) => !n.lida).length;
+
+  const marcarLida = useCallback(
+    (id: string) => {
+      if (!usuario) return;
+      setLidas((anteriores) => {
+        const doUsuario = anteriores[usuario.id] ?? [];
+        return doUsuario.includes(id) ? anteriores : { ...anteriores, [usuario.id]: [...doUsuario, id] };
+      });
+    },
+    [usuario],
+  );
+
+  const marcarTodasLidas = useCallback(() => {
+    if (!usuario) return;
+    const ids = notificacoesDoUsuario(postagens, usuario).map((n) => n.id);
+    setLidas((anteriores) => ({ ...anteriores, [usuario.id]: ids }));
+  }, [usuario, postagens]);
+
   return (
     <SimuladorContext.Provider
       value={{
@@ -680,6 +711,10 @@ export const SimuladorProvider = ({ children }: { children: ReactNode }) => {
         encerrarMissao,
         sugestao,
         seguirSugestao,
+        notificacoes,
+        naoLidas,
+        marcarLida,
+        marcarTodasLidas,
       }}
     >
       {children}

@@ -3,7 +3,7 @@ import type { ReactNode } from 'react';
 import { FiStar } from 'react-icons/fi';
 import type { Missao } from '../../types/types';
 import { useSimulador } from '../../hooks/useSimulador';
-import { buscarCategoriaPorImpacto } from '../../data/categorias';
+import { buscarCategoriaPorImpacto, buscarCategoriaPorPontos } from '../../data/categorias';
 import {
   complementoDe,
   comunidadesSugeridas,
@@ -13,6 +13,13 @@ import {
   pessoasSugeridas,
 } from '../../data/comunidades';
 import { momentos, objetivos } from '../../data/onboarding';
+import {
+  PONTOS_MES_DEMO,
+  TOP_DISTINTIVO,
+  distintivoDoMesAtual,
+  faltamParaTop,
+  participantesMes,
+} from '../../data/liga';
 import { mensagemDoErro } from '../../utils/erros';
 import { formatarPontos } from '../../utils/formatadores';
 import SelosComunidade from './SelosComunidade';
@@ -33,6 +40,7 @@ export default function ParaVoce({ compacto = false }: ParaVoceProps) {
     usuario,
     usuarios,
     comunidades,
+    postagens,
     minhasComunidades,
     complementos,
     complementosComunidade,
@@ -213,7 +221,36 @@ export default function ParaVoce({ compacto = false }: ParaVoceProps) {
         )),
     });
 
-    // e) Próximo papel no app, pelo momento escolhido
+    // e) Impacto, para quem escolheu "Medir meu impacto": CO₂ das aprovadas (API) + distintivo do mês (demonstração)
+    if (complemento.objetivo === 'impacto') {
+      const co2Evitado = postagens
+        .filter((p) => p.idUsuario === usuario.id && p.stValidacao === 'APROVADO')
+        .reduce((total, p) => total + (buscarCategoriaPorPontos(p.ptGerado)?.co2Kg ?? 0), 0);
+      const distintivo = distintivoDoMesAtual();
+      const faltam = faltamParaTop(participantesMes(usuario.username, PONTOS_MES_DEMO));
+      secoes.push({
+        id: 'impacto',
+        titulo: 'Seu impacto',
+        itens: [
+          <button
+            key="impacto"
+            type="button"
+            onClick={() => irPara('ranking')}
+            className={`${classeCard} block w-full text-left cursor-pointer`}
+          >
+            <span className="block text-sm font-semibold">{formatarPontos(co2Evitado)} kg de CO₂ evitados</span>
+            <span className="block text-xs text-slate-500">
+              Distintivo do mês: {distintivo.emoji} {distintivo.animal} ·{' '}
+              {faltam === 0
+                ? `você está no top ${TOP_DISTINTIVO}`
+                : `faltam ${formatarPontos(faltam)} pts para o top ${TOP_DISTINTIVO}`}
+            </span>
+          </button>,
+        ],
+      });
+    }
+
+    // f) Próximo papel no app, pelo momento escolhido
     const papel: ReactNode[] = [];
     if (complemento.momento === 'mobilizador') {
       const ehCriador = usuario.tipoPerfil === 'CRIADOR';
@@ -302,7 +339,7 @@ export default function ParaVoce({ compacto = false }: ParaVoceProps) {
       )}
 
       <p className="text-center text-[11px] text-slate-500">
-        Demonstração: temas, respostas do onboarding e missões ficam só no front.
+          Demonstração: temas, respostas do onboarding, missões e distintivo ficam só no front.
       </p>
     </section>
   );

@@ -112,6 +112,7 @@ export const explicacoes: Record<TelaId, Explicacao> = {
       'CO₂ evitado: fator da categoria de cada ação aprovada',
       'Extrato com as ações aprovadas e os pontos a liberar das pendentes',
       'Teto diário de 15 pts com redução progressiva: demonstração, a API ainda paga o valor cheio',
+      'Distintivos da fauna brasileira em risco de extinção: demonstração, a API não tem distintivos',
     ],
     proximaAcao: 'Abra "Minha meta de atividades" para definir uma meta.',
   },
@@ -149,12 +150,25 @@ export const explicacoes: Record<TelaId, Explicacao> = {
   notificacoes: {
     titulo: 'Notificações',
     descricao:
-      'Avisos sobre moderação das postagens, prazo de contestação, mudança de divisão na liga e distintivos conquistados.',
+      'Avisos sobre a moderação das postagens, a liga semanal, os distintivos, a meta e, para quem modera, a inatividade.',
     destaques: [
-      'Postagem aprovada ou rejeitada, com justificativa',
-      'Subida ou descida de divisão na liga semanal',
-      'Aviso de inatividade para moderadores',
+      'Aprovada ou rejeitada: vem das postagens do usuário na API (GET /postagens, carregado ao abrir)',
+      'Liga, distintivo, prazo de contestação, meta e inatividade: demonstração, a API não tem notificações',
+      '"Marcar como lida" fica só no front',
     ],
+    proximaAcao: 'Abra uma notificação para ir à tela dela.',
+  },
+  ranking: {
+    titulo: 'Ranking',
+    descricao:
+      'Mostra onde o usuário está entre os participantes. A aba Geral usa os dados reais da API; a liga semanal, a disputa mensal e o ranking entre amigos são demonstração.',
+    destaques: [
+      'Geral: sdPonto do GET /usuarios; com uma comunidade escolhida, soma o ptGerado das postagens aprovadas dela (GET /postagens)',
+      'Liga semanal: divisões Tatu, Tamanduá, Onça-pintada e Lobo-guará; os 3 primeiros sobem e os 3 últimos descem',
+      'Disputa mensal: o top 10 ganha o distintivo do mês, um animal da fauna brasileira em risco de extinção',
+      'Demonstração: a API não tem tabela de ranking nem data nas postagens',
+    ],
+    proximaAcao: 'Troque a aba ou escolha uma comunidade.',
   },
     ajustes: {
     titulo: 'Configurações',
@@ -299,11 +313,12 @@ export const explicacoes: Record<TelaId, Explicacao> = {
   'para-voce': {
     titulo: 'Para você',
     descricao:
-      'Sugestões montadas com as respostas do onboarding: meta, missões e comunidades nos temas de interesse, pessoas com temas em comum e o próximo papel no app.',
+        'Sugestões montadas com as respostas do onboarding: meta, missões e comunidades nos temas de interesse, pessoas com temas em comum, o impacto (para quem quer medir) e o próximo papel no app.',
     destaques: [
       'Cruza os interesses do usuário com os temas das comunidades e das pessoas',
       'Entrar direto pela sugestão: POST /comunidades/{id}/membros?idUsuario=',
       '"Registrar ação desta missão" abre a nova postagem já preenchida',
+      'Seu impacto: CO₂ evitado das ações aprovadas na API e o distintivo do mês (demonstração), com atalho para o ranking',
       'Demonstração: temas, respostas do onboarding e missões ficam no front',
     ],
     proximaAcao: 'Entre em uma comunidade sugerida ou registre uma missão.',
