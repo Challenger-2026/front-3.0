@@ -56,7 +56,9 @@ export const requisitar = async <T>(metodo: MetodoRequisicao, caminho: string, o
     metodo,
     rota: rotaSegura(caminho),
     horario: new Date(inicio).toISOString(),
-    apoio: opcoes.apoio ?? false,
+    // no modo json-server, toda chamada só imita o Java (a linha que vale é a simulada); os feedbacks são a exceção
+    apoio: USANDO_JSON_SERVER && !opcoes.soJsonServer,
+    simulado: false,
   };
 
   let response: Response;
@@ -93,4 +95,46 @@ export const requisitar = async <T>(metodo: MetodoRequisicao, caminho: string, o
   // 201 sem corpo (ex.: entrar na comunidade): lê como texto antes de converter
   const texto = await response.text();
   return (texto ? JSON.parse(texto) : undefined) as T;
+};
+
+// ----- Linha "como o Java responderia" (só no modo json-server) -----
+
+// Status de sucesso de cada método nos controllers do Java (@ResponseStatus)
+const STATUS_SUCESSO_JAVA: Record<MetodoRequisicao, number> = { GET: 200, POST: 201, PUT: 200, PATCH: 200, DELETE: 204 };
+
+// Roda a função do api.ts e registra uma linha com o endpoint real do Java, o status e o tempo total.
+// Se a regra imitada falhar (ex.: 403, 404, 409), a linha sai com esse status.
+// Com a API Java ligada, só roda a função: as linhas são as chamadas reais.
+export const simularJava = async <T>(
+  metodo: MetodoRequisicao,
+  rotaJava: string,
+  executar: () => Promise<T>,
+  statusSucesso = STATUS_SUCESSO_JAVA[metodo], // o login é POST mas devolve 200
+): Promise<T> => {
+  if (!USANDO_JSON_SERVER) return executar();
+
+  const inicio = Date.now();
+  const base = {
+    metodo,
+    rota: rotaSegura(rotaJava),
+    horario: new Date(inicio).toISOString(),
+    apoio: false,
+    simulado: true,
+  };
+
+  try {
+    const resultado = await executar();
+    registrar({ ...base, status: statusSucesso, tempoMs: Date.now() - inicio });
+    return resultado;
+  } catch (err) {
+    // TypeError do fetch: o json-server não respondeu
+    const semResposta = err instanceof TypeError;
+    registrar({
+      ...base,
+      status: semResposta ? null : ((err as ErroComStatus).status ?? null),
+      tempoMs: Date.now() - inicio,
+      erro: semResposta ? 'Sem resposta da API' : (err as Error).message,
+    });
+    throw err;
+  }
 };

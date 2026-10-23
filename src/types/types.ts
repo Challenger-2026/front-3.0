@@ -173,7 +173,7 @@ export type MetodoRequisicao = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 export interface OpcoesRequisicao {
   corpo?: object; // vira JSON; nunca entra no registro
   mensagemErro: string; // usada quando a resposta de erro não traz { erro }
-  apoio?: boolean; // true: chamada extra do json-server para imitar uma regra do Java
+  soJsonServer?: boolean; // true: recurso que só existe no json-server (feedbacks); a linha real aparece no painel
 }
 
 // O que fica registrado de cada chamada (para o painel de requisições ao vivo)
@@ -185,7 +185,8 @@ export interface RegistroRequisicao {
   tempoMs: number;
   horario: string; // ISO, hora em que a chamada começou
   erro?: string; // mensagem mostrada ao usuário quando falha
-  apoio: boolean;
+  apoio: boolean; // true: chamada ao json-server que só imita o Java (o painel esconde por padrão)
+  simulado: boolean; // true: linha "como o Java responderia" (só no modo json-server)
 }
 
 // Dados que a API não guarda e ficam fixos no front
