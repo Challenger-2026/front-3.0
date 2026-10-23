@@ -12,6 +12,7 @@ import Faq from './pages/Faq';
 import Integrantes from './pages/Integrantes';
 import Contato from './pages/Contato';
 import Simulador from './pages/Simulador';
+import SimuladorCelular from './pages/SimuladorCelular';
 
 const router = createBrowserRouter([
   {
@@ -25,7 +26,7 @@ const router = createBrowserRouter([
       { path: '/integrantes', element: <Integrantes /> },
       { path: '/integrantes/:rm', element: <Integrantes /> },
       { path: '/contato', element: <Contato /> },
-      { path: '/simulador', element: <Simulador /> },
+      { path: '/simulador', element: <Simulador />, children: [{ index: true, element: <SimuladorCelular /> }],},
       { path: '*', element: <Navigate to="/" replace /> },
     ],
   },
