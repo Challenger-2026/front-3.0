@@ -30,7 +30,7 @@ import TelaRanking from './telas/TelaRanking';
 import TelaCarteira from './telas/TelaCarteira';
 import TelaBeneficios from './telas/TelaBeneficios';
 import TelaPrivacidade from './telas/TelaPrivacidade';
-
+import TelaParametros from './telas/TelaParametros';
 
 export default function TelaAtual() {
   const { telaAtual, loading, error, carregarDados } = useSimulador();
@@ -111,6 +111,8 @@ export default function TelaAtual() {
       return <TelaBeneficios />;
     case 'privacidade':
       return <TelaPrivacidade />;
+    case 'parametros':
+      return <TelaParametros />;
     default:
       return <TelaEmConstrucao />;
       

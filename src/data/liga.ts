@@ -6,6 +6,7 @@ import type {
   NotificacaoBase,
   ParticipanteRanking,
   Postagem,
+  SituacaoLiga,
   Usuario,
   Zona,
 } from '../types/types';
