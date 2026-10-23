@@ -21,7 +21,7 @@ export default function TelaComunidades() {
   const [entrando, setEntrando] = useState<number | null>(null);
   const [erro, setErro] = useState('');
 
-  // GET /comunidades/{id}/membros/total de cada comunidade ao abrir a tela
+  // GET /comunidades/{id}/membros/total só das comunidades que ainda não têm total
   useEffect(() => {
     const buscarTotais = async () => {
       try {

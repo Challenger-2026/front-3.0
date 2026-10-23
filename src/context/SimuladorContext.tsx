@@ -475,11 +475,22 @@ export const SimuladorProvider = ({ children }: { children: ReactNode }) => {
     [irPara],
   );
 
-  // Uma chamada de GET /comunidades/{id}/membros/total por comunidade
+  // GET /comunidades/{id}/membros/total só das comunidades que ainda não têm total (carrega uma vez e reaproveita)
   const carregarTotaisMembros = useCallback(async () => {
-    const totais = await Promise.all(comunidades.map((c) => api.getTotalMembros(c.id)));
-    setTotalMembros(Object.fromEntries(comunidades.map((c, i) => [c.id, totais[i]])));
-  }, [comunidades]);
+    const semTotal = comunidades.filter((c) => totalMembros[c.id] === undefined);
+    if (semTotal.length === 0) return;
+    const totais = await Promise.all(semTotal.map((c) => api.getTotalMembros(c.id)));
+    setTotalMembros((anteriores) => ({
+      ...anteriores,
+      ...Object.fromEntries(semTotal.map((c, i) => [c.id, totais[i]])),
+    }));
+  }, [comunidades, totalMembros]);
+
+  // GET /comunidades/{id}/membros/total só da comunidade aberta (detalhe)
+  const carregarTotalMembros = useCallback(async (id: number) => {
+    const total = await api.getTotalMembros(id);
+    setTotalMembros((anteriores) => ({ ...anteriores, [id]: total }));
+  }, []);
 
   // Soma ou tira um membro do total já carregado (depois de entrar ou sair)
   const alterarTotal = useCallback((id: number, diferenca: number) => {
@@ -656,6 +667,7 @@ export const SimuladorProvider = ({ children }: { children: ReactNode }) => {
         abrirComunidade,
         totalMembros,
         carregarTotaisMembros,
+        carregarTotalMembros,
         criarComunidade,
         editarComunidade,
         excluirComunidade,

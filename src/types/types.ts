@@ -165,6 +165,30 @@ export interface ErroApi {
 // Erro lançado pelo api.ts: a mensagem da API + o status HTTP (ex.: 403 na fila de moderação)
 export type ErroComStatus = Error & Partial<Pick<ErroApi, 'status'>>;
 
+// ===== Requisições à API (services/http.ts) =====
+
+// PATCH só aparece com o json-server (no lugar dos UPDATE que o Java faz no banco)
+export type MetodoRequisicao = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
+
+export interface OpcoesRequisicao {
+  corpo?: object; // vira JSON; nunca entra no registro
+  mensagemErro: string; // usada quando a resposta de erro não traz { erro }
+  soJsonServer?: boolean; // true: recurso que só existe no json-server (feedbacks); a linha real aparece no painel
+}
+
+// O que fica registrado de cada chamada (para o painel de requisições ao vivo)
+export interface RegistroRequisicao {
+  id: number;
+  metodo: MetodoRequisicao;
+  rota: string; // sem a URL base e com senha, CPF e e-mail mascarados
+  status: number | null; // null: não houve resposta (API fora do ar, sem rede ou CORS)
+  tempoMs: number;
+  horario: string; // ISO, hora em que a chamada começou
+  erro?: string; // mensagem mostrada ao usuário quando falha
+  apoio: boolean; // true: chamada ao json-server que só imita o Java (o painel esconde por padrão)
+  simulado: boolean; // true: linha "como o Java responderia" (só no modo json-server)
+}
+
 // Dados que a API não guarda e ficam fixos no front
 export interface ComplementoUsuario {
   bio: string;
@@ -434,7 +458,8 @@ export type AcoesComunidade = {
   idComunidadeAberta: number | null;
   abrirComunidade: (id: number) => void; // vai para o detalhe
   totalMembros: Record<number, number>; // por id de comunidade
-  carregarTotaisMembros: () => Promise<void>;
+  carregarTotaisMembros: () => Promise<void>; // só as que ainda não têm total
+  carregarTotalMembros: (id: number) => Promise<void>; // só a comunidade aberta
   criarComunidade: (dados: ComunidadeEdicao, complemento: ComplementoNovaComunidade) => Promise<Comunidade>;
   editarComunidade: (id: number, dados: ComunidadeEdicao, regras: string) => Promise<void>;
   excluirComunidade: (id: number) => Promise<void>;
