@@ -1,6 +1,7 @@
 import { Outlet } from 'react-router-dom';
 import { RequisicoesProvider } from '../context/RequisicoesContext';
 import { SimuladorProvider } from '../context/SimuladorContext';
+import PainelRequisicoes from '../components/simulador/PainelRequisicoes';
 
 // Layout do simulador: os contextos ficam aqui para o estado continuar ao trocar de aba
 // (o RequisicoesProvider por fora, para ouvir as chamadas desde a abertura)
@@ -12,6 +13,7 @@ export default function Simulador() {
           <h1 className="text-center text-3xl font-extrabold text-[#a84312]">Simulador do Soul Up</h1>
           <Outlet />
         </div>
+        <PainelRequisicoes />
       </SimuladorProvider>
     </RequisicoesProvider>
   );
