@@ -122,6 +122,7 @@ export default function TelaMetas() {
 
   // Só contam as postagens do usuário aprovadas depois do início da meta (id maior que o idBase)
   const concluidas = concluidasDaMeta(meta, postagens, usuario.id);
+  
   const concluiu = concluidas >= meta.alvo;
   const progresso = Math.min(100, Math.round((concluidas / meta.alvo) * 100));
   const restantes = diasRestantes(meta);

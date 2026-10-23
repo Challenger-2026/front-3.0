@@ -1,5 +1,4 @@
 import type { SecaoPrivacidade } from '../types/types';
-import { buscarCategoriaPorPontos } from './categorias';
 
 // ===== Privacidade (demonstração: a API não guarda consentimento nem pedido de exclusão) =====
 
