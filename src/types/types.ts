@@ -458,7 +458,8 @@ export type AcoesComunidade = {
   idComunidadeAberta: number | null;
   abrirComunidade: (id: number) => void; // vai para o detalhe
   totalMembros: Record<number, number>; // por id de comunidade
-  carregarTotaisMembros: () => Promise<void>;
+  carregarTotaisMembros: () => Promise<void>; // só as que ainda não têm total
+  carregarTotalMembros: (id: number) => Promise<void>; // só a comunidade aberta
   criarComunidade: (dados: ComunidadeEdicao, complemento: ComplementoNovaComunidade) => Promise<Comunidade>;
   editarComunidade: (id: number, dados: ComunidadeEdicao, regras: string) => Promise<void>;
   excluirComunidade: (id: number) => Promise<void>;

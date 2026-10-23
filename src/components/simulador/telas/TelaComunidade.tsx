@@ -19,7 +19,7 @@ export default function TelaComunidade() {
     postagens,
     complementosComunidade,
     totalMembros,
-    carregarTotaisMembros,
+    carregarTotalMembros,
     idComunidadeAberta,
     entrarComunidade,
     sairComunidade,
@@ -30,17 +30,18 @@ export default function TelaComunidade() {
   const [enviando, setEnviando] = useState(false);
   const [erro, setErro] = useState('');
 
-  // Total de membros atualizado ao abrir a tela (GET /comunidades/{id}/membros/total)
+// Total de membros atualizado ao abrir a tela: só o da comunidade aberta (GET /comunidades/{id}/membros/total)
   useEffect(() => {
-    const buscarTotais = async () => {
+    if (idComunidadeAberta === null) return;
+    const buscarTotal = async () => {
       try {
-        await carregarTotaisMembros();
+        await carregarTotalMembros(idComunidadeAberta);
       } catch (err) {
         setErro(mensagemDoErro(err));
       }
     };
-    buscarTotais();
-  }, [carregarTotaisMembros]);
+    buscarTotal();
+  }, [carregarTotalMembros, idComunidadeAberta]);
 
   const comunidade = comunidades.find((c) => c.id === idComunidadeAberta);
 
