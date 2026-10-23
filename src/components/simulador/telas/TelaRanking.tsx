@@ -3,9 +3,10 @@ import type { IntervaloRanking } from '../../../types/types';
 import { useSimulador } from '../../../hooks/useSimulador';
 import { INTERVALOS_RANKING, QUANTIDADE_AMIGOS_DEMO, rankingEntreAmigos, rankingGeral } from '../../../data/liga';
 import LinhaRanking from '../LinhaRanking';
+import LigaSemanal from '../LigaSemanal';
 
 export default function TelaRanking() {
-  const { usuario, usuarios, postagens, comunidades } = useSimulador();
+  const {usuario, usuarios, postagens, comunidades } = useSimulador();
   const [intervalo, setIntervalo] = useState<IntervaloRanking>('Geral');
   const [idComunidade, setIdComunidade] = useState<number | null>(null); // null = todas
 
@@ -35,7 +36,7 @@ export default function TelaRanking() {
           </button>
         ))}
       </div>
-
+    {intervalo === 'Semanal' && <LigaSemanal />}
       {intervalo === 'Geral' && (
         <section className="space-y-3">
           <label htmlFor="ranking-comunidade" className="sr-only">
