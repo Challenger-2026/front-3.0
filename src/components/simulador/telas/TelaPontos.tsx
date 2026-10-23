@@ -12,7 +12,7 @@ import { formatarPontos } from '../../../utils/formatadores';
 import { DISTINTIVOS_CONQUISTADOS_DEMO, FONTE_DISTINTIVOS } from '../../../data/liga';
 
 export default function TelaPontos() {
-  const { usuario, postagens, irPara } = useSimulador();
+  const { usuario, postagens, saldoDisponivel, irPara } = useSimulador();
 
   // Demonstração do teto: quantos pontos o usuário "já ganhou hoje"
   const [ganhosHoje, setGanhosHoje] = useState(0);
@@ -37,7 +37,7 @@ export default function TelaPontos() {
       {/* Saldo */}
       <section className="rounded-2xl bg-gradient-to-br from-[#4F46E5] to-[#8B3CF0] p-5 text-white shadow-sm">
         <p className="text-[10px] uppercase tracking-wider text-white/70">Saldo</p>
-        <p className="text-3xl font-extrabold">{formatarPontos(usuario.sdPonto)} pts</p>
+        <p className="text-3xl font-extrabold">{formatarPontos(saldoDisponivel)} pts</p>
         <div className="mt-3 grid grid-cols-2 gap-2 text-center">
           <div className="rounded-xl bg-white/15 py-2">
             <p className="text-sm font-extrabold">{formatarPontos(co2Evitado)} kg</p>
@@ -185,7 +185,7 @@ export default function TelaPontos() {
         </button>
         <button
           type="button"
-          onClick={() => irPara('carteira')}
+          onClick={() => irPara('beneficios')}
           className="w-full rounded-full bg-[#4F46E5] py-3 text-sm font-bold text-white cursor-pointer"
         >
           Trocar pontos por benefícios

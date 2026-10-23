@@ -27,6 +27,8 @@ import TelaCriarComunidade from './telas/TelaCriarComunidade';
 import TelaParaVoce from './telas/TelaParaVoce';
 import TelaNotificacoes from './telas/TelaNotificacoes';
 import TelaRanking from './telas/TelaRanking';
+import TelaCarteira from './telas/TelaCarteira';
+import TelaBeneficios from './telas/TelaBeneficios';
 
 
 export default function TelaAtual() {
@@ -102,6 +104,10 @@ export default function TelaAtual() {
       return <TelaNotificacoes />;
     case 'ranking':
       return <TelaRanking />;
+    case 'carteira':
+      return <TelaCarteira />;
+    case 'beneficios':
+      return <TelaBeneficios />;
     default:
       return <TelaEmConstrucao />;
       

@@ -21,6 +21,7 @@ import {
   participantesMes,
 } from '../../data/liga';
 import { mensagemDoErro } from '../../utils/erros';
+import { beneficiosOngPorTemas } from '../../data/beneficios';
 import { formatarPontos } from '../../utils/formatadores';
 import SelosComunidade from './SelosComunidade';
 
@@ -50,6 +51,7 @@ export default function ParaVoce({ compacto = false }: ParaVoceProps) {
     abrirComunidade,
     seguirSugestao,
     irPara,
+    saldoDisponivel,
   } = useSimulador();
   const [expandido, setExpandido] = useState(false);
   const [enviando, setEnviando] = useState(false);
@@ -221,7 +223,34 @@ export default function ParaVoce({ compacto = false }: ParaVoceProps) {
         )),
     });
 
-    // e) Impacto, para quem escolheu "Medir meu impacto": CO₂ das aprovadas (API) + distintivo do mês (demonstração)
+    // e) Benefícios, para quem escolheu "Acumular pontos e benefícios": ONGs ligadas aos temas (demonstração)
+    if (complemento.objetivo === 'pontos') {
+      secoes.push({
+        id: 'beneficios',
+        titulo: 'Benefícios',
+        itens: beneficiosOngPorTemas(interesses, comunidades, complementosComunidade)
+          .slice(0, 2)
+          .map((b) => {
+            const falta = Math.max(0, b.custo - saldoDisponivel);
+            return (
+              <button
+                key={b.id}
+                type="button"
+                onClick={() => irPara('beneficios')}
+                className={`${classeCard} block w-full text-left cursor-pointer`}
+              >
+                <span className="block text-sm font-semibold">{b.nome}</span>
+                <span className="block text-xs text-slate-500">
+                  {b.parceiro} · {formatarPontos(b.custo)} pts ·{' '}
+                  {falta === 0 ? 'Você já tem saldo' : `Faltam ${formatarPontos(falta)} pts`}
+                </span>
+              </button>
+            );
+          }),
+      });
+    }
+
+    // f) Impacto, para quem escolheu "Medir meu impacto": CO₂ das aprovadas (API) + distintivo do mês (demonstração)
     if (complemento.objetivo === 'impacto') {
       const co2Evitado = postagens
         .filter((p) => p.idUsuario === usuario.id && p.stValidacao === 'APROVADO')
@@ -250,7 +279,7 @@ export default function ParaVoce({ compacto = false }: ParaVoceProps) {
       });
     }
 
-    // f) Próximo papel no app, pelo momento escolhido
+    // g) Próximo papel no app, pelo momento escolhido
     const papel: ReactNode[] = [];
     if (complemento.momento === 'mobilizador') {
       const ehCriador = usuario.tipoPerfil === 'CRIADOR';
@@ -339,7 +368,7 @@ export default function ParaVoce({ compacto = false }: ParaVoceProps) {
       )}
 
       <p className="text-center text-[11px] text-slate-500">
-          Demonstração: temas, respostas do onboarding, missões e distintivo ficam só no front.
+          Demonstração: temas, respostas do onboarding, missões, distintivo e benefícios ficam só no front.
       </p>
     </section>
   );

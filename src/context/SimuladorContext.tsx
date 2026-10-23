@@ -32,6 +32,7 @@ import type {
   MissaoCadastro,
   Sugestao,
   Notificacao,
+  Resgate,
 } from '../types/types';
 import { api } from '../services/api';
 import { complementosUsuario } from '../data/complementosUsuario';
@@ -51,6 +52,7 @@ import {
 } from '../data/moderacao';
 import { complementoDe, complementosComunidadeIniciais, ehDono, missoesIniciais } from '../data/comunidades';
 import { notificacoesDoUsuario } from '../data/liga';
+import { buscarBeneficio, gerarCodigoResgate, resgatesIniciais, totalResgatado } from '../data/beneficios';
 
 // Dados públicos do app, carregados ao abrir o simulador (antes do login)
 const buscarDados = () =>
@@ -614,7 +616,39 @@ export const SimuladorProvider = ({ children }: { children: ReactNode }) => {
     [missoes, podeAdministrar],
   );
 
-    // ----- Notificações -----
+  // ----- Carteira (demonstração: a API não tem resgates nem rota que desconte pontos) -----
+
+  // Resgates por id de usuário (só no front)
+  const [resgatesPorUsuario, setResgatesPorUsuario] = useState<Record<number, Resgate[]>>(resgatesIniciais);
+
+  // Saldo disponível = sdPonto da API menos o que o usuário já resgatou
+  const resgates = usuario ? (resgatesPorUsuario[usuario.id] ?? []) : [];
+  const saldoDisponivel = usuario ? Math.max(0, Number((usuario.sdPonto - totalResgatado(resgates)).toFixed(2))) : 0;
+
+  const resgatar = useCallback(
+    (idBeneficio: number) => {
+      const beneficio = buscarBeneficio(idBeneficio);
+      if (!usuario || !beneficio) return null;
+      const doUsuario = resgatesPorUsuario[usuario.id] ?? [];
+      if (beneficio.custo > usuario.sdPonto - totalResgatado(doUsuario)) return null;
+      const novo: Resgate = {
+        id: proximoId(doUsuario),
+        codigo: gerarCodigoResgate(),
+        status: 'Processando',
+        idBeneficio,
+        custo: beneficio.custo,
+        data: hojeIso(),
+      };
+      setResgatesPorUsuario((anteriores) => ({
+        ...anteriores,
+        [usuario.id]: [novo, ...(anteriores[usuario.id] ?? [])],
+      }));
+      return novo;
+    },
+    [usuario, resgatesPorUsuario],
+  );
+
+  // ----- Notificações -----
 
   // Ids das notificações já lidas, por id de usuário (só no front)
   const [lidas, setLidas] = useState<Record<number, string[]>>({});
@@ -715,6 +749,9 @@ export const SimuladorProvider = ({ children }: { children: ReactNode }) => {
         naoLidas,
         marcarLida,
         marcarTodasLidas,
+        resgates,
+        saldoDisponivel,
+        resgatar,
       }}
     >
       {children}
