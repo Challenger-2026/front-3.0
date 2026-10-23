@@ -130,12 +130,25 @@ export const explicacoes: Record<TelaId, Explicacao> = {
   carteira: {
     titulo: 'Carteira',
     descricao:
-      'Mostra o saldo de pontos e permite trocá-los por benefícios de empresas parceiras e ONGs.',
+      'Reúne o saldo de pontos, o distintivo do mês, a meta de atividades e os atalhos para pontuar, resgatar e ver o ranking.',
     destaques: [
-      'Catálogo de benefícios com o custo em pontos',
-      'Histórico de resgates com código e status',
+      'Saldo: sdPonto da API (carregado ao abrir) menos os resgates (demonstração)',
+      'Aprovadas e pendentes: postagens do usuário no GET /postagens',
+      'Demonstração: ganhos do dia (a postagem não tem data na API) e distintivo do mês',
+      'Meta de atividades: fica no front, como na tela de metas',
     ],
-    proximaAcao: 'Escolha um benefício para resgatar.',
+    proximaAcao: 'Toque em "Resgatar benefício" ou em "Ver ranking".',
+  },
+  beneficios: {
+    titulo: 'Benefícios',
+    descricao:
+      'Catálogo de benefícios de empresas parceiras e ONGs. O usuário troca pontos por um benefício e recebe um código de acompanhamento.',
+    destaques: [
+      'ONGs aparecem primeiro, com o selo "Parceria proposta" (não é parceria oficial)',
+      'Sem saldo suficiente, o botão mostra quantos pontos faltam',
+      'Demonstração: a API não tem tabelas de benefício, parceiro e resgate, nem rota que desconte pontos; o resgate fica só no front',
+    ],
+    proximaAcao: 'Escolha um benefício e confirme o resgate.',
   },
     perfil: {
     titulo: 'Perfil',
@@ -319,6 +332,7 @@ export const explicacoes: Record<TelaId, Explicacao> = {
       'Entrar direto pela sugestão: POST /comunidades/{id}/membros?idUsuario=',
       '"Registrar ação desta missão" abre a nova postagem já preenchida',
       'Seu impacto: CO₂ evitado das ações aprovadas na API e o distintivo do mês (demonstração), com atalho para o ranking',
+      'Benefícios (objetivo "Acumular pontos e benefícios"): até 2 benefícios das ONGs ligadas aos temas, com quanto falta no saldo',
       'Demonstração: temas, respostas do onboarding e missões ficam no front',
     ],
     proximaAcao: 'Entre em uma comunidade sugerida ou registre uma missão.',

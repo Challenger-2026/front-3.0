@@ -82,7 +82,8 @@ export type TelaId =
   | 'comunidade'
   | 'criar-comunidade'
   | 'para-voce'
-  | 'ranking';
+  | 'ranking'
+  | 'beneficios';
 
 export type Explicacao = {
   titulo: string;
@@ -494,6 +495,38 @@ export type AcoesNotificacao = {
   marcarTodasLidas: () => void;
 };
 
+// ===== Carteira e benefícios (bloco 7: demonstração, a API não tem essas tabelas) =====
+
+export type TipoBeneficio = 'Cupom' | 'Doação' | 'Assinatura' | 'Produto' | 'Experiência';
+export type StatusResgate = 'Processando' | 'Concluído';
+
+// Benefício de uma empresa parceira ou de uma ONG
+export interface Beneficio {
+  id: number;
+  tipo: TipoBeneficio;
+  nome: string;
+  custo: number; // em pontos
+  parceiro: string;
+  area: string;
+  ong: boolean; // ONG com parceria proposta (não oficial)
+}
+
+// Resgate do usuário, com o código de acompanhamento (ex.: SU-4KJ9-2Q7A)
+export interface Resgate {
+  id: number;
+  codigo: string;
+  status: StatusResgate;
+  idBeneficio: number;
+  custo: number; // custo no dia do resgate
+  data: string; // "AAAA-MM-DD"
+}
+
+export type AcoesCarteira = {
+  resgates: Resgate[]; // do usuário logado, mais novo primeiro
+  saldoDisponivel: number; // sdPonto da API menos os resgates
+  resgatar: (idBeneficio: number) => Resgate | null; // null: sem saldo
+};
+
 export type DadosSimulador = {
   usuario: Usuario | null; // usuário logado (null antes do login)
   usuarios: Usuario[];
@@ -578,4 +611,5 @@ export type SimuladorContextType = NavegacaoSimulador &
   AcoesPostagem &
   AcoesModeracao &
   AcoesComunidade &
-  AcoesNotificacao;
+  AcoesNotificacao &
+  AcoesCarteira;
