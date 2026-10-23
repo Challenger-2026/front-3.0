@@ -8,7 +8,7 @@ import DisputaMensal from '../DisputaMensal';
 
 export default function TelaRanking() {
   const {usuario, usuarios, postagens, comunidades } = useSimulador();
-  const [intervalo, setIntervalo] = useState<IntervaloRanking>('Geral');
+  const [intervalo, setIntervalo] = useState<IntervaloRanking>('Mensal');
   const [idComunidade, setIdComunidade] = useState<number | null>(null); // null = todas
 
   if (!usuario) return null;
