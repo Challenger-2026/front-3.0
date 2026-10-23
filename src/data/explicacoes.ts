@@ -106,9 +106,9 @@ export const explicacoes: Record<TelaId, Explicacao> = {
   pontos: {
     titulo: 'Minha pontuação',
     descricao:
-      'Saldo de pontos, CO₂ evitado e como cada tipo de impacto pontua. O saldo é o sdPonto da API, que só cresce quando a moderação aprova uma ação.',
+      'Saldo de pontos, CO₂ evitado e como cada tipo de impacto pontua. O saldo parte do sdPonto da API, que só cresce quando a moderação aprova uma ação.',
     destaques: [
-      'Saldo: sdPonto do usuário (somado pelo Java na aprovação)',
+      'Saldo: sdPonto do usuário (somado pelo Java na aprovação) menos os resgates (demonstração)',
       'CO₂ evitado: fator da categoria de cada ação aprovada',
       'Extrato com as ações aprovadas e os pontos a liberar das pendentes',
       'Teto diário de 15 pts com redução progressiva: demonstração, a API ainda paga o valor cheio',
