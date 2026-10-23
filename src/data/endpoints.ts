@@ -201,3 +201,24 @@ export const situacaoDe = (status: number | null, tempoMs: number): SituacaoApi 
   if (status === null || status >= 400) return 'fora';
   return tempoMs > LIMITE_LENTA_MS ? 'lenta' : 'operacional';
 };
+
+// Nome curto de cada controller nos cartões
+export const nomesControllers: Record<ControllerJava, string> = {
+  UsuarioController: 'Usuários',
+  ComunidadeController: 'Comunidades',
+  PostagemController: 'Postagens',
+  ModeracaoController: 'Moderações',
+};
+
+export const textosSituacao: Record<SituacaoApi, string> = {
+  operacional: 'Operacional',
+  lenta: 'Lenta',
+  fora: 'Fora do ar',
+};
+
+// Cor da barra (e da legenda) de cada situação
+export const coresSituacao: Record<SituacaoApi, string> = {
+  operacional: 'bg-emerald-500',
+  lenta: 'bg-amber-400',
+  fora: 'bg-red-500',
+};
