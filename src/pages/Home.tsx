@@ -1,32 +1,64 @@
+import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import CardMini, { type CardMiniProps } from '../components/CardMini';
 import Reveal from '../components/Reveal'; 
 
-
 const listaResumo: CardMiniProps[] = [
   {
-    icone: '🪴',
     titulo: 'Descrição',
     descricao:
       'O projeto Lobo-guará Tech transforma ações sustentáveis em um sistema de recompensas e desafios com rankeamento. Unindo inovação incremental e disruptiva, conectamos mecanismos já existentes com as lacunas da sustentabilidade — criando uma plataforma de gamificação que torna o engajamento ambiental tangível e motivador.',
   },
   {
-    icone: '🎯',
     titulo: 'Objetivo',
     descricao:
       'Colocar o usuário no centro da solução: tornar a sustentabilidade não apenas uma escolha consciente, mas um hábito reforçado por recompensas reais. A plataforma escala o impacto ambiental de forma ágil, transformando o compromisso com o planeta em uma experiência digital recompensadora.',
   },
   {
-    icone: '🏆',
     titulo: 'Diferencial',
     descricao:
       'Comunidades ligadas a ONGs focadas em impacto ambiental e um sistema de ranking. Sistema de medalhas mensais inspirado na fauna brasileira, rankeamento entre usuários e ciclos de engajamento personalizados. A identidade do lobo-guará reforça o vínculo entre tecnologia e natureza, criando uma experiência única e com propósito.',
   },
 ];
+// O parágrafo dividido em array de palavras para o efeito de scroll
+const palavrasReveal = "Nossa plataforma vai além de um aplicativo de tarefas: criamos uma rede de impacto socioambiental. Através da união entre tecnologia, validação comunitária e incentivos reais, transformamos a conscientização ecológica em hábitos diários e mensuráveis.".split(" ");
 
 export default function Home() {
   const efeitoOnda =
     "relative overflow-hidden after:content-[''] after:absolute after:inset-0 after:z-[1] after:pointer-events-none after:rounded-t-[45%] after:bg-amber-400/20 after:translate-y-full after:transition-transform after:duration-500 hover:after:translate-y-[10%] active:after:translate-y-[10%]";
+
+  const revealRef = useRef<HTMLDivElement>(null);
+  const tituloRef = useRef<HTMLDivElement>(null); // Referência para o título gigante
+  
+  const [progressoTexto, setProgressoTexto] = useState(0);
+  const [distanciaTitulo, setDistanciaTitulo] = useState(0); // Estado para o parallax
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (revealRef.current) {
+        const { top, height } = revealRef.current.getBoundingClientRect();
+        const windowHeight = window.innerHeight;
+        
+        const distanciaRolavel = height - windowHeight;
+        let progresso = -top / distanciaRolavel;
+        
+        // Limitar o progresso entre 0 e 1
+        progresso = Math.max(0, Math.min(1, progresso));
+        setProgressoTexto(progresso);
+      }
+
+      if (tituloRef.current) {
+        const { top } = tituloRef.current.getBoundingClientRect();
+        setDistanciaTitulo(top);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    handleScroll();
+    
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
 
   return (
     <main className="relative w-[100vw] left-1/2 -translate-x-1/2 -mt-8">
@@ -63,18 +95,52 @@ export default function Home() {
           </svg>
         </div>
 
-        <div className="max-w-6xl mx-auto flex flex-col items-center relative z-10 mb-16">
-          <Reveal delay={100}>
-            <div className="w-full bg-[#fffdf5] rounded-2xl px-8 py-10 border border-[#ead9b6]/40 shadow-sm text-center max-w-4xl mx-auto">
-              <h2 className="text-3xl font-extrabold text-stone-900 mb-6">
-                O Ecossistema Lobo-guará Tech
-              </h2>
-              <p className="text-stone-700 leading-relaxed text-base sm:text-lg">
-                Nossa plataforma vai além de um aplicativo de tarefas: criamos uma <strong className="text-stone-900">rede de impacto socioambiental</strong>. Através da união entre tecnologia, validação comunitária e incentivos reais, transformamos a conscientização ecológica em hábitos diários e mensuráveis. 
+        <div className="w-full flex flex-col items-center">
+          
+          <div ref={tituloRef} className="w-full pt-10 pb-8 flex flex-col items-center justify-center text-center px-4 relative z-10 overflow-hidden">
+            <h2 className="font-black uppercase tracking-tighter leading-[0.85] text-[#D35400] text-[11vw] sm:text-[9vw] md:text-[8vw] lg:text-[7.5vw] select-none flex flex-col">
+              <span 
+                className="inline-block transition-transform duration-100 ease-out"
+                style={{ transform: `translateX(${distanciaTitulo * -0.35}px)` }}
+              >
+                O Ecossistema
+              </span>
+              <span 
+                className="inline-block transition-transform duration-100 ease-out"
+                style={{ transform: `translateX(${distanciaTitulo * 0.35}px)` }}
+              >
+                Lobo-guará
+              </span>
+            </h2>
+          </div>
+
+          <div ref={revealRef} className="relative w-full h-[200vh] mb-12">
+            <div className="sticky top-0 w-full h-screen flex flex-col items-center justify-center px-6 md:px-12">
+              <p className="text-2xl md:text-4xl lg:text-5xl font-extrabold text-center max-w-5xl leading-tight md:leading-tight">
+                {palavrasReveal.map((palavra, index) => {
+                  const threshold = index / palavrasReveal.length;
+                  const estaAtiva = progressoTexto > threshold;
+                  
+                  const isHighlight = palavra.includes('impacto') || palavra.includes('socioambiental') || palavra.includes('conscientização') || palavra.includes('ecológica');
+
+                  return (
+                    <span 
+                      key={index} 
+                      className={`inline-block mr-2 md:mr-3 transition-colors duration-300 ${
+                        estaAtiva 
+                          ? isHighlight ? 'text-[#D35400]' : 'text-stone-900' 
+                          : 'text-[#e5d5b7]' 
+                      }`}
+                    >
+                      {palavra}
+                    </span>
+                  );
+                })}
               </p>
             </div>
-          </Reveal>
+          </div>
         </div>
+
 
         <div className="max-w-6xl mx-auto flex flex-col items-center relative z-10">
           <Reveal delay={200}>

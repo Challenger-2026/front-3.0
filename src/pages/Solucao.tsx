@@ -1,9 +1,10 @@
+import { useState } from 'react';
 import CardPilar from '../components/CardPilar';
 import Reveal from '../components/Reveal';
 
 export interface CardSolucao {
   id: string;
-  icone: string;
+  imagem: string;
   titulo: string;
   descricao: string;
 }
@@ -17,45 +18,45 @@ export interface EtapaRanking {
 const listaCards: CardSolucao[] = [
   {
     id: 'comunidades',
-    icone: '👥',
+    imagem: '/img-comunidades.jpg',
     titulo: 'Comunidades Ativas',
     descricao:
-      'Os usuários podem se unir em comunidades parceiras com ONGs e unem forças para cumprir macro-desafios, como a revitalização de uma praça ou mutirões de reciclagem, fortalecendo o comportamento social positivo.',
+      'Os usuários podem se unir em comunidades parceiras com ONGs e unem forças para cumprir macro-desafios, como a revitalização de uma praça ou mutirões de reciclagem.',
   },
   {
     id: 'moderadores',
-    icone: '🛡️',
+    imagem: '/img-moderadores.jpg',
     titulo: 'Moderadores Guardiões',
     descricao:
-      'Para garantir a integridade do sistema, membros veteranos e engajados atuam como moderadores. Eles são responsáveis por auditar as evidências (fotos e vídeos) enviadas pelos usuários para comprovar as ações sustentáveis, garantindo que os pontos distribuídos sejam justos.',
+      'Para garantir a integridade do sistema, membros veteranos e engajados atuam como moderadores. Eles são responsáveis por auditar as evidências enviadas pelos usuários.',
   },
   {
     id: 'pontuacao',
-    icone: '🎲',
+    imagem: '/img-pontuacao.jpg',
     titulo: 'Pontuação Inteligente',
     descricao:
-      'O sistema considera múltiplos fatores antes de calcular a pontuação final do usuário. Sendo eles o tipo da ação sustentável realizada, a frequência com que o usuário realiza a ação, a consistência ao longo do tempo e o impacto sustentável gerado pela ação que o usuário realizou.',
+      'O sistema considera múltiplos fatores antes de calcular a pontuação final do usuário: tipo da ação, frequência, consistência e o impacto gerado.',
   },
   {
     id: 'ranking',
-    icone: '🏆',
+    imagem: '/img-ranking.jpg',
     titulo: 'Ranking e Ligas',
     descricao:
-      'O motor de engajamento do nosso sistema. Dividido em ligas mensais baseadas na fauna brasileira, o ranking estimula a competição saudável. Subir de nível significa ganhar maior reconhecimento social na plataforma.',
+      'O motor de engajamento do nosso sistema. Dividido em ligas mensais baseadas na fauna brasileira, o ranking estimula a competição saudável.',
   },
   {
     id: 'criadores',
-    icone: '🎯',
+    imagem: '/img-criadores.jpg',
     titulo: 'Criadores de Comunidade',
     descricao:
-      'Inicialmente, pensamos nas Comunidades estarem atreladas as ONGs parceiras para ter visibilidade dentro de suas causas. E futuramente, ser uma possibilidades para outros tipos de visibilidade como hábitos saudáveis por exemplo.',
+      'Inicialmente, pensamos nas Comunidades estarem atreladas as ONGs parceiras para ter visibilidade dentro de suas causas.',
   },
   {
     id: 'regras',
-    icone: '📖',
-    titulo: 'Regras',
+    imagem: '/img-regras.jpg',
+    titulo: 'Regras do Sistema',
     descricao:
-      'Para ser moderador e criador dentro da plataforma, existem regras que o usuário deve seguir inicialmente. Elas são baseadas no tempo de uso, engajamento e entendimento sobre a plataforma.',
+      'Para ser moderador e criador dentro da plataforma, existem regras que o usuário deve seguir inicialmente baseadas no tempo de uso.',
   },
 ];
 
@@ -78,6 +79,8 @@ const listaEtapas: EtapaRanking[] = [
 ];
 
 export default function Solucao() {
+  const [cardAtivo, setCardAtivo] = useState<string | null>(null);
+
   return (
     <main className="w-full max-w-6xl mx-auto px-4 py-12 flex flex-col items-center">
       
@@ -100,29 +103,36 @@ export default function Solucao() {
           Pilares da Solução
         </h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full">
-          {listaCards.map((card, index) => (
-            <Reveal key={card.id} delay={index * 150}>
-              <CardPilar
-                icone={card.icone}
-                titulo={card.titulo}
-                descricao={card.descricao}
-              />
-            </Reveal>
-          ))}
+        <div className="flex flex-wrap gap-6 w-full justify-center">
+          {listaCards.map((card, index) => {
+            const isAtivo = cardAtivo === card.id;
+
+            return (
+              <div 
+                key={card.id} 
+                className={`transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] ${
+                  isAtivo ? 'w-full order-first mb-4' : 'w-full sm:w-[calc(50%-0.75rem)] md:w-[calc(33.333%-1rem)] order-none'
+                }`}
+              >
+                <Reveal delay={isAtivo ? 0 : index * 50}>
+                  <CardPilar
+                    imagem={card.imagem}
+                    titulo={card.titulo}
+                    descricao={card.descricao}
+                    ativo={isAtivo}
+                    onClick={() => setCardAtivo(isAtivo ? null : card.id)}
+                  />
+                </Reveal>
+              </div>
+            );
+          })}
         </div>
       </section>
 
-      <section
-        aria-labelledby="ranking-title"
-        className="w-full"
-      >
+      <section aria-labelledby="ranking-title" className="w-full">
         <Reveal>
           <div className="bg-[#1C1C1C] rounded-2xl p-8 sm:p-12 text-center text-amber-50 shadow-lg border border-stone-800">
-            <h2
-              id="ranking-title"
-              className="text-2xl sm:text-3xl font-extrabold text-[#D35400] mb-3"
-            >
+            <h2 id="ranking-title" className="text-2xl sm:text-3xl font-extrabold text-[#D35400] mb-3">
               Como funciona a dinâmica de Ranking?
             </h2>
             <p className="text-stone-300 text-sm sm:text-base max-w-3xl mx-auto mb-10 leading-relaxed">
