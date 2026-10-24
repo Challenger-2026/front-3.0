@@ -182,6 +182,7 @@ export const explicacoes: Record<TelaId, Explicacao> = {
       'Disputa mensal: o top 10 ganha o distintivo do mês, um animal da fauna brasileira em risco de extinção',
       'Entre amigos: some da lista quando a pessoa escolhe "Ocultar meu perfil" na Privacidade',
       'Demonstração: a API não tem tabela de ranking nem data nas postagens',
+      'Demonstração: "Simular execução agora" nos Parâmetros de pontuação fecha a liga e troca o grupo da semana',
     ],
     proximaAcao: 'Troque a aba ou escolha uma comunidade.',
   },
@@ -193,7 +194,7 @@ export const explicacoes: Record<TelaId, Explicacao> = {
       'PUT /usuarios/{id}/perfil com o novo tipoPerfil',
       'Moderador não troca direto: abre a candidatura com o questionário',
       'Criador com comunidades ou moderador que já moderou não pode trocar: a API responde 409',
-      'Acesso aos dados cadastrais, às respostas do onboarding, à meta de atividades e à privacidade',
+      'Acesso aos dados cadastrais, às respostas do onboarding, à meta de atividades, aos parâmetros de pontuação e à privacidade',
     ],
     proximaAcao: 'Troque o tipo de perfil ou abra a privacidade.',
   },
@@ -350,5 +351,18 @@ export const explicacoes: Record<TelaId, Explicacao> = {
       'Demonstração: o pedido de exclusão dos dados de gamificação só é registrado; a API não tem rota que apague pontos e postagens sem excluir a conta',
     ],
     proximaAcao: 'Ative "Ocultar meu perfil" e confira o ranking Entre amigos.',
+  },
+  parametros: {
+    titulo: 'Parâmetros de pontuação',
+    descricao:
+      'Reúne as regras de pontuação vigentes: teto diário com redução progressiva, pontos de sequência da meta, CO₂ evitado por ação e os processos automáticos do Temporizador. Só leitura.',
+    destaques: [
+      'Pesos por atividade iguais ao PostagemService do Java (10,6 / 6,6 / 1,6): o ptGerado é gravado na publicação',
+      'Bônus de quem modera: 10% do ptGerado (bnModerador do ModeracaoService)',
+      'Demonstração: teto diário de 15 pts com redução progressiva e piso; a API ainda soma o valor cheio no sdPonto',
+      'Demonstração: pontos de sequência da meta e fatores de CO₂ ficam no front',
+      'Demonstração: a API não tem agendador; "Simular execução agora" fecha a liga ou entrega o distintivo e gera notificação',
+    ],
+    proximaAcao: 'Simule o fechamento da liga e veja a notificação.',
   },
 };

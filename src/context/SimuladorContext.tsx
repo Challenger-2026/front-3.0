@@ -32,7 +32,9 @@ import type {
   MissaoCadastro,
   Sugestao,
   Notificacao,
+  NotificacaoBase,
   Resgate,
+  SituacaoLiga,
 } from '../types/types';
 import { api } from '../services/api';
 import { complementosUsuario } from '../data/complementosUsuario';
@@ -51,7 +53,19 @@ import {
   reputacoesIniciais,
 } from '../data/moderacao';
 import { complementoDe, complementosComunidadeIniciais, ehDono, missoesIniciais } from '../data/comunidades';
-import { notificacoesDoUsuario } from '../data/liga';
+import {
+  PONTOS_MES_DEMO,
+  SITUACAO_LIGA_INICIAL,
+  TOP_DISTINTIVO,
+  distintivoDoMesAtual,
+  faltamParaTop,
+  notificacoesDoUsuario,
+  participantesLiga,
+  participantesMes,
+  proximaDivisao,
+  zonaDaPosicao,
+} from '../data/liga';
+import { formatarPontos } from '../utils/formatadores';
 import { buscarBeneficio, gerarCodigoResgate, resgatesIniciais, totalResgatado } from '../data/beneficios';
 
 // Dados públicos do app, carregados ao abrir o simulador (antes do login)
@@ -670,15 +684,104 @@ export const SimuladorProvider = ({ children }: { children: ReactNode }) => {
     );
   }, [usuario]);
 
+  // ----- Temporizador (demonstração: a API não tem agendador) -----
+
+  // Divisão, pontos da semana, semana da liga e distintivos, por id de usuário (só no front)
+  const [situacoesLiga, setSituacoesLiga] = useState<Record<number, SituacaoLiga>>({});
+  // Notificações geradas pelas simulações, por id de usuário (só no front)
+  const [notificacoesSimuladas, setNotificacoesSimuladas] = useState<Record<number, NotificacaoBase[]>>({});
+
+  const situacaoLiga = usuario ? (situacoesLiga[usuario.id] ?? SITUACAO_LIGA_INICIAL) : SITUACAO_LIGA_INICIAL;
+
+  // Coloca a notificação no topo da lista do usuário logado
+  const notificar = useCallback(
+    (nova: NotificacaoBase) => {
+      if (!usuario) return;
+      setNotificacoesSimuladas((anteriores) => ({
+        ...anteriores,
+        [usuario.id]: [nova, ...(anteriores[usuario.id] ?? [])],
+      }));
+    },
+    [usuario],
+  );
+
+  // Fechamento da liga: os 3 primeiros sobem, os 3 últimos descem; a semana recomeça com outro grupo
+  const simularFechamentoLiga = useCallback(() => {
+    if (!usuario) return;
+    const { divisao, pontosSemana, semana } = situacaoLiga;
+    const lista = participantesLiga(usuario.username, pontosSemana, divisao, semana);
+    const posicao = lista.findIndex((p) => p.eu);
+    const zona = zonaDaPosicao(posicao, lista.length, divisao);
+    const nova = proximaDivisao(divisao, zona);
+
+    setSituacoesLiga((anteriores) => ({
+      ...anteriores,
+      [usuario.id]: { ...situacaoLiga, divisao: nova, pontosSemana: 0, semana: semana + 1 },
+    }));
+
+    let titulo = `Você continua na divisão ${divisao}`;
+    if (zona === 'subida') titulo = `Você subiu para a divisão ${nova}!`;
+    if (zona === 'descida') titulo = `Você desceu para a divisão ${nova}`;
+    notificar({
+      id: `sim-liga-${Date.now()}`,
+      tipo: 'liga',
+      titulo,
+      texto: `Fechamento da liga: você terminou em ${posicao + 1}º lugar na ${divisao}.`,
+      em: hojeIso(),
+      demonstracao: true,
+      tela: 'ranking',
+    });
+  }, [usuario, situacaoLiga, notificar]);
+
+  // Entrega do distintivo: quem está no top 10 da disputa mensal ganha o animal do mês
+  const simularEntregaDistintivo = useCallback(() => {
+    if (!usuario) return;
+    const faltam = faltamParaTop(participantesMes(usuario.username, PONTOS_MES_DEMO));
+    const { mes, animal, status, emoji } = distintivoDoMesAtual();
+
+    if (faltam > 0) {
+      notificar({
+        id: `sim-distintivo-${Date.now()}`,
+        tipo: 'distintivo',
+        titulo: `Não foi desta vez: ${animal}`,
+        texto: `Faltaram ${formatarPontos(faltam)} pts para entrar no top ${TOP_DISTINTIVO} do mês.`,
+        em: hojeIso(),
+        demonstracao: true,
+        tela: 'ranking',
+      });
+      return;
+    }
+
+    // O mesmo distintivo não entra duas vezes
+    if (!situacaoLiga.distintivos.some((d) => d.animal === animal)) {
+      setSituacoesLiga((anteriores) => ({
+        ...anteriores,
+        [usuario.id]: { ...situacaoLiga, distintivos: [...situacaoLiga.distintivos, { mes, animal, status, emoji }] },
+      }));
+    }
+    notificar({
+      id: `sim-distintivo-${Date.now()}`,
+      tipo: 'distintivo',
+      titulo: `Distintivo conquistado: ${animal} ${emoji}`,
+      texto: `Você terminou ${mes.toLowerCase()} no top ${TOP_DISTINTIVO} da disputa mensal.`,
+      em: hojeIso(),
+      demonstracao: true,
+      tela: 'pontos',
+    });
+  }, [usuario, situacaoLiga, notificar]);
+
   // ----- Notificações -----
 
   // Ids das notificações já lidas, por id de usuário (só no front)
   const [lidas, setLidas] = useState<Record<number, string[]>>({});
 
-  // Aprovadas e rejeitadas vêm das postagens da API; liga, distintivo, contestação, meta e inatividade são demonstração
+  // Primeiro as geradas pelo Temporizador; depois aprovadas e rejeitadas (API) e as outras demonstrações
   const lidasDoUsuario = usuario ? (lidas[usuario.id] ?? []) : [];
   const notificacoes: Notificacao[] = usuario
-    ? notificacoesDoUsuario(postagens, usuario).map((n) => ({ ...n, lida: lidasDoUsuario.includes(n.id) }))
+    ? [...(notificacoesSimuladas[usuario.id] ?? []), ...notificacoesDoUsuario(postagens, usuario)].map((n) => ({
+        ...n,
+        lida: lidasDoUsuario.includes(n.id),
+      }))
     : [];
   const naoLidas = notificacoes.filter((n) => !n.lida).length;
 
@@ -695,9 +798,11 @@ export const SimuladorProvider = ({ children }: { children: ReactNode }) => {
 
   const marcarTodasLidas = useCallback(() => {
     if (!usuario) return;
-    const ids = notificacoesDoUsuario(postagens, usuario).map((n) => n.id);
+      const ids = [...(notificacoesSimuladas[usuario.id] ?? []), ...notificacoesDoUsuario(postagens, usuario)].map(
+      (n) => n.id,
+    );
     setLidas((anteriores) => ({ ...anteriores, [usuario.id]: ids }));
-  }, [usuario, postagens]);
+  }, [usuario, postagens, notificacoesSimuladas]);
 
   return (
     <SimuladorContext.Provider
@@ -778,6 +883,13 @@ export const SimuladorProvider = ({ children }: { children: ReactNode }) => {
         alternarOcultoEntreAmigos,
         pedidoExclusaoEm,
         pedirExclusaoGamificacao,
+        divisao: situacaoLiga.divisao,
+        pontosSemana: situacaoLiga.pontosSemana,
+        semanaLiga: situacaoLiga.semana,
+        pontosMes: PONTOS_MES_DEMO,
+        distintivosConquistados: situacaoLiga.distintivos,
+        simularFechamentoLiga,
+        simularEntregaDistintivo,
       }}
     >
       {children}

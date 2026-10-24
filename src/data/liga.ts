@@ -6,6 +6,7 @@ import type {
   NotificacaoBase,
   ParticipanteRanking,
   Postagem,
+  SituacaoLiga,
   Usuario,
   Zona,
 } from '../types/types';
@@ -102,6 +103,14 @@ export const zonaDaPosicao = (posicao: number, total: number, divisao: Divisao):
   return 'neutra';
 };
 
+// Divisão depois do fechamento da liga: sobe, desce ou continua
+export const proximaDivisao = (divisao: Divisao, zona: Zona): Divisao => {
+  const nivel = DIVISOES.indexOf(divisao);
+  if (zona === 'subida') return DIVISOES[Math.min(nivel + 1, DIVISOES.length - 1)];
+  if (zona === 'descida') return DIVISOES[Math.max(nivel - 1, 0)];
+  return divisao;
+};
+
 // A liga fecha no domingo, 23h59
 export const diasParaFimDaSemana = (hoje = new Date()) => {
   const diaDaSemana = hoje.getDay(); // 0 = domingo
@@ -121,20 +130,40 @@ const USERNAMES_DEMO = [
   'sofi_nascente', 'enzo_luz', 'vivi.reuso', 'caio_mata', 'helo_jardim',
 ];
 
+// Nomes das ligas das semanas seguintes (depois de simular o fechamento)
+const USERNAMES_EXTRA = [
+  'rio_limpo', 'maria.verde', 'joao_compostagem', 'ana.semeia', 'beto_reusa', 'clara_pedala', 'duda.nativa',
+  'fabio_horta', 'gabi.oceano', 'igor_reflora', 'juju_granel', 'kaua.solar', 'lara_cerrado', 'mateus.agua',
+  'nara_mangue', 'otavio_ciclo', 'paula.trilha', 'quim_eco', 'rita_ipe', 'samuel.bike', 'tais_coleta',
+  'ursula.mata', 'vitor_lixozero', 'wanda_reciclo', 'yara.floresta', 'zeca_mutirao', 'bela_composta', 'dani.sementes',
+];
+
 // Número "aleatório" entre 0 e 1 que é sempre o mesmo para o mesmo n (a lista não muda a cada tela)
 const numeroFixo = (n: number) => {
   const x = Math.sin(n * 9301 + 49297) * 233280;
   return x - Math.floor(x);
 };
 
-// Liga semanal: 14 participantes do mesmo nível + o usuário logado
-export const participantesLiga = (username: string, meusPontos: number): ParticipanteRanking[] => {
-  const outros = USERNAMES_DEMO.slice(0, 14).map((nome, i) => ({
-    chave: `liga-${i}`,
-    username: nome,
-    pontos: Math.round((8 + numeroFixo(i + 1) * 60) * 10) / 10,
-    eu: false,
-  }));
+// Liga semanal: 14 participantes do mesmo nível + o usuário logado.
+// A semana 0 é o grupo do protótipo; a cada fechamento entra um grupo novo, com pontos de começo de semana (0 a 12).
+export const participantesLiga = (
+  username: string,
+  meusPontos: number,
+  divisao: Divisao = DIVISAO_DEMO,
+  semana = 0,
+): ParticipanteRanking[] => {
+  const grupo = ((DIVISOES.indexOf(divisao) + DIVISOES.length - 1) % DIVISOES.length) + semana * DIVISOES.length;
+  const nomes = semana === 0 ? USERNAMES_DEMO : USERNAMES_EXTRA;
+  const inicio = (grupo * 7) % nomes.length;
+  const outros = Array.from({ length: 14 }, (_, i) => {
+    const sorteio = numeroFixo(i + 1 + grupo * 50);
+    return {
+      chave: `liga-${grupo}-${i}`,
+      username: nomes[(inicio + i) % nomes.length],
+      pontos: Math.round((semana === 0 ? 8 + sorteio * 60 : sorteio * 12) * 10) / 10,
+      eu: false,
+    };
+  });
   return ordenar([...outros, { chave: 'eu', username, pontos: meusPontos, eu: true }]);
 };
 
@@ -184,6 +213,14 @@ export const distintivoDoMesAtual = (hoje = new Date()) => DISTINTIVOS_ANO[hoje.
 export const DISTINTIVOS_CONQUISTADOS_DEMO: DistintivoConquistado[] = DISTINTIVOS_ANO.slice(5, 9).map(
   ({ mes, animal, status, emoji }) => ({ mes, animal, status, emoji }),
 );
+
+// Como todo usuário começa no simulador, antes de simular o Temporizador
+export const SITUACAO_LIGA_INICIAL: SituacaoLiga = {
+  divisao: DIVISAO_DEMO,
+  pontosSemana: PONTOS_SEMANA_DEMO,
+  semana: 0,
+  distintivos: DISTINTIVOS_CONQUISTADOS_DEMO,
+};
 
 // ===== Notificações =====
 
