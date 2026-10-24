@@ -2,10 +2,8 @@ import { Fragment } from 'react';
 import type { Zona } from '../../types/types';
 import { useSimulador } from '../../hooks/useSimulador';
 import {
-  DIVISAO_DEMO,
   DIVISOES,
   EMOJI_DIVISAO,
-  PONTOS_SEMANA_DEMO,
   ZONA_TAMANHO,
   diasParaFimDaSemana,
   participantesLiga,
@@ -21,12 +19,13 @@ const coresZona: Record<Zona, string> = {
 
 // Liga semanal (demonstração): ~15 participantes do mesmo nível; os 3 primeiros sobem e os 3 últimos descem
 export default function LigaSemanal() {
-  const { usuario } = useSimulador();
+const { usuario, divisao, pontosSemana, semanaLiga } = useSimulador();
 
   if (!usuario) return null;
 
-  const lista = participantesLiga(usuario.username, PONTOS_SEMANA_DEMO);
-  const nivel = DIVISOES.indexOf(DIVISAO_DEMO);
+  // Divisão, pontos e grupo mudam quando o fechamento é simulado nos Parâmetros de pontuação
+  const lista = participantesLiga(usuario.username, pontosSemana, divisao, semanaLiga);
+  const nivel = DIVISOES.indexOf(divisao);
   const dias = diasParaFimDaSemana();
 
   return (
@@ -34,7 +33,7 @@ export default function LigaSemanal() {
       <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
         <div className="flex items-center justify-between gap-2">
           <p className="text-sm font-bold">
-            {EMOJI_DIVISAO[DIVISAO_DEMO]} Liga {DIVISAO_DEMO}
+            {EMOJI_DIVISAO[divisao]} Liga {divisao}
           </p>
           <span className="shrink-0 rounded-full bg-slate-100 px-3 py-1 text-[11px] font-bold text-slate-600">
             {dias === 0 ? 'Termina hoje' : `Termina em ${dias} ${dias === 1 ? 'dia' : 'dias'}`}
@@ -66,7 +65,7 @@ export default function LigaSemanal() {
 
       <p className="rounded-xl bg-amber-50 px-3 py-2 text-[11px] text-amber-700">
         Demonstração: a API não guarda a data das postagens, então os pontos da semana e os outros participantes são
-        fixos.
+        simulados. O fechamento da liga pode ser simulado nos Parâmetros de pontuação.
       </p>
 
       <ol className="space-y-2">
@@ -85,7 +84,7 @@ export default function LigaSemanal() {
             <LinhaRanking
               posicao={i + 1}
               participante={p}
-              cor={coresZona[zonaDaPosicao(i, lista.length, DIVISAO_DEMO)]}
+              cor={coresZona[zonaDaPosicao(i, lista.length, divisao)]}
             />
           </Fragment>
         ))}
