@@ -27,8 +27,8 @@ const abasDireita: ItemAba[] = [
 const telasDeEntrada: TelaId[] = ['login', 'cadastro'];
 
 export default function AppSoulUp({ children }: AppSoulUpProps) {
-  const { telaAtual, podeVoltar, irPara, voltar } = useSimulador();
-    const naEntrada = telasDeEntrada.includes(telaAtual);
+  const { telaAtual, podeVoltar, irPara, voltar, naoLidas } = useSimulador();
+  const naEntrada = telasDeEntrada.includes(telaAtual);
 
   const renderAba = (aba: ItemAba) => (
     <button
@@ -75,10 +75,15 @@ export default function AppSoulUp({ children }: AppSoulUpProps) {
           <button
             type="button"
             onClick={() => irPara('notificacoes')}
-            aria-label="Notificações"
-            className="grid h-9 w-9 place-items-center rounded-full border border-slate-200 cursor-pointer"
+            aria-label={naoLidas > 0 ? `Notificações, ${naoLidas} não lidas` : 'Notificações'}
+            className="relative grid h-9 w-9 place-items-center rounded-full border border-slate-200 cursor-pointer"
           >
             <FiBell size={16} />
+            {naoLidas > 0 && (
+              <span className="absolute -right-1 -top-1 grid min-w-5 place-items-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white">
+                {naoLidas}
+              </span>
+            )}
           </button>
         )}
       </header>
@@ -90,7 +95,7 @@ export default function AppSoulUp({ children }: AppSoulUpProps) {
 
       {/* Barra inferior */}
       {!naEntrada && (
-        <nav className="border-t border-slate-200 bg-white px-3 pt-2 pb-4">
+      <nav className="border-t border-slate-200 bg-white px-3 pt-2 pb-4">
         <div className="grid grid-cols-5 items-end">
           {abasEsquerda.map(renderAba)}
           <div className="flex justify-center">

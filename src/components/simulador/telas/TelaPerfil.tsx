@@ -1,7 +1,8 @@
-import { FiSettings } from 'react-icons/fi';
+import { FiChevronRight, FiSettings } from 'react-icons/fi';
 import type { TipoPerfil } from '../../../types/types';
 import { useSimulador } from '../../../hooks/useSimulador';
 import { buscarCategoriaPorPontos } from '../../../data/categorias';
+import { distintivoDoMesAtual } from '../../../data/liga';
 import { formatarPontos } from '../../../utils/formatadores';
 import PostagemCard from '../PostagemCard';
 
@@ -12,7 +13,7 @@ const nomesPerfil: Record<TipoPerfil, string> = {
 };
 
 export default function TelaPerfil() {
-  const { usuario, postagens, comunidades, complementos, irPara } = useSimulador();
+  const { usuario, postagens, comunidades, complementos, irPara, abrirComunidade } = useSimulador();
 
   if (!usuario) return null;
 
@@ -23,13 +24,15 @@ export default function TelaPerfil() {
     .sort((a, b) => b.id - a.id);
   const aprovadas = minhas.filter((p) => p.stValidacao === 'APROVADO');
   const pendentes = minhas.filter((p) => p.stValidacao === 'PENDENTE');
-  const criadas = comunidades.filter((c) => c.idCriador === usuario.id);
+  const criadas = comunidades.filter((c) => c.idUsuarioCriador === usuario.id);
 
   // CO₂ evitado = soma do fator de cada ação aprovada
   const co2Evitado = aprovadas.reduce(
     (total, p) => total + (buscarCategoriaPorPontos(p.ptGerado)?.co2Kg ?? 0),
     0,
   );
+
+  const distintivo = distintivoDoMesAtual(); // demonstração: distintivo em disputa no mês
 
   const estatisticas = [
     { label: 'Publicações', valor: String(minhas.length) },
@@ -63,7 +66,19 @@ export default function TelaPerfil() {
 
         {criadas.length > 0 && (
           <p className="mt-2 text-[11px] text-slate-500">
-            Criadora de: <strong>{criadas.map((c) => c.nmComunidade).join(', ')}</strong>
+            Comunidades criadas:{' '}
+            {criadas.map((c, i) => (
+              <span key={c.id}>
+                {i > 0 && ', '}
+                <button
+                  type="button"
+                  onClick={() => abrirComunidade(c.id)}
+                  className="font-semibold text-[#4F46E5] cursor-pointer"
+                >
+                  {c.nmComunidade}
+                </button>
+              </span>
+            ))}
           </p>
         )}
 
@@ -89,26 +104,23 @@ export default function TelaPerfil() {
         </div>
 
         <p className="mt-3 rounded-xl bg-slate-100 px-3 py-2 text-xs text-slate-500">
-          {formatarPontos(co2Evitado)} kg de CO₂ evitados · {pendentes.length} ação(ões) aguardando validação
+        {formatarPontos(co2Evitado)} kg de CO₂ evitados · distintivo {distintivo.animal} {distintivo.emoji}
         </p>
       </section>
       
-      <div className="grid grid-cols-2 gap-2">
-        <button
-          type="button"
-          onClick={() => irPara('atividades')}
-          className="rounded-full border border-slate-200 bg-white py-2.5 text-sm font-semibold cursor-pointer"
-        >
-          Minhas atividades
-        </button>
-        <button
-          type="button"
-          onClick={() => irPara('pontos')}
-          className="rounded-full border border-slate-200 bg-white py-2.5 text-sm font-semibold cursor-pointer"
-        >
-          Minha pontuação
-        </button>
-      </div>
+       <button
+        type="button"
+        onClick={() => irPara('atividades')}
+        className="flex w-full items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-4 text-left shadow-sm cursor-pointer"
+      >
+        <span>
+          <span className="block text-sm font-bold">Atividades registradas</span>
+          <span className="mt-1 block text-xs text-slate-500">
+            {aprovadas.length} aprovada(s) · {pendentes.length} aguardando validação
+          </span>
+        </span>
+        <FiChevronRight className="shrink-0 text-slate-400" />
+      </button>
 
       <h2 className="pt-1 text-sm font-bold uppercase tracking-wider text-slate-500">Minhas publicações</h2>
       <div className="space-y-3">
@@ -118,7 +130,7 @@ export default function TelaPerfil() {
 
         {aprovadas.length === 0 && (
           <p className="rounded-2xl bg-slate-100 p-6 text-center text-sm text-slate-500">
-            Nenhuma publicação validada ainda.
+              Nenhuma publicação validada ainda. Suas atividades em análise ficam em “Atividades registradas”.
           </p>
         )}
       </div>

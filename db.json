@@ -62,40 +62,16 @@
       "tipoPerfil": "COMUM"
     },
     {
-      "nmCompleto": "Ana Carolina",
-      "cpf": "12356789100",
-      "email": "abroba@gmail.com",
-      "username": "anabau",
-      "senha": "Abroba123",
-      "dtNascimento": "1999-09-02",
-      "sdPonto": 0,
+      "id": 6,
+      "nmCompleto": "Helena Prado",
+      "cpf": "66677788899",
+      "email": "helena@soulup.io",
+      "username": "helenap",
+      "senha": "soulup123",
+      "dtNascimento": "1985-02-08",
+      "sdPonto": 401.7,
       "nvUsuario": 1,
-      "tipoPerfil": "COMUM",
-      "id": 6
-    },
-    {
-      "nmCompleto": "Ana Abroba",
-      "cpf": "01234567891",
-      "email": "abroba@abroba.com",
-      "username": "abroba",
-      "senha": "Abroba123",
-      "dtNascimento": "1999-09-02",
-      "sdPonto": 0,
-      "nvUsuario": 1,
-      "tipoPerfil": "CRIADOR",
-      "id": 7
-    },
-    {
-      "nmCompleto": "Ana Abroba",
-      "cpf": "01234567890",
-      "email": "abroba1@gmail.com",
-      "username": "abroba1",
-      "senha": "Abroba123",
-      "dtNascimento": "1999-09-02",
-      "sdPonto": 0,
-      "nvUsuario": 1,
-      "tipoPerfil": "COMUM",
-      "id": 8
+      "tipoPerfil": "MODERADOR"
     }
   ],
   "comunidades": [
@@ -104,16 +80,18 @@
       "nmComunidade": "Ciclo Zero Resíduo",
       "descricao": "Pessoas reduzindo lixo doméstico com compostagem e reuso criativo.",
       "dtCriacao": "2026-03-10",
-      "idCriador": 1,
-      "idRanking": null
+      "idCriador": 2,
+      "idRanking": null,
+      "idUsuarioCriador": 1
     },
     {
       "id": 2,
       "nmComunidade": "Pedala Sampa",
       "descricao": "Trocar o carro pela bike nos deslocamentos do dia a dia.",
       "dtCriacao": "2026-04-02",
-      "idCriador": 2,
-      "idRanking": null
+      "idCriador": 1,
+      "idRanking": null,
+      "idUsuarioCriador": 2
     },
     {
       "id": 3,
@@ -121,7 +99,8 @@
       "descricao": "Plantio, recuperação de nascentes e mutirões de limpeza em áreas verdes.",
       "dtCriacao": "2026-04-21",
       "idCriador": 3,
-      "idRanking": null
+      "idRanking": null,
+      "idUsuarioCriador": 3
     },
     {
       "id": 4,
@@ -129,15 +108,35 @@
       "descricao": "Metas semanais de economia de água em casa e no trabalho.",
       "dtCriacao": "2026-06-08",
       "idCriador": 3,
-      "idRanking": null
+      "idRanking": null,
+      "idUsuarioCriador": 3
     },
     {
       "id": 5,
       "nmComunidade": "SOS Mata Atlântica",
       "descricao": "Restauração da Mata Atlântica, plantio de nativas e monitoramento de rios.",
       "dtCriacao": "2026-07-15",
-      "idCriador": 2,
-      "idRanking": null
+      "idCriador": 1,
+      "idRanking": null,
+      "idUsuarioCriador": 2
+    },
+    {
+      "id": 6,
+      "nmComunidade": "Greenpeace Brasil",
+      "descricao": "Mobilização por clima, oceanos e florestas, com ações individuais e coletivas.",
+      "dtCriacao": "2026-09-01",
+      "idCriador": 1,
+      "idRanking": null,
+      "idUsuarioCriador": 2
+    },
+    {
+      "id": 7,
+      "nmComunidade": "WWF-Brasil",
+      "descricao": "Conservação da fauna, da água e do clima com hábitos do dia a dia.",
+      "dtCriacao": "2026-09-01",
+      "idCriador": 1,
+      "idRanking": null,
+      "idUsuarioCriador": 2
     }
   ],
   "membros": [
@@ -195,6 +194,16 @@
       "id": 11,
       "idUsuario": 5,
       "idComunidade": 1
+    },
+    {
+      "id": 12,
+      "idUsuario": 2,
+      "idComunidade": 6
+    },
+    {
+      "id": 13,
+      "idUsuario": 2,
+      "idComunidade": 7
     }
   ],
   "postagens": [
@@ -269,16 +278,71 @@
       "ptGerado": 6.6,
       "idUsuario": 5,
       "idComunidade": 4
+    },
+    {
+      "id": 9,
+      "ctTexto": "Troquei todas as lâmpadas de casa por LED e instalei temporizador no chuveiro.",
+      "ctUrl": "https://fotos.soulup.io/lampadas-led.jpg",
+      "stValidacao": "PENDENTE",
+      "ptGerado": 6.6,
+      "idUsuario": 5,
+      "idComunidade": 1
+    },
+    {
+      "id": 10,
+      "ctTexto": "Participei do mutirão de limpeza da nascente do Córrego Verde no sábado.",
+      "ctUrl": "https://fotos.soulup.io/mutirao-corrego-verde.jpg",
+      "stValidacao": "PENDENTE",
+      "ptGerado": 10.6,
+      "idUsuario": 4,
+      "idComunidade": 5
+    },
+    {
+      "id": 11,
+      "ctTexto": "Separei toda a reciclagem de casa durante o mês e levei à cooperativa do bairro.",
+      "ctUrl": "https://fotos.soulup.io/reciclagem-cooperativa.jpg",
+      "stValidacao": "PENDENTE",
+      "ptGerado": 1.6,
+      "idUsuario": 4,
+      "idComunidade": 3
+    },
+    {
+      "id": 12,
+      "ctTexto": "Levei sacolas retornáveis para as compras da semana inteira.",
+      "ctUrl": "https://fotos.soulup.io/sacolas-retornaveis.jpg",
+      "stValidacao": "PENDENTE",
+      "ptGerado": 1.6,
+      "idUsuario": 2,
+      "idComunidade": 2
+    },
+    {
+      "id": 13,
+      "ctTexto": "Organizei a coleta de 40 pilhas usadas no prédio e levei ao ponto de descarte certificado.",
+      "ctUrl": "https://fotos.soulup.io/coleta-pilhas.jpg",
+      "stValidacao": "REJEITADO",
+      "ptGerado": 10.6,
+      "idUsuario": 5,
+      "idComunidade": 1
     }
   ],
-    "moderacoes": [
+  "moderacoes": [
     { "id": 1, "decisao": "A", "justificativa": "Ação comprovada com fotos e registro diário.", "bnModerador": 0.66, "idModerador": 1, "idPostagem": 1 },
     { "id": 2, "decisao": "R", "justificativa": "O registro não traz evidência suficiente da atividade realizada.", "bnModerador": 0.16, "idModerador": 1, "idPostagem": 2 },
-    { "id": 3, "decisao": "A", "justificativa": "Ação de alto impacto comprovada com fotos e lista de presença.", "bnModerador": 1.06, "idModerador": 1, "idPostagem": 3 },
+    { "id": 3, "decisao": "A", "justificativa": "Ação de alto impacto comprovada com fotos e lista de presença.", "bnModerador": 1.06, "idModerador": 2, "idPostagem": 3 },
     { "id": 4, "decisao": "A", "justificativa": "Fotos das mudas e do mutirão.", "bnModerador": 1.06, "idModerador": 1, "idPostagem": 4 },
     { "id": 5, "decisao": "A", "justificativa": "Registro consistente com o histórico da comunidade.", "bnModerador": 0.66, "idModerador": 1, "idPostagem": 5 },
     { "id": 6, "decisao": "A", "justificativa": "Evidência consistente.", "bnModerador": 0.66, "idModerador": 1, "idPostagem": 6 },
-    { "id": 7, "decisao": "A", "justificativa": "Comprovação com fotos da instalação e conta de água.", "bnModerador": 0.66, "idModerador": 1, "idPostagem": 8 }
+    { "id": 7, "decisao": "A", "justificativa": "Comprovação com fotos da instalação e conta de água.", "bnModerador": 0.66, "idModerador": 2, "idPostagem": 8 },
+    { "id": 8, "decisao": "R", "justificativa": "Faltou comprovação do ponto de descarte utilizado.", "bnModerador": 1.06, "idModerador": 1, "idPostagem": 13 }
+  ],
+  "moderadores": [
+    { "id": 1, "nvModerador": 1, "rtModerador": "INICIANTE", "dtAdesao": "2026-04-01", "idUsuario": 3 },
+    { "id": 2, "nvModerador": 1, "rtModerador": "INICIANTE", "dtAdesao": "2026-02-20", "idUsuario": 6 }
+  ],
+  "criadores": [
+    { "id": 1, "nvCriador": 1, "rtCriador": "INICIANTE", "dtAdesao": "2026-02-15", "idUsuario": 2 },
+    { "id": 2, "nvCriador": 1, "rtCriador": "INICIANTE", "dtAdesao": "2026-03-05", "idUsuario": 1 },
+    { "id": 3, "nvCriador": 1, "rtCriador": "INICIANTE", "dtAdesao": "2026-04-15", "idUsuario": 3 }
   ],
   "$schema": "./node_modules/json-server/schema.json"
 }

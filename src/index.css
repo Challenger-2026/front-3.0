@@ -19,7 +19,9 @@
 }
 
 .animate-fade-in {
-  animation: fadeIn 0.3s ease-out forwards;
+  /* sem forwards: no fim a animação sai e o transform não fica preso,
+     senão o position: fixed (painel de requisições) passa a contar a partir do <main> */
+  animation: fadeIn 0.3s ease-out;
 }
 
 .video-reveal {

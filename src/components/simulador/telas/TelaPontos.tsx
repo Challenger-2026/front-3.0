@@ -9,9 +9,10 @@ import {
 } from '../../../data/categorias';
 import { FAIXAS_META, pontosSequencia } from '../../../data/metas';
 import { formatarPontos } from '../../../utils/formatadores';
+import { FONTE_DISTINTIVOS } from '../../../data/liga';
 
 export default function TelaPontos() {
-  const { usuario, postagens, irPara } = useSimulador();
+  const { usuario, postagens, saldoDisponivel, irPara, distintivosConquistados } = useSimulador();
 
   // Demonstração do teto: quantos pontos o usuário "já ganhou hoje"
   const [ganhosHoje, setGanhosHoje] = useState(0);
@@ -36,7 +37,7 @@ export default function TelaPontos() {
       {/* Saldo */}
       <section className="rounded-2xl bg-gradient-to-br from-[#4F46E5] to-[#8B3CF0] p-5 text-white shadow-sm">
         <p className="text-[10px] uppercase tracking-wider text-white/70">Saldo</p>
-        <p className="text-3xl font-extrabold">{formatarPontos(usuario.sdPonto)} pts</p>
+        <p className="text-3xl font-extrabold">{formatarPontos(saldoDisponivel)} pts</p>
         <div className="mt-3 grid grid-cols-2 gap-2 text-center">
           <div className="rounded-xl bg-white/15 py-2">
             <p className="text-sm font-extrabold">{formatarPontos(co2Evitado)} kg</p>
@@ -126,6 +127,28 @@ export default function TelaPontos() {
         </p>
       </section>
 
+      {/* Distintivos da fauna: demonstração */}
+      <section className="space-y-3">
+        <h2 className="text-sm font-bold uppercase tracking-wider text-slate-500">Distintivos da fauna</h2>
+        <div className="grid grid-cols-3 gap-3">
+          {distintivosConquistados.map((d) => (
+            <div key={d.mes} className="rounded-3xl border border-slate-200 bg-slate-100 p-3 text-center">
+              <span className="mx-auto grid h-11 w-11 place-items-center rounded-full bg-[#4F46E5]/10 text-xl">
+                {d.emoji}
+              </span>
+              <p className="mt-2 text-[11px] font-bold">{d.animal}</p>
+              <p className="text-[10px] text-slate-500">{d.mes}</p>
+              <p className="text-[10px] font-semibold">{d.status}</p>
+            </div>
+          ))}
+        </div>
+        <p className="text-[10px] text-slate-500">Fonte do status: {FONTE_DISTINTIVOS}</p>
+        <p className="rounded-xl bg-amber-50 px-3 py-2 text-[11px] text-amber-700">
+          Demonstração: a API não tem distintivos. Os de junho a setembro vêm do protótipo; o do mês entra ao simular a
+          entrega nos Parâmetros de pontuação.
+        </p>
+      </section>
+
       {/* Extrato */}
       <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
         <h2 className="text-sm font-bold">Extrato</h2>
@@ -163,7 +186,7 @@ export default function TelaPontos() {
         </button>
         <button
           type="button"
-          onClick={() => irPara('carteira')}
+          onClick={() => irPara('beneficios')}
           className="w-full rounded-full bg-[#4F46E5] py-3 text-sm font-bold text-white cursor-pointer"
         >
           Trocar pontos por benefícios

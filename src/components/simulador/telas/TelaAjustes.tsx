@@ -15,19 +15,28 @@ type OpcaoPerfil = {
 const opcoes: OpcaoPerfil[] = [
   { perfil: 'COMUM', titulo: 'Usuário comum', texto: 'Registrar ações, pontuar e resgatar benefícios.', icone: <FiCompass size={20} /> },
   { perfil: 'CRIADOR', titulo: 'Criador', texto: 'Cria e administra comunidades. Não modera a própria comunidade.', icone: <FiStar size={20} /> },
-  { perfil: 'MODERADOR', titulo: 'Moderador', texto: 'Avalia às cegas a fila global de postagens da Soul Up.', icone: <FiShield size={20} /> },
+  { perfil: 'MODERADOR', titulo: 'Moderador', texto: 'Avalia às cegas a fila global de postagens da Soul Up. Requer candidatura.', icone: <FiShield size={20} /> },
 ];
 
 export default function TelaAjustes() {
-  const { usuario, trocarPerfil, irPara, reiniciar } = useSimulador();
+  const { usuario, trocarPerfil, irPara, reiniciar, comunidades, missoes } = useSimulador();
   const [trocando, setTrocando] = useState<TipoPerfil | null>(null);
   const [erro, setErro] = useState('');
   const [aviso, setAviso] = useState('');
 
   if (!usuario) return null;
 
+  // Dados de criador: comunidades dele (pelo idUsuarioCriador) e missões ativas delas
+  const criadas = comunidades.filter((c) => c.idUsuarioCriador === usuario.id);
+  const missoesAtivas = missoes.filter((m) => !m.encerrada && criadas.some((c) => c.id === m.idComunidade)).length;
+
   const escolher = async (perfil: TipoPerfil) => {
     if (perfil === usuario.tipoPerfil) return;
+    // Moderador não troca direto: passa pela candidatura (confidencialidade, requisitos e questionário)
+    if (perfil === 'MODERADOR') {
+      irPara('candidatura');
+      return;
+    }
     setErro('');
     setAviso('');
     setTrocando(perfil);
@@ -91,6 +100,23 @@ export default function TelaAjustes() {
         )}
       </section>
 
+      {usuario.tipoPerfil === 'CRIADOR' && (
+        <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+          <p className="text-sm font-semibold">Dados de criador</p>
+          <div className="mt-2 grid grid-cols-2 gap-2 text-center">
+            {[
+              { label: 'Comunidades criadas', valor: criadas.length },
+              { label: 'Missões ativas', valor: missoesAtivas },
+            ].map((item) => (
+              <div key={item.label} className="rounded-xl bg-slate-100 py-2">
+                <p className="text-[10px] uppercase tracking-wider text-slate-500">{item.label}</p>
+                <p className="text-sm font-bold">{item.valor}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
       <section className="space-y-2">
         <h2 className="text-xs font-bold uppercase tracking-wider text-slate-500">Conta e app</h2>
 
@@ -110,6 +136,50 @@ export default function TelaAjustes() {
           Interesses e sugestões para você
           <FiChevronRight className="text-slate-400" />
         </button>
+        <button
+          type="button"
+          onClick={() => irPara('metas')}
+          className="flex w-full items-center justify-between rounded-2xl border border-slate-200 bg-white p-3 text-left text-sm font-semibold cursor-pointer"
+        >
+          Meta de atividades
+          <FiChevronRight className="text-slate-400" />
+        </button>
+        <button
+          type="button"
+          onClick={() => irPara('parametros')}
+          className="flex w-full items-center justify-between rounded-2xl border border-slate-200 bg-white p-3 text-left text-sm font-semibold cursor-pointer"
+        >
+          Parâmetros de pontuação
+          <FiChevronRight className="text-slate-400" />
+        </button>
+        <button
+          type="button"
+          onClick={() => irPara('privacidade')}
+          className="flex w-full items-center justify-between rounded-2xl border border-slate-200 bg-white p-3 text-left text-sm font-semibold cursor-pointer"
+        >
+          Privacidade e segurança dos dados
+          <FiChevronRight className="text-slate-400" />
+        </button>
+        {usuario.tipoPerfil === 'CRIADOR' && (
+          <button
+            type="button"
+            onClick={() => irPara('criar-comunidade')}
+            className="flex w-full items-center justify-between rounded-2xl border border-slate-200 bg-white p-3 text-left text-sm font-semibold cursor-pointer"
+          >
+            Criar minha comunidade
+            <FiChevronRight className="text-slate-400" />
+          </button>
+        )}
+        {usuario.tipoPerfil === 'MODERADOR' && (
+          <button
+            type="button"
+            onClick={() => irPara('moderacao')}
+            className="flex w-full items-center justify-between rounded-2xl border border-slate-200 bg-white p-3 text-left text-sm font-semibold cursor-pointer"
+          >
+            Fila de moderação
+            <FiChevronRight className="text-slate-400" />
+          </button>
+        )}
         <button
           type="button"
           onClick={reiniciar}

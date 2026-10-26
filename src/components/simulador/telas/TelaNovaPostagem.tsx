@@ -20,9 +20,12 @@ const classeOpcao = (ativo: boolean) =>
   }`;
 
 export default function TelaNovaPostagem() {
-  const { usuario, minhasComunidades, publicarPostagem, abrirPostagem, irPara, trocarPara } = useSimulador();
+  const { usuario, minhasComunidades, publicarPostagem, abrirPostagem, irPara, trocarPara, sugestao } = useSimulador();
   const [erroApi, setErroApi] = useState('');
   const [criada, setCriada] = useState<Postagem | null>(null);
+
+  // Veio de "Registrar ação desta missão": comunidade, impacto e texto já preenchidos
+  const missao = sugestao?.tela === 'nova-postagem' ? sugestao : null;
 
   const {
     register,
@@ -31,10 +34,10 @@ export default function TelaNovaPostagem() {
     formState: { errors, isSubmitting },
   } = useForm<FormNovaPostagem>({
     defaultValues: {
-      idComunidade: minhasComunidades[0]?.id ?? 0,
-      ctTexto: '',
+      idComunidade: missao?.idComunidade ?? minhasComunidades[0]?.id ?? 0,
+      ctTexto: missao ? `Missão: ${missao.missao} — ` : '',
       ctUrl: '',
-      impacto: 'ROTINA',
+      impacto: missao?.impacto ?? 'ROTINA',
     },
   });
 
@@ -125,6 +128,13 @@ export default function TelaNovaPostagem() {
         <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#4F46E5]">Nova ação</p>
         <h1 className="text-xl font-bold leading-snug">O que você fez hoje pelo planeta?</h1>
       </div>
+
+      {missao && (
+        <p className="rounded-2xl border border-[#4F46E5]/25 bg-[#4F46E5]/5 p-3 text-xs">
+          Missão: <strong>{missao.missao}</strong>. É uma sugestão do Criador: a ação segue a pontuação normal da
+          categoria.
+        </p>
+      )}
 
       <form onSubmit={handleSubmit(enviar)} noValidate className="space-y-3">
         <div>

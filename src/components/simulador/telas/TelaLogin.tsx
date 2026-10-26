@@ -30,7 +30,7 @@ export default function TelaLogin() {
   return (
     <>
       <div className="pt-2">
-        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#4F46E5]">Bem-vinda de volta</p>
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#4F46E5]">Que bom ter você de volta</p>
         <h1 className="text-xl font-bold leading-snug">Cada atitude sua conta muito por aqui.</h1>
       </div>
 

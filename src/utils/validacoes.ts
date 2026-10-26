@@ -47,3 +47,40 @@ export const regrasUrlPostagem = {
     return true;
   },
 };
+
+// Regras da moderação: justificativa de rejeição, parecer das denúncias e da revisão
+export const regrasParecer = {
+  validate: (valor: string) => valor.trim().length >= 10 || 'Escreva pelo menos 10 caracteres.',
+};
+
+// Motivo da contestação
+export const regrasMotivoContestacao = {
+  validate: (valor: string) => valor.trim().length >= 15 || 'Descreva sua contestação com pelo menos 15 caracteres.',
+};
+
+
+// Regras da comunidade (criar e editar): nome igual ao @NotBlank/@Size do DTOComunidadeRequest;
+// a descrição pede no mínimo 20 caracteres, como no protótipo (o Java só exige que não seja vazia)
+export const regrasNomeComunidade = {
+  validate: (valor: string) => valor.trim().length > 0 || 'O nome da comunidade é obrigatório',
+  maxLength: { value: 150, message: 'O nome pode ter no máximo 150 caracteres' },
+};
+
+export const regrasDescricaoComunidade = {
+  validate: (valor: string) => {
+    const texto = valor.trim();
+    if (!texto) return 'A descrição é obrigatória';
+    if (texto.length < 20) return 'Descreva o propósito com pelo menos 20 caracteres';
+    return true;
+  },
+};
+
+// Missão (demonstração): título obrigatório e descrição com no mínimo 10 caracteres
+export const regrasTituloMissao = {
+  validate: (valor: string) => valor.trim().length > 0 || 'Dê um título para a missão.',
+};
+
+export const regrasDescricaoMissao = {
+  validate: (valor: string) =>
+    valor.trim().length >= 10 || 'Descreva o que fazer e como registrar (mínimo de 10 caracteres).',
+};

@@ -9,6 +9,7 @@ import {
   proximaMetrica,
   fimDaMeta,
   diasRestantes,
+  concluidasDaMeta,
 } from '../../../data/metas';
 
 // Botão de opção: preenchido quando selecionado
@@ -26,11 +27,24 @@ const classeBotaoPrincipal = 'w-full rounded-full bg-[#4F46E5] py-3 text-sm font
 const formatarDia = (data: Date) => data.toLocaleDateString('pt-BR');
 
 export default function TelaMetas() {
-  const { usuario, postagens, metas, criarMeta, aumentarMeta, subirMetrica, recusarUpgrade, encerrarMeta, irPara } =
-    useSimulador();
+  const {
+    usuario,
+    postagens,
+    metas,
+    criarMeta,
+    aumentarMeta,
+    subirMetrica,
+    recusarUpgrade,
+    encerrarMeta,
+    irPara,
+    sugestao,
+  } = useSimulador();
+
+  // Veio do "Para você": começa com o período sugerido pelo onboarding
+  const periodoSugerido = sugestao?.tela === 'metas' ? sugestao.periodoDias : null;
 
   // Escolhas da tela antes de começar a meta e do acréscimo de alvo
-  const [periodo, setPeriodo] = useState<PeriodoMeta>(15);
+  const [periodo, setPeriodo] = useState<PeriodoMeta>(periodoSugerido ?? 15);
   const [alvo, setAlvo] = useState(7);
   const [extra, setExtra] = useState(1);
 
@@ -107,10 +121,7 @@ export default function TelaMetas() {
   // ----- Meta em andamento -----
 
   // Só contam as postagens do usuário aprovadas depois do início da meta (id maior que o idBase)
-  const concluidas = postagens.filter(
-    (p) => p.idUsuario === usuario.id && p.stValidacao === 'APROVADO' && p.id > meta.idBase,
-  ).length;
-
+  const concluidas = concluidasDaMeta(meta, postagens, usuario.id);
   const concluiu = concluidas >= meta.alvo;
   const progresso = Math.min(100, Math.round((concluidas / meta.alvo) * 100));
   const restantes = diasRestantes(meta);

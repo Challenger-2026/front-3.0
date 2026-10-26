@@ -1,4 +1,4 @@
-import type { MetaAtividades, PeriodoMeta } from '../types/types';
+import type { MetaAtividades, PeriodoMeta, Postagem } from '../types/types';
 
 export const PERIODOS_META: PeriodoMeta[] = [7, 15, 30];
 
@@ -33,6 +33,10 @@ export const fimDaMeta = (meta: MetaAtividades) => {
 
 export const diasRestantes = (meta: MetaAtividades) =>
   Math.max(0, Math.ceil((fimDaMeta(meta).getTime() - Date.now()) / 86_400_000));
+
+// Atividades concluídas: postagens do usuário aprovadas depois do início da meta (id maior que o idBase)
+export const concluidasDaMeta = (meta: MetaAtividades, postagens: Postagem[], idUsuario: number) =>
+  postagens.filter((p) => p.idUsuario === idUsuario && p.stValidacao === 'APROVADO' && p.id > meta.idBase).length;
 
 // Data de hoje no formato do Java (AAAA-MM-DD), no fuso do navegador
 export const hojeIso = () => {

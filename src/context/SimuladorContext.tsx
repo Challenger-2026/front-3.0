@@ -16,16 +16,64 @@ import type {
   UsuarioCadastro,
   UsuarioAtualizacao,
   TipoPerfil,
+  PostagemFila,
+  ModeracaoCadastro,
+  StatusValidacao,
+  Denuncia,
+  MotivoDenuncia,
+  RevisaoDenuncia,
+  AcaoDenuncia,
+  Contestacao,
+  DecisaoRevisao,
+  ComunidadeEdicao,
+  ComplementoComunidade,
+  ComplementoNovaComunidade,
+  Missao,
+  MissaoCadastro,
+  Sugestao,
+  Notificacao,
+  NotificacaoBase,
+  Resgate,
+  SituacaoLiga,
 } from '../types/types';
 import { api } from '../services/api';
 import { complementosUsuario } from '../data/complementosUsuario';
 import { mensagemDoErro } from '../utils/erros';
 import { hojeIso, proximaMetrica } from '../data/metas';
 import { buscarCategoriaPorImpacto } from '../data/categorias';
+import {
+  BONUS_REPUTACAO,
+  PENALIDADE_REPUTACAO,
+  REPUTACAO_INICIAL,
+  buscarModeradorDemo,
+  contestacoesIniciais,
+  denunciasIniciais,
+  motivoImpedimentoRevisao,
+  reputacaoDe,
+  reputacoesIniciais,
+} from '../data/moderacao';
+import { complementoDe, complementosComunidadeIniciais, ehDono, missoesIniciais } from '../data/comunidades';
+import {
+  PONTOS_MES_DEMO,
+  SITUACAO_LIGA_INICIAL,
+  TOP_DISTINTIVO,
+  distintivoDoMesAtual,
+  faltamParaTop,
+  notificacoesDoUsuario,
+  participantesLiga,
+  participantesMes,
+  proximaDivisao,
+  zonaDaPosicao,
+} from '../data/liga';
+import { formatarPontos } from '../utils/formatadores';
+import { buscarBeneficio, gerarCodigoResgate, resgatesIniciais, totalResgatado } from '../data/beneficios';
 
 // Dados públicos do app, carregados ao abrir o simulador (antes do login)
 const buscarDados = () =>
   Promise.all([api.getUsuarios(), api.getComunidades(), api.getPostagens(), api.getModeracoes()]);
+
+// Próximo id das listas que ficam só no front (denúncias e contestações)
+const proximoId = (itens: { id: number }[]) => itens.reduce((maior, item) => Math.max(maior, item.id), 0) + 1;
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const SimuladorContext = createContext<SimuladorContextType | undefined>(undefined);
@@ -34,19 +82,31 @@ export const SimuladorProvider = ({ children }: { children: ReactNode }) => {
   // ----- Navegação entre telas -----
   const [historico, setHistorico] = useState<TelaId[]>(['login']);
 
+  // Sugestão deixada para a próxima tela (missão → nova postagem; Para você → metas)
+  const [sugestao, setSugestao] = useState<Sugestao | null>(null);
+
   const telaAtual = historico[historico.length - 1];
 
+  // A sugestão só vale na tela dela: ir para outra tela descarta
   const irPara = useCallback((tela: TelaId) => {
     setHistorico((anterior) => [...anterior, tela]);
+    setSugestao((atual) => (atual && atual.tela === tela ? atual : null));
   }, []);
 
   // Troca de tela sem deixar caminho de volta (ex.: depois do login)
   const trocarPara = useCallback((tela: TelaId) => {
     setHistorico([tela]);
+    setSugestao(null);
   }, []);
 
   const voltar = useCallback(() => {
     setHistorico((anterior) => (anterior.length > 1 ? anterior.slice(0, -1) : anterior));
+    setSugestao(null);
+  }, []);
+
+  const seguirSugestao = useCallback((nova: Sugestao) => {
+    setSugestao(nova);
+    setHistorico((anterior) => [...anterior, nova.tela]);
   }, []);
 
   // ----- Dados vindos da API -----
@@ -68,6 +128,18 @@ export const SimuladorProvider = ({ children }: { children: ReactNode }) => {
   // Postagem aberta na tela de feedback
   const [idPostagemAberta, setIdPostagemAberta] = useState<number | null>(null);
 
+  
+  // ----- Moderação -----
+  const [fila, setFila] = useState<PostagemFila[]>([]); // fila às cegas do moderador logado
+
+  // Demonstrações (a API não tem essas tabelas): valem só nesta sessão do simulador
+  const [impedidas, setImpedidas] = useState<number[]>([]);
+  const [reputacoes, setReputacoes] = useState<Record<number, number>>(reputacoesIniciais);
+  const [denuncias, setDenuncias] = useState<Denuncia[]>(denunciasIniciais);
+  const [revisoesDenuncia, setRevisoesDenuncia] = useState<RevisaoDenuncia[]>([]);
+  const [contestacoes, setContestacoes] = useState<Contestacao[]>(contestacoesIniciais);
+  const [idContestacaoAberta, setIdContestacaoAberta] = useState<number | null>(null);
+
   // Usado pelo botão "Tentar novamente"
   const carregarDados = useCallback(async () => {
     setLoading(true);
@@ -78,9 +150,6 @@ export const SimuladorProvider = ({ children }: { children: ReactNode }) => {
       setComunidades(dadosComunidades);
       setPostagens(dadosPostagens);
       setModeracoes(dadosModeracoes);
-      setUsuarios(dadosUsuarios);
-      setComunidades(dadosComunidades);
-      setPostagens(dadosPostagens);
     } catch (err) {
       setError(mensagemDoErro(err));
       console.error(err);
@@ -93,10 +162,11 @@ export const SimuladorProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [dadosUsuarios, dadosComunidades, dadosPostagens] = await buscarDados();
+        const [dadosUsuarios, dadosComunidades, dadosPostagens, dadosModeracoes] = await buscarDados();
         setUsuarios(dadosUsuarios);
         setComunidades(dadosComunidades);
         setPostagens(dadosPostagens);
+        setModeracoes(dadosModeracoes);
       } catch (err) {
         setError(mensagemDoErro(err));
         console.error(err);
@@ -161,6 +231,7 @@ export const SimuladorProvider = ({ children }: { children: ReactNode }) => {
     setUsuario(null);
     setMinhasComunidades([]);
     setHistorico(['login']);
+    setSugestao(null);
   }, []);
 
   const salvarComplemento = useCallback((idUsuario: number, complemento: ComplementoUsuario) => {
@@ -272,6 +343,467 @@ export const SimuladorProvider = ({ children }: { children: ReactNode }) => {
     alterarMeta(() => null);
   }, [alterarMeta]);
 
+  
+  // ----- Moderação às cegas (API) -----
+
+  // Sem try/catch: a tela trata o 403 (não é moderador) mostrando a candidatura
+  const carregarFila = useCallback(async () => {
+    if (!usuario) return;
+    setFila(await api.getFilaModeracao(usuario.id));
+  }, [usuario]);
+
+  const abrirAnalise = useCallback(
+    (idPostagem: number) => {
+      setIdPostagemAberta(idPostagem);
+      irPara('moderacao-analise');
+    },
+    [irPara],
+  );
+
+  // Sem try/catch: a tela mostra o erro (ex.: 409 "Esta postagem já foi moderada")
+  const moderar = useCallback(
+    async (dados: Omit<ModeracaoCadastro, 'idUsuario'>) => {
+      if (!usuario) throw new Error('Entre na sua conta para moderar');
+      const moderacao = await api.moderarPostagem({ ...dados, idUsuario: usuario.id });
+
+      const novoStatus: StatusValidacao = dados.decisao === 'A' ? 'APROVADO' : 'REJEITADO';
+      setModeracoes((anteriores) => [...anteriores, moderacao]);
+      setPostagens((anteriores) =>
+        anteriores.map((p) => (p.id === dados.idPostagem ? { ...p, stValidacao: novoStatus } : p)),
+      );
+      setFila((anteriores) => anteriores.filter((p) => p.id !== dados.idPostagem));
+
+      // Na aprovação o Java soma o ptGerado no sdPonto do autor: busca o saldo atualizado
+      const postagem = postagens.find((p) => p.id === dados.idPostagem);
+      if (dados.decisao === 'A' && postagem) {
+        const autor = await api.getUsuario(postagem.idUsuario);
+        setUsuarios((anteriores) => anteriores.map((u) => (u.id === autor.id ? autor : u)));
+      }
+      return moderacao;
+    },
+    [usuario, postagens],
+  );
+
+  // ----- Demonstrações da moderação (só no estado do front) -----
+
+  const declararImpedimento = useCallback((idPostagem: number) => {
+    setImpedidas((anteriores) => [...anteriores, idPostagem]);
+  }, []);
+
+  const denunciar = useCallback(
+    (idPostagem: number, motivo: MotivoDenuncia, detalhe: string) => {
+      if (!usuario) return;
+      setDenuncias((anteriores) => [
+        ...anteriores,
+        { id: proximoId(anteriores), idPostagem, idUsuario: usuario.id, motivo, detalhe },
+      ]);
+    },
+    [usuario],
+  );
+
+  const revisarDenuncias = useCallback(
+    (idPostagem: number, acao: AcaoDenuncia, parecer: string) => {
+      if (!usuario) return;
+      setRevisoesDenuncia((anteriores) => [...anteriores, { idPostagem, acao, parecer, idUsuario: usuario.id }]);
+    },
+    [usuario],
+  );
+
+  const abrirContestacao = useCallback(
+    (id: number) => {
+      setIdContestacaoAberta(id);
+      irPara('revisao');
+    },
+    [irPara],
+  );
+
+  // A contestação guarda quem rejeitou (idModerador da moderação) e a reputação dele naquele momento
+  const contestar = useCallback(
+    (idPostagem: number, motivo: string) => {
+      if (!usuario) return;
+      const moderacao = moderacoes.find((m) => m.idPostagem === idPostagem);
+      if (!moderacao) return;
+      const original = buscarModeradorDemo(moderacao.idModerador);
+      setContestacoes((anteriores) => [
+        ...anteriores,
+        {
+          id: proximoId(anteriores),
+          idPostagem,
+          idUsuario: usuario.id,
+          motivo,
+          abertaEm: hojeIso(),
+          status: 'EM_REVISAO',
+          idModeradorOriginal: moderacao.idModerador,
+          reputacaoOriginal: original ? reputacaoDe(original.idUsuario, reputacoes) : REPUTACAO_INICIAL,
+        },
+      ]);
+    },
+    [usuario, moderacoes, reputacoes],
+  );
+
+  // Mantida: bônus de reputação para o moderador original; revertida: penalidade
+  const revisarContestacao = useCallback(
+    (id: number, decisao: DecisaoRevisao, parecer: string) => {
+      if (!usuario) return;
+      const contestacao = contestacoes.find((c) => c.id === id);
+      if (!contestacao || contestacao.status !== 'EM_REVISAO') return;
+      if (motivoImpedimentoRevisao(usuario, contestacao, reputacoes)) return;
+
+      const delta = decisao === 'MANTIDA' ? BONUS_REPUTACAO : -PENALIDADE_REPUTACAO;
+      setContestacoes((anteriores) =>
+        anteriores.map((c) =>
+          c.id === id
+            ? {
+                ...c,
+                status: decisao,
+                idRevisor: usuario.id,
+                reputacaoRevisor: reputacaoDe(usuario.id, reputacoes),
+                parecer,
+                decididaEm: hojeIso(),
+                deltaReputacao: delta,
+              }
+            : c,
+        ),
+      );
+      const original = buscarModeradorDemo(contestacao.idModeradorOriginal);
+      if (original) {
+        setReputacoes((anteriores) => ({
+          ...anteriores,
+          [original.idUsuario]: reputacaoDe(original.idUsuario, anteriores) + delta,
+        }));
+      }
+    },
+    [usuario, contestacoes, reputacoes],
+  );
+
+  // ----- Comunidades -----
+  const [idComunidadeAberta, setIdComunidadeAberta] = useState<number | null>(null);
+  const [totalMembros, setTotalMembros] = useState<Record<number, number>>({});
+
+  // Demonstrações (a API não tem esses campos/tabelas): valem só nesta sessão do simulador
+  const [complementosComunidade, setComplementosComunidade] =
+    useState<Record<number, ComplementoComunidade>>(complementosComunidadeIniciais);
+  const [missoes, setMissoes] = useState<Missao[]>(missoesIniciais);
+
+  const abrirComunidade = useCallback(
+    (id: number) => {
+      setIdComunidadeAberta(id);
+      irPara('comunidade');
+    },
+    [irPara],
+  );
+
+  // GET /comunidades/{id}/membros/total só das comunidades que ainda não têm total (carrega uma vez e reaproveita)
+  const carregarTotaisMembros = useCallback(async () => {
+    const semTotal = comunidades.filter((c) => totalMembros[c.id] === undefined);
+    if (semTotal.length === 0) return;
+    const totais = await Promise.all(semTotal.map((c) => api.getTotalMembros(c.id)));
+    setTotalMembros((anteriores) => ({
+      ...anteriores,
+      ...Object.fromEntries(semTotal.map((c, i) => [c.id, totais[i]])),
+    }));
+  }, [comunidades, totalMembros]);
+
+  // GET /comunidades/{id}/membros/total só da comunidade aberta (detalhe)
+  const carregarTotalMembros = useCallback(async (id: number) => {
+    const total = await api.getTotalMembros(id);
+    setTotalMembros((anteriores) => ({ ...anteriores, [id]: total }));
+  }, []);
+
+  // Soma ou tira um membro do total já carregado (depois de entrar ou sair)
+  const alterarTotal = useCallback((id: number, diferenca: number) => {
+    setTotalMembros((anteriores) =>
+      anteriores[id] === undefined ? anteriores : { ...anteriores, [id]: anteriores[id] + diferenca },
+    );
+  }, []);
+
+  // Sem try/catch nas ações da API: a tela mostra o erro (ex.: 409 ao excluir com membros)
+  const criarComunidade = useCallback(
+    async (dados: ComunidadeEdicao, complemento: ComplementoNovaComunidade) => {
+      if (!usuario) throw new Error('Entre na sua conta para criar uma comunidade');
+      const nova = await api.cadastrarComunidade({ ...dados, idUsuario: usuario.id });
+      setComunidades((anteriores) => [...anteriores, nova]);
+      setMinhasComunidades((anteriores) => [...anteriores, nova]); // quem cria já é membro
+      setTotalMembros((anteriores) => ({ ...anteriores, [nova.id]: 1 }));
+      setComplementosComunidade((anteriores) => ({
+        ...anteriores,
+        [nova.id]: {
+          temas: [],
+          plano: complemento.plano,
+          verificada: false,
+          verificacaoPendente: Boolean(complemento.organizacao), // organização aguarda verificação
+          organizacao: complemento.organizacao,
+          regras: complemento.regras,
+        },
+      }));
+      return nova;
+    },
+    [usuario],
+  );
+
+  const editarComunidade = useCallback(
+    async (id: number, dados: ComunidadeEdicao, regras: string) => {
+      if (!usuario) return;
+      const alterada = await api.atualizarComunidade(id, { ...dados, idUsuario: usuario.id });
+      setComunidades((anteriores) => anteriores.map((c) => (c.id === id ? alterada : c)));
+      setMinhasComunidades((anteriores) => anteriores.map((c) => (c.id === id ? alterada : c)));
+      // as regras não existem na API: ficam no complemento (demonstração)
+      setComplementosComunidade((anteriores) => ({
+        ...anteriores,
+        [id]: { ...complementoDe(id, anteriores), regras: regras.trim() || undefined },
+      }));
+    },
+    [usuario],
+  );
+
+  const excluirComunidade = useCallback(
+    async (id: number) => {
+      if (!usuario) return;
+      await api.excluirComunidade(id, usuario.id);
+      setComunidades((anteriores) => anteriores.filter((c) => c.id !== id));
+      setMinhasComunidades((anteriores) => anteriores.filter((c) => c.id !== id));
+      setMissoes((anteriores) => anteriores.filter((m) => m.idComunidade !== id));
+    },
+    [usuario],
+  );
+
+  // Entrar e sair mudam o "Minhas comunidades", a Nova postagem e a fila do moderador
+  const entrarComunidade = useCallback(
+    async (id: number) => {
+      if (!usuario) return;
+      await api.entrarComunidade(id, usuario.id);
+      const comunidade = comunidades.find((c) => c.id === id);
+      if (comunidade) {
+        setMinhasComunidades((anteriores) => [...anteriores, comunidade].sort((a, b) => a.id - b.id));
+      }
+      alterarTotal(id, 1);
+    },
+    [usuario, comunidades, alterarTotal],
+  );
+
+  const sairComunidade = useCallback(
+    async (id: number) => {
+      if (!usuario) return;
+      await api.sairComunidade(id, usuario.id);
+      setMinhasComunidades((anteriores) => anteriores.filter((c) => c.id !== id));
+      alterarTotal(id, -1);
+    },
+    [usuario, alterarTotal],
+  );
+
+  // ----- Missões (demonstração): só o criador da comunidade cria, edita e encerra -----
+
+  const podeAdministrar = useCallback(
+    (idComunidade: number) => {
+      const comunidade = comunidades.find((c) => c.id === idComunidade);
+      return comunidade !== undefined && ehDono(comunidade, usuario);
+    },
+    [comunidades, usuario],
+  );
+
+  const criarMissao = useCallback(
+    (idComunidade: number, dados: MissaoCadastro) => {
+      if (!podeAdministrar(idComunidade)) return;
+      setMissoes((anteriores) => [
+        ...anteriores,
+        { ...dados, id: proximoId(anteriores), idComunidade, encerrada: false, criadaEm: hojeIso() },
+      ]);
+    },
+    [podeAdministrar],
+  );
+
+  const editarMissao = useCallback(
+    (id: number, dados: MissaoCadastro) => {
+      const missao = missoes.find((m) => m.id === id);
+      if (!missao || !podeAdministrar(missao.idComunidade)) return;
+      setMissoes((anteriores) => anteriores.map((m) => (m.id === id ? { ...m, ...dados } : m)));
+    },
+    [missoes, podeAdministrar],
+  );
+
+  const encerrarMissao = useCallback(
+    (id: number) => {
+      const missao = missoes.find((m) => m.id === id);
+      if (!missao || !podeAdministrar(missao.idComunidade)) return;
+      setMissoes((anteriores) => anteriores.map((m) => (m.id === id ? { ...m, encerrada: true } : m)));
+    },
+    [missoes, podeAdministrar],
+  );
+
+  // ----- Carteira (demonstração: a API não tem resgates nem rota que desconte pontos) -----
+
+  // Resgates por id de usuário (só no front)
+  const [resgatesPorUsuario, setResgatesPorUsuario] = useState<Record<number, Resgate[]>>(resgatesIniciais);
+
+  // Saldo disponível = sdPonto da API menos o que o usuário já resgatou
+  const resgates = usuario ? (resgatesPorUsuario[usuario.id] ?? []) : [];
+  const saldoDisponivel = usuario ? Math.max(0, Number((usuario.sdPonto - totalResgatado(resgates)).toFixed(2))) : 0;
+
+  const resgatar = useCallback(
+    (idBeneficio: number) => {
+      const beneficio = buscarBeneficio(idBeneficio);
+      if (!usuario || !beneficio) return null;
+      const doUsuario = resgatesPorUsuario[usuario.id] ?? [];
+      if (beneficio.custo > usuario.sdPonto - totalResgatado(doUsuario)) return null;
+      const novo: Resgate = {
+        id: proximoId(doUsuario),
+        codigo: gerarCodigoResgate(),
+        status: 'Processando',
+        idBeneficio,
+        custo: beneficio.custo,
+        data: hojeIso(),
+      };
+      setResgatesPorUsuario((anteriores) => ({
+        ...anteriores,
+        [usuario.id]: [novo, ...(anteriores[usuario.id] ?? [])],
+      }));
+      return novo;
+    },
+    [usuario, resgatesPorUsuario],
+  );
+
+  // ----- Privacidade (demonstração: a API não guarda consentimento nem pedido de exclusão) -----
+
+  // Quem escolheu sair do ranking Entre amigos, por id de usuário (só no front)
+  const [ocultosEntreAmigos, setOcultosEntreAmigos] = useState<Record<number, boolean>>({});
+  // Data do pedido de exclusão dos dados de gamificação, por id de usuário (só no front)
+  const [pedidosExclusao, setPedidosExclusao] = useState<Record<number, string>>({});
+
+  const ocultoEntreAmigos = usuario ? (ocultosEntreAmigos[usuario.id] ?? false) : false;
+  const pedidoExclusaoEm = usuario ? (pedidosExclusao[usuario.id] ?? null) : null;
+
+  const alternarOcultoEntreAmigos = useCallback(() => {
+    if (!usuario) return;
+    setOcultosEntreAmigos((anteriores) => ({ ...anteriores, [usuario.id]: !anteriores[usuario.id] }));
+  }, [usuario]);
+
+  const pedirExclusaoGamificacao = useCallback(() => {
+    if (!usuario) return;
+    setPedidosExclusao((anteriores) =>
+      anteriores[usuario.id] ? anteriores : { ...anteriores, [usuario.id]: hojeIso() },
+    );
+  }, [usuario]);
+
+  // ----- Temporizador (demonstração: a API não tem agendador) -----
+
+  // Divisão, pontos da semana, semana da liga e distintivos, por id de usuário (só no front)
+  const [situacoesLiga, setSituacoesLiga] = useState<Record<number, SituacaoLiga>>({});
+  // Notificações geradas pelas simulações, por id de usuário (só no front)
+  const [notificacoesSimuladas, setNotificacoesSimuladas] = useState<Record<number, NotificacaoBase[]>>({});
+
+  const situacaoLiga = usuario ? (situacoesLiga[usuario.id] ?? SITUACAO_LIGA_INICIAL) : SITUACAO_LIGA_INICIAL;
+
+  // Coloca a notificação no topo da lista do usuário logado
+  const notificar = useCallback(
+    (nova: NotificacaoBase) => {
+      if (!usuario) return;
+      setNotificacoesSimuladas((anteriores) => ({
+        ...anteriores,
+        [usuario.id]: [nova, ...(anteriores[usuario.id] ?? [])],
+      }));
+    },
+    [usuario],
+  );
+
+  // Fechamento da liga: os 3 primeiros sobem, os 3 últimos descem; a semana recomeça com outro grupo
+  const simularFechamentoLiga = useCallback(() => {
+    if (!usuario) return;
+    const { divisao, pontosSemana, semana } = situacaoLiga;
+    const lista = participantesLiga(usuario.username, pontosSemana, divisao, semana);
+    const posicao = lista.findIndex((p) => p.eu);
+    const zona = zonaDaPosicao(posicao, lista.length, divisao);
+    const nova = proximaDivisao(divisao, zona);
+
+    setSituacoesLiga((anteriores) => ({
+      ...anteriores,
+      [usuario.id]: { ...situacaoLiga, divisao: nova, pontosSemana: 0, semana: semana + 1 },
+    }));
+
+    let titulo = `Você continua na divisão ${divisao}`;
+    if (zona === 'subida') titulo = `Você subiu para a divisão ${nova}!`;
+    if (zona === 'descida') titulo = `Você desceu para a divisão ${nova}`;
+    notificar({
+      id: `sim-liga-${Date.now()}`,
+      tipo: 'liga',
+      titulo,
+      texto: `Fechamento da liga: você terminou em ${posicao + 1}º lugar na ${divisao}.`,
+      em: hojeIso(),
+      demonstracao: true,
+      tela: 'ranking',
+    });
+  }, [usuario, situacaoLiga, notificar]);
+
+  // Entrega do distintivo: quem está no top 10 da disputa mensal ganha o animal do mês
+  const simularEntregaDistintivo = useCallback(() => {
+    if (!usuario) return;
+    const faltam = faltamParaTop(participantesMes(usuario.username, PONTOS_MES_DEMO));
+    const { mes, animal, status, emoji } = distintivoDoMesAtual();
+
+    if (faltam > 0) {
+      notificar({
+        id: `sim-distintivo-${Date.now()}`,
+        tipo: 'distintivo',
+        titulo: `Não foi desta vez: ${animal}`,
+        texto: `Faltaram ${formatarPontos(faltam)} pts para entrar no top ${TOP_DISTINTIVO} do mês.`,
+        em: hojeIso(),
+        demonstracao: true,
+        tela: 'ranking',
+      });
+      return;
+    }
+
+    // O mesmo distintivo não entra duas vezes
+    if (!situacaoLiga.distintivos.some((d) => d.animal === animal)) {
+      setSituacoesLiga((anteriores) => ({
+        ...anteriores,
+        [usuario.id]: { ...situacaoLiga, distintivos: [...situacaoLiga.distintivos, { mes, animal, status, emoji }] },
+      }));
+    }
+    notificar({
+      id: `sim-distintivo-${Date.now()}`,
+      tipo: 'distintivo',
+      titulo: `Distintivo conquistado: ${animal} ${emoji}`,
+      texto: `Você terminou ${mes.toLowerCase()} no top ${TOP_DISTINTIVO} da disputa mensal.`,
+      em: hojeIso(),
+      demonstracao: true,
+      tela: 'pontos',
+    });
+  }, [usuario, situacaoLiga, notificar]);
+
+  // ----- Notificações -----
+
+  // Ids das notificações já lidas, por id de usuário (só no front)
+  const [lidas, setLidas] = useState<Record<number, string[]>>({});
+
+  // Primeiro as geradas pelo Temporizador; depois aprovadas e rejeitadas (API) e as outras demonstrações
+  const lidasDoUsuario = usuario ? (lidas[usuario.id] ?? []) : [];
+  const notificacoes: Notificacao[] = usuario
+    ? [...(notificacoesSimuladas[usuario.id] ?? []), ...notificacoesDoUsuario(postagens, usuario)].map((n) => ({
+        ...n,
+        lida: lidasDoUsuario.includes(n.id),
+      }))
+    : [];
+  const naoLidas = notificacoes.filter((n) => !n.lida).length;
+
+  const marcarLida = useCallback(
+    (id: string) => {
+      if (!usuario) return;
+      setLidas((anteriores) => {
+        const doUsuario = anteriores[usuario.id] ?? [];
+        return doUsuario.includes(id) ? anteriores : { ...anteriores, [usuario.id]: [...doUsuario, id] };
+      });
+    },
+    [usuario],
+  );
+
+  const marcarTodasLidas = useCallback(() => {
+    if (!usuario) return;
+      const ids = [...(notificacoesSimuladas[usuario.id] ?? []), ...notificacoesDoUsuario(postagens, usuario)].map(
+      (n) => n.id,
+    );
+    setLidas((anteriores) => ({ ...anteriores, [usuario.id]: ids }));
+  }, [usuario, postagens, notificacoesSimuladas]);
+
   return (
     <SimuladorContext.Provider
       value={{
@@ -307,6 +839,57 @@ export const SimuladorProvider = ({ children }: { children: ReactNode }) => {
         subirMetrica,
         recusarUpgrade,
         encerrarMeta,
+        fila,
+        carregarFila,
+        abrirAnalise,
+        moderar,
+        impedidas,
+        declararImpedimento,
+        reputacoes,
+        denuncias,
+        revisoesDenuncia,
+        denunciar,
+        revisarDenuncias,
+        contestacoes,
+        idContestacaoAberta,
+        abrirContestacao,
+        contestar,
+        revisarContestacao,
+        idComunidadeAberta,
+        abrirComunidade,
+        totalMembros,
+        carregarTotaisMembros,
+        carregarTotalMembros,
+        criarComunidade,
+        editarComunidade,
+        excluirComunidade,
+        entrarComunidade,
+        sairComunidade,
+        complementosComunidade,
+        missoes,
+        criarMissao,
+        editarMissao,
+        encerrarMissao,
+        sugestao,
+        seguirSugestao,
+        notificacoes,
+        naoLidas,
+        marcarLida,
+        marcarTodasLidas,
+        resgates,
+        saldoDisponivel,
+        resgatar,
+        ocultoEntreAmigos,
+        alternarOcultoEntreAmigos,
+        pedidoExclusaoEm,
+        pedirExclusaoGamificacao,
+        divisao: situacaoLiga.divisao,
+        pontosSemana: situacaoLiga.pontosSemana,
+        semanaLiga: situacaoLiga.semana,
+        pontosMes: PONTOS_MES_DEMO,
+        distintivosConquistados: situacaoLiga.distintivos,
+        simularFechamentoLiga,
+        simularEntregaDistintivo,
       }}
     >
       {children}
