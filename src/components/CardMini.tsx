@@ -1,13 +1,26 @@
+import { useState } from 'react';
+
 export interface CardMiniProps {
   titulo: string;
   descricao: string;
 }
 
 export default function CardMini({ titulo, descricao }: CardMiniProps) {
+  const [isFlipped, setIsFlipped] = useState(false);
+
   return (
-    <article className="group relative w-full h-[320px] bg-transparent cursor-pointer [perspective:1000px]">
+    <article 
+      className="relative w-full h-[320px] bg-transparent cursor-pointer [perspective:1000px]"
+      onClick={() => setIsFlipped(!isFlipped)}
+      onMouseEnter={() => setIsFlipped(true)}
+      onMouseLeave={() => setIsFlipped(false)}
+    >
       
-      <div className="relative w-full h-full transition-all duration-700 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)] rounded-3xl shadow-sm hover:shadow-lg">
+      <div 
+        className={`relative w-full h-full transition-all duration-700 [transform-style:preserve-3d] rounded-3xl shadow-sm hover:shadow-lg ${
+          isFlipped ? '[transform:rotateY(180deg)]' : ''
+        }`}
+      >
         
         <div className="absolute inset-0 w-full h-full bg-white border border-[#ead9b6]/60 rounded-3xl p-8 flex flex-col items-center justify-center text-center [backface-visibility:hidden]">
           <h3 className="text-2xl font-extrabold text-stone-900 mb-6">

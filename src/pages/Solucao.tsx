@@ -84,37 +84,61 @@ export default function Solucao() {
   return (
     <main className="w-full max-w-6xl mx-auto px-4 py-12 flex flex-col items-center">
       
-      <section className="text-center max-w-4xl mx-auto mb-12 w-full">
+      <section className="w-full mb-16 mt-4">
         <Reveal>
-          <div className="relative z-10 bg-[#fffbed]/90 rounded-2xl px-6 py-6 md:px-10 md:py-8 border border-[#ead9b6]/40 shadow-sm">
-            <h1 className="text-3xl sm:text-4xl font-extrabold text-stone-900 mb-4">
-              O Ecossistema Lobo-guará Tech
-            </h1>
-            <p className="text-stone-700 text-sm sm:text-base leading-relaxed">
-              Nossa plataforma vai além de um aplicativo de tarefas: criamos uma{' '}
-              <strong className="text-stone-900 font-semibold">rede de impacto socioambiental</strong>. Através da união entre tecnologia, validação comunitária e incentivos reais, transformamos a conscientização ecológica em hábitos diários e mensuráveis.
-            </p>
+          <div className="bg-white rounded-3xl p-8 sm:p-10 shadow-sm border border-stone-200 flex flex-col lg:flex-row gap-10 items-center justify-between">
+            
+            <div className="lg:w-5/12 space-y-4">
+              <span className="text-sm font-bold tracking-widest text-[#D35400] uppercase block">
+                Nossa Abordagem
+              </span>
+              <h1 className="text-3xl sm:text-4xl font-black text-stone-900 leading-tight">
+                O Ecossistema <br />
+                <span className="text-[#D35400]">Lobo-guará Tech</span>
+              </h1>
+              <p className="text-stone-600 text-sm sm:text-base leading-relaxed">
+                Nossa plataforma vai muito além de um simples aplicativo de tarefas. Criamos uma <strong className="text-stone-900 font-semibold">rede de impacto socioambiental</strong> baseada em engajamento real.
+              </p>
+            </div>
+
+            <div className="lg:w-7/12 grid grid-cols-1 sm:grid-cols-2 gap-5 w-full">
+              <div className="bg-[#1C1C1C] p-6 rounded-2xl border border-stone-800 shadow-md transition-transform hover:-translate-y-1">
+                <h2 className="text-lg font-bold text-[#D35400] mb-2">União e Tecnologia</h2>
+                <p className="text-stone-300 text-sm leading-relaxed">
+                  Através de validação comunitária e incentivos reais, conectamos pessoas em prol de um ecossistema mais sustentável e colaborativo.
+                </p>
+              </div>
+              
+              <div className="bg-[#1C1C1C] p-6 rounded-2xl border border-stone-800 shadow-md transition-transform hover:-translate-y-1">
+                <h2 className="text-lg font-bold text-[#D35400] mb-2">Hábitos Mensuráveis</h2>
+                <p className="text-stone-300 text-sm leading-relaxed">
+                  Transformamos a conscientização ecológica em ações práticas, desenvolvendo hábitos que são diários, constantes e mensuráveis.
+                </p>
+              </div>
+            </div>
+
           </div>
         </Reveal>
       </section>
 
-      <section aria-labelledby="pilares-title" className="w-full mb-16">
+     
+      <section aria-labelledby="pilares-title" className="w-full max-w-5xl mx-auto mb-16">
         <h2 id="pilares-title" className="sr-only">
           Pilares da Solução
         </h2>
 
-        <div className="flex flex-wrap gap-6 w-full justify-center">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
           {listaCards.map((card, index) => {
             const isAtivo = cardAtivo === card.id;
 
             return (
               <div 
                 key={card.id} 
-                className={`transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] ${
-                  isAtivo ? 'w-full order-first mb-4' : 'w-full sm:w-[calc(50%-0.75rem)] md:w-[calc(33.333%-1rem)] order-none'
+                className={`transition-all duration-500 ease-in-out ${
+                  isAtivo ? 'col-span-1 sm:col-span-2 lg:col-span-3' : 'col-span-1'
                 }`}
               >
-                <Reveal delay={isAtivo ? 0 : index * 50}>
+                <Reveal delay={index * 50}>
                   <CardPilar
                     imagem={card.imagem}
                     titulo={card.titulo}
@@ -129,6 +153,7 @@ export default function Solucao() {
         </div>
       </section>
 
+     
       <section aria-labelledby="ranking-title" className="w-full">
         <Reveal>
           <div className="bg-[#1C1C1C] rounded-2xl p-8 sm:p-12 text-center text-amber-50 shadow-lg border border-stone-800">
