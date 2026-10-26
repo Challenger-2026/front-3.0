@@ -50,6 +50,3 @@ export const beneficiosOngPorTemas = (
     .map((c) => c.organizacao);
   return beneficios.filter((b) => b.ong && organizacoes.includes(b.parceiro)).sort((a, b) => a.custo - b.custo);
 };
-
-// Carteira: pontos que o usuário "já ganhou hoje" (a postagem não tem data na API)
-export const GANHOS_HOJE_DEMO = 6.6;

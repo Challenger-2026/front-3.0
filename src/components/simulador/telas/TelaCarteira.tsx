@@ -2,7 +2,6 @@ import { FiChevronRight } from 'react-icons/fi';
 import type { TelaId } from '../../../types/types';
 import { useSimulador } from '../../../hooks/useSimulador';
 import { buscarCategoriaPorPontos, TETO_DIARIO_PONTOS } from '../../../data/categorias';
-import { GANHOS_HOJE_DEMO } from '../../../data/beneficios';
 import { concluidasDaMeta, diasRestantes } from '../../../data/metas';
 import { distintivoDoMesAtual } from '../../../data/liga';
 import { formatarPontos } from '../../../utils/formatadores';
@@ -30,6 +29,8 @@ export default function TelaCarteira() {
   // CO₂ evitado = soma do fator de cada ação aprovada
   const co2Evitado = aprovadas.reduce((total, p) => total + (buscarCategoriaPorPontos(p.ptGerado)?.co2Kg ?? 0), 0);
 
+  // Hoje (demonstração): sem data na API, todas as aprovadas contam como de hoje (pode passar do teto)
+  const pontosHoje = aprovadas.reduce((total, p) => total + p.ptGerado, 0);
   const distintivo = distintivoDoMesAtual();
   const meta = metas[usuario.id];
   const concluidas = meta ? concluidasDaMeta(meta, postagens, usuario.id) : 0;
@@ -37,7 +38,7 @@ export default function TelaCarteira() {
   const numeros = [
     { label: 'Aprovadas', valor: String(aprovadas.length) },
     { label: 'Pendentes', valor: String(pendentes) },
-    { label: 'Hoje', valor: `${formatarPontos(GANHOS_HOJE_DEMO)}/${TETO_DIARIO_PONTOS}` },
+    { label: 'Hoje', valor: `${formatarPontos(pontosHoje)}/${TETO_DIARIO_PONTOS}` },
   ];
 
   return (
@@ -68,8 +69,8 @@ export default function TelaCarteira() {
       </div>
 
       <p className="rounded-xl bg-amber-50 px-3 py-2 text-[11px] text-amber-700">
-        Demonstração: o saldo desconta os resgates feitos aqui (a API não tem resgates). Os pontos de hoje e o
-        distintivo do mês são fixos, porque a postagem não tem data na API.
+        Demonstração: o saldo desconta os resgates feitos aqui (a API não tem resgates). Como a postagem não tem
+        data na API, os pontos de hoje somam todas as postagens aprovadas e o distintivo do mês é fixo.
       </p>
 
       {/* Meta de atividades (fica no front) */}
