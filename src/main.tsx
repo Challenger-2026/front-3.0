@@ -2,7 +2,7 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom';
 import './index.css';
-import { FeedbackProvider } from './context/FeedbackContext';
+
 
 import App from './App.tsx';
 import Home from './pages/Home';
@@ -39,8 +39,6 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <FeedbackProvider>
       <RouterProvider router={router} />
-    </FeedbackProvider>
   </StrictMode>,
 );

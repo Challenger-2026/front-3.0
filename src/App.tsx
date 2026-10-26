@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useLocation, Outlet } from 'react-router-dom';
 import Header from './components/Header';
 import Footer from './components/Footer';
+import BotaoTopo from './components/BotaoTopo';
 
 
 export default function App() {
@@ -23,7 +24,7 @@ export default function App() {
   }, [location.pathname]);
 
   return (
-    <div className="relative isolate min-h-screen flex flex-col bg-[#fffbed] text-stone-900 before:content-[''] before:fixed before:inset-0 before:-z-10 before:pointer-events-none before:bg-[url('./assets/papel-fundo.jpg')] before:bg-no-repeat before:bg-center before:bg-cover portrait:before:bg-bottom portrait:before:bg-[length:100%_auto]">
+    <div className="relative isolate min-h-screen flex flex-col bg-[#fffbed] text-stone-900">
       <Header titulo={nomeProjeto} />
 
       <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fade-in">
@@ -31,6 +32,7 @@ export default function App() {
       </main>
 
       <Footer />
+      <BotaoTopo />
     </div>
   );
 }
