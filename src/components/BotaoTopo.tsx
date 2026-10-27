@@ -1,8 +1,11 @@
 import { useState, useEffect } from 'react';
 import { FaArrowUp } from 'react-icons/fa';
+import { useLocation } from 'react-router-dom';
 
 export default function BotaoTopo() {
   const [visivel, setVisivel] = useState(false);
+  const location = useLocation();
+  const noSimulador = location.pathname.startsWith('/simulador');
 
   useEffect(() => {
     const verificarScroll = () => {
@@ -24,7 +27,7 @@ export default function BotaoTopo() {
     });
   };
 
-  if (!visivel) return null;
+  if (!visivel || noSimulador) return null;
 
   return (
     <button
