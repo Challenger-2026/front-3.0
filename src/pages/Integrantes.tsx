@@ -4,6 +4,7 @@ import CardIntegrante from '../components/CardIntegrante';
 import Botao from '../components/Botao';
 import type { IntegranteProps } from '../types/types';
 import Reveal from '../components/Reveal'; 
+import { FiCompass, FiTarget, FiHeart } from 'react-icons/fi';
 
 import foto1 from '../assets/Pic4.png';
 import foto2 from '../assets/Pic2.png';
@@ -84,6 +85,24 @@ const listaIntegrantes: IntegranteProps[] = [
   },
 ];
 
+const valores = [
+  {
+    icone: FiCompass,
+    titulo: 'Propósito',
+    texto: 'Unir a inovação tecnológica da Sociedade 5.0 à urgência da preservação ambiental.',
+  },
+  {
+    icone: FiTarget,
+    titulo: 'Objetivo',
+    texto: 'Transformar hábitos ecológicos do dia a dia em uma experiência engajadora e recompensadora através da gamificação.',
+  },
+  {
+    icone: FiHeart,
+    titulo: 'No que acreditamos',
+    texto: 'O desenvolvimento de sistemas deve servir ao bem-estar planetário, provando que linhas de código podem proteger nossa biodiversidade e construir um futuro sustentável.',
+  },
+];
+
 export default function Integrantes() {
   const { rm } = useParams<{ rm?: string }>();
   const navigate = useNavigate();
@@ -101,21 +120,30 @@ export default function Integrantes() {
 
   return (
     <main className="w-full max-w-7xl mx-auto px-4 py-6 text-center overflow-hidden">
-      
-      <Reveal>
-        <h1 className="text-3xl font-extrabold text-[#a84312] mb-3">Nossa Equipe</h1>
-      </Reveal>
+      <section className="grid md:grid-cols-5 gap-8 md:gap-10 items-center text-left mb-12">
+        <Reveal className="md:col-span-2">
+          <p className="text-xs font-bold tracking-widest text-[#2F5D50] uppercase">Quem somos</p>
+          <h1 className="text-3xl sm:text-4xl font-extrabold text-[#a84312] mt-1">Nossa Equipe</h1>
+          <p className="text-xl sm:text-2xl font-extrabold text-stone-900 leading-snug mt-4">
+            Linhas de código como ferramentas para{' '}
+            <span className="text-orange-700">proteger a biodiversidade</span>.
+          </p>
+        </Reveal>
 
-      <Reveal delay={150}>
-        <p className="max-w-3xl mx-auto mb-10 py-6 px-6 sm:px-8 bg-[#fffdf5]/95 rounded-2xl relative z-10 text-stone-700 text-sm leading-relaxed border border-[#ead9b6]/40 shadow-sm">
-          A Lobo-guará Tech nasceu com o propósito de unir a inovação tecnológica da Sociedade 5.0 à
-          urgência da preservação ambiental. Nosso objetivo é transformar hábitos ecológicos do dia a
-          dia em uma experiência engajadora e recompensadora através da gamificação. Acreditamos que o
-          desenvolvimento de sistemas deve servir ao bem-estar planetário, provando que linhas de
-          código podem ser ferramentas ativas para proteger nossa biodiversidade e construir um futuro
-          sustentável.
-        </p>
-      </Reveal>
+        <Reveal delay={150} className="md:col-span-3 space-y-4">
+          {valores.map(({ icone: Icone, titulo, texto }) => (
+            <div key={titulo} className="flex gap-4 bg-white border border-orange-100 rounded-2xl p-5 shadow-sm">
+              <span className="shrink-0 w-11 h-11 rounded-full bg-orange-100 text-orange-700 grid place-items-center">
+                <Icone size={22} aria-hidden="true" />
+              </span>
+              <div>
+                <h2 className="font-bold text-stone-900">{titulo}</h2>
+                <p className="text-sm text-stone-600 leading-relaxed">{texto}</p>
+              </div>
+            </div>
+          ))}
+        </Reveal>
+      </section>
 
       {rm && !selecionado && (
         <Reveal delay={200}>
@@ -192,7 +220,7 @@ export default function Integrantes() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 justify-items-center items-stretch mt-8">
         {listaIntegrantes.map((integrante, index) => (
-          <Reveal key={integrante.rm} delay={300 + index * 100}>
+          <Reveal key={integrante.rm} delay={300 + index * 100} className="w-full h-full flex justify-center">
             <div className="w-full max-w-[220px] h-full flex flex-col transition-transform duration-300 hover:-translate-y-2 rounded-xl">
               <CardIntegrante
                 nome={integrante.nome}

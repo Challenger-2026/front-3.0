@@ -14,7 +14,10 @@ export default function Reveal({ children, delay = 0, className = '' }: RevealPr
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
-        setIsVisible(entry.isIntersecting);
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
       },
       { 
         threshold: 0.15, 

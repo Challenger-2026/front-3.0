@@ -16,7 +16,7 @@ export default function CardIntegrante({
     "relative overflow-hidden after:content-[''] after:absolute after:inset-0 after:z-[1] after:pointer-events-none after:rounded-t-[45%] after:bg-amber-400/20 after:translate-y-full after:transition-transform after:duration-500 hover:after:translate-y-[10%] active:after:translate-y-[10%]";
 
   return (
-    <article className="group w-full h-full bg-white border border-stone-200 rounded-2xl p-5 sm:p-6 shadow-sm hover:shadow-lg hover:border-orange-600 transition-all duration-300 flex flex-col items-center text-center">
+    <article className="group w-full h-full bg-white border border-orange-100 rounded-2xl p-5 sm:p-6 shadow-sm hover:shadow-lg hover:border-orange-600 transition-all duration-300 flex flex-col items-center text-center">
    
       <Link
         to={`/integrantes/${rm}`}
@@ -27,21 +27,21 @@ export default function CardIntegrante({
           <img
             src={foto}
             alt={`Foto de ${nome}`}
-            className="w-24 h-24 sm:w-28 sm:h-28 rounded-full object-cover border-2 border-stone-100 group-hover:border-orange-600 transition-colors shadow-sm"
+            className="w-24 h-24 sm:w-28 sm:h-28 rounded-full object-cover ring-4 ring-orange-100 group-hover:ring-orange-300 transition-all shadow-sm"
           />
         </div>
 
         <h2
           title={nome}
-          className="min-h-14 w-full flex items-center justify-center text-base sm:text-lg font-bold text-stone-900 group-hover:text-orange-600 transition-colors leading-snug px-1 mb-2"
+          className="min-h-14 w-full flex items-center justify-center text-base font-bold text-stone-900 group-hover:text-orange-600 transition-colors leading-snug px-1 mb-2"
         >
           {nome}
         </h2>
 
         <div className="bg-stone-50 rounded-xl py-2 px-4 w-full mb-6 border border-stone-100 space-y-1 text-xs sm:text-sm text-stone-600">
-          <p>
-            <strong className="text-stone-800">RM:</strong> {rm}
-          </p>
+          <p className="text-xs sm:text-sm text-stone-500 mb-5">
+            RM {rm} &middot; {turma}
+         </p>
           <p>
             <strong className="text-stone-800">Turma:</strong> {turma}
           </p>
