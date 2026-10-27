@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import CardIntegrante from '../components/CardIntegrante';
-import Botao from '../components/Botao';
 import type { IntegranteProps } from '../types/types';
 import Reveal from '../components/Reveal'; 
+import { FiCompass, FiTarget, FiHeart, FiX } from 'react-icons/fi';
 
 import foto1 from '../assets/Pic4.png';
 import foto2 from '../assets/Pic2.png';
@@ -84,6 +84,24 @@ const listaIntegrantes: IntegranteProps[] = [
   },
 ];
 
+const valores = [
+  {
+    icone: FiCompass,
+    titulo: 'Propósito',
+    texto: 'Unir a inovação tecnológica da Sociedade 5.0 à urgência da preservação ambiental.',
+  },
+  {
+    icone: FiTarget,
+    titulo: 'Objetivo',
+    texto: 'Transformar hábitos ecológicos do dia a dia em uma experiência engajadora e recompensadora através da gamificação.',
+  },
+  {
+    icone: FiHeart,
+    titulo: 'No que acreditamos',
+    texto: 'O desenvolvimento de sistemas deve servir ao bem-estar planetário, provando que linhas de código podem proteger nossa biodiversidade e construir um futuro sustentável.',
+  },
+];
+
 export default function Integrantes() {
   const { rm } = useParams<{ rm?: string }>();
   const navigate = useNavigate();
@@ -99,23 +117,49 @@ export default function Integrantes() {
       : 'Integrantes | Lobo-guará Tech';
   }, [selecionado]);
 
+  const painelAberto = Boolean(selecionado);
+
+  function fecharPainel() {
+    navigate('/integrantes');
+  }
+
+  useEffect(() => {
+    if (!painelAberto) return;
+
+    const fecharComEsc = (evento: KeyboardEvent) => {
+      if (evento.key === 'Escape') navigate('/integrantes');
+    };
+
+    window.addEventListener('keydown', fecharComEsc);
+    return () => window.removeEventListener('keydown', fecharComEsc);
+  }, [painelAberto, navigate]);
+
   return (
     <main className="w-full max-w-7xl mx-auto px-4 py-6 text-center overflow-hidden">
-      
-      <Reveal>
-        <h1 className="text-3xl font-extrabold text-[#a84312] mb-3">Nossa Equipe</h1>
-      </Reveal>
+      <section className="grid md:grid-cols-5 gap-8 md:gap-10 items-center text-left mb-12">
+        <Reveal className="md:col-span-2">
+          <p className="text-xs font-bold tracking-widest text-[#2F5D50] uppercase">Quem somos</p>
+          <h1 className="text-3xl sm:text-4xl font-extrabold text-[#a84312] mt-1">Nossa Equipe</h1>
+          <p className="text-xl sm:text-2xl font-extrabold text-stone-900 leading-snug mt-4">
+            Linhas de código como ferramentas para{' '}
+            <span className="text-orange-700">proteger a biodiversidade</span>.
+          </p>
+        </Reveal>
 
-      <Reveal delay={150}>
-        <p className="max-w-3xl mx-auto mb-10 py-6 px-6 sm:px-8 bg-[#fffdf5]/95 rounded-2xl relative z-10 text-stone-700 text-sm leading-relaxed border border-[#ead9b6]/40 shadow-sm">
-          A Lobo-guará Tech nasceu com o propósito de unir a inovação tecnológica da Sociedade 5.0 à
-          urgência da preservação ambiental. Nosso objetivo é transformar hábitos ecológicos do dia a
-          dia em uma experiência engajadora e recompensadora através da gamificação. Acreditamos que o
-          desenvolvimento de sistemas deve servir ao bem-estar planetário, provando que linhas de
-          código podem ser ferramentas ativas para proteger nossa biodiversidade e construir um futuro
-          sustentável.
-        </p>
-      </Reveal>
+        <Reveal delay={150} className="md:col-span-3 space-y-4">
+          {valores.map(({ icone: Icone, titulo, texto }) => (
+            <div key={titulo} className="flex gap-4 bg-white border border-orange-100 rounded-2xl p-5 shadow-sm">
+              <span className="shrink-0 w-11 h-11 rounded-full bg-orange-100 text-orange-700 grid place-items-center">
+                <Icone size={22} aria-hidden="true" />
+              </span>
+              <div>
+                <h2 className="font-bold text-stone-900">{titulo}</h2>
+                <p className="text-sm text-stone-600 leading-relaxed">{texto}</p>
+              </div>
+            </div>
+          ))}
+        </Reveal>
+      </section>
 
       {rm && !selecionado && (
         <Reveal delay={200}>
@@ -125,74 +169,9 @@ export default function Integrantes() {
         </Reveal>
       )}
 
-      {selecionado && (
-        <Reveal delay={200}>
-          <article className="max-w-xl mx-auto mb-12 p-6 sm:p-8 bg-white border-2 border-orange-500 rounded-2xl shadow-lg flex flex-col items-center transition-all duration-300 animate-fade-in text-center">
-            <span className="text-xs font-bold text-[#a84312] uppercase tracking-widest mb-3">
-              Integrante em Destaque
-            </span>
-
-            <img
-              src={selecionado.foto}
-              alt={`Foto de ${selecionado.nome}`}
-              className="w-28 h-28 rounded-full object-cover border-4 border-orange-500 mb-3 shadow"
-            />
-
-            <h2 className="text-2xl font-bold text-stone-900">{selecionado.nome}</h2>
-
-            <span className="text-xs font-semibold bg-orange-100 text-orange-800 px-3 py-1 rounded-full mt-1 mb-2">
-              {selecionado.funcao || 'Membro do Projeto'}
-            </span>
-
-            <p className="text-stone-500 text-xs sm:text-sm mb-4">
-              <strong className="text-stone-700">RM:</strong> {selecionado.rm} &bull;{' '}
-              <strong className="text-stone-700">Turma:</strong> {selecionado.turma}
-            </p>
-
-            {selecionado.contribuicao && (
-              <div className="bg-stone-50 border border-stone-200 rounded-xl p-4 mb-6 w-full text-stone-700 text-xs sm:text-sm text-left">
-                <strong className="text-stone-900 block mb-2 font-bold">
-                  Contribuição no Projeto:
-                </strong>
-                <ul className="list-disc pl-5 space-y-2">
-                  {selecionado.contribuicao.map((item) => (
-                    <li key={item}>{item}</li>
-                  ))}
-                </ul>
-              </div>
-            )}
-
-            <div className="flex items-center justify-center gap-3 w-full mb-6">
-              <a
-                href={selecionado.github}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={`GitHub de ${selecionado.nome}`}
-                className={`${efeitoOnda} flex-1 py-2.5 px-4 rounded-xl bg-stone-900 hover:bg-black text-white text-xs font-semibold transition-colors duration-200`}
-              >
-                GitHub
-              </a>
-              <a
-                href={selecionado.linkedin}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={`LinkedIn de ${selecionado.nome}`}
-                className={`${efeitoOnda} flex-1 py-2.5 px-4 rounded-xl bg-[#0A66C2] hover:bg-[#084e96] text-white text-xs font-semibold transition-colors duration-200`}
-              >
-                LinkedIn
-              </a>
-            </div>
-
-            <Botao acao={() => navigate('/integrantes')} variante="secundario">
-              Limpar Destaque
-            </Botao>
-          </article>
-        </Reveal>
-      )}
-
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 justify-items-center items-stretch mt-8">
         {listaIntegrantes.map((integrante, index) => (
-          <Reveal key={integrante.rm} delay={300 + index * 100}>
+          <Reveal key={integrante.rm} delay={300 + index * 100} className="w-full h-full flex justify-center">
             <div className="w-full max-w-[220px] h-full flex flex-col transition-transform duration-300 hover:-translate-y-2 rounded-xl">
               <CardIntegrante
                 nome={integrante.nome}
@@ -206,6 +185,121 @@ export default function Integrantes() {
           </Reveal>
         ))}
       </div>
+      {selecionado && (
+        <div className="fixed inset-0 z-[60]">
+          <div
+            onClick={fecharPainel}
+            className="absolute inset-0 bg-stone-900/30 animate-fundo"
+            aria-hidden="true"
+          />
+
+          <aside
+            role="dialog"
+            aria-modal="true"
+            aria-label={`Informações de ${selecionado.nome}`}
+            className="absolute top-0 right-0 h-full w-full max-w-md bg-white shadow-2xl p-6 sm:p-8 overflow-y-auto text-left animate-painel"
+          >
+            <button
+              type="button"
+              onClick={fecharPainel}
+              aria-label="Fechar"
+              className="absolute top-3 right-3 w-9 h-9 rounded-full grid place-items-center text-stone-500 hover:bg-stone-100 transition-colors"
+            >
+              <FiX size={20} aria-hidden="true" />
+            </button>
+
+            <span className="text-xs font-bold text-[#a84312] uppercase tracking-widest">
+              Integrante
+            </span>
+
+            <div className="flex items-center gap-4 mt-5">
+              <img
+                src={selecionado.foto}
+                alt={`Foto de ${selecionado.nome}`}
+                className="w-20 h-20 rounded-full object-cover ring-4 ring-orange-100 shrink-0"
+              />
+              <div>
+                <h2 className="text-xl font-extrabold text-stone-900 leading-snug">{selecionado.nome}</h2>
+                <span className="inline-block text-xs font-semibold bg-orange-100 text-orange-800 px-3 py-1 rounded-full mt-1">
+                  {selecionado.funcao || 'Membro do Projeto'}
+                </span>
+                <p className="text-xs text-stone-500 mt-2">
+                  RM {selecionado.rm} &middot; {selecionado.turma}
+                </p>
+              </div>
+            </div>
+
+            {selecionado.contribuicao && (
+              <div className="mt-6">
+                <h3 className="text-xs font-bold tracking-widest text-[#2F5D50] uppercase mb-3">
+                  Contribuição no projeto
+                </h3>
+                <ul className="space-y-3">
+                  {selecionado.contribuicao.map((item) => {
+                    const [titulo, ...resto] = item.split(': ');
+                    return (
+                      <li key={item} className="flex gap-3">
+                        <span className="mt-1.5 w-2 h-2 rounded-full bg-orange-500 shrink-0" aria-hidden="true" />
+                        <p className="text-sm text-stone-700">
+                          <strong className="text-stone-900">{titulo}:</strong> {resto.join(': ')}
+                        </p>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            )}
+
+            <div className="grid grid-cols-2 gap-3 mt-6">
+              <a
+                href={selecionado.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`GitHub de ${selecionado.nome}`}
+                className={`${efeitoOnda} py-2.5 rounded-xl bg-stone-900 hover:bg-black text-white text-sm font-semibold text-center transition-colors duration-200`}
+              >
+                GitHub
+              </a>
+              <a
+                href={selecionado.linkedin}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`LinkedIn de ${selecionado.nome}`}
+                className={`${efeitoOnda} py-2.5 rounded-xl bg-[#0A66C2] hover:bg-[#084e96] text-white text-sm font-semibold text-center transition-colors duration-200`}
+              >
+                LinkedIn
+              </a>
+            </div>
+
+            <p className="text-xs text-stone-500 mt-8">Outros integrantes:</p>
+            <div className="flex flex-wrap gap-2 mt-2">
+              {listaIntegrantes.map((integrante) => {
+                const ativo = integrante.rm === selecionado.rm;
+                return (
+                  <Link
+                    key={integrante.rm}
+                    to={`/integrantes/${integrante.rm}`}
+                    replace
+                    title={integrante.nome}
+                    aria-label={`Ver ${integrante.nome}`}
+                    aria-current={ativo ? 'true' : undefined}
+                    className={`rounded-full transition ${
+                      ativo ? 'ring-2 ring-orange-600' : 'opacity-70 hover:opacity-100'
+                    }`}
+                  >
+                    <img
+                      src={integrante.foto}
+                      alt=""
+                      className="w-10 h-10 rounded-full object-cover"
+                    />
+                  </Link>
+                );
+              })}
+            </div>
+          </aside>
+        </div>
+      )}
     </main>
+    
   );
 }

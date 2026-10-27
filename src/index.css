@@ -75,3 +75,22 @@
     color: #D35400 !important;
   }
 }
+
+/* painel lateral dos integrantes */
+@keyframes painelEntrada {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+.animate-painel {
+  animation: painelEntrada 0.25s ease-out;
+}
+
+@keyframes fundoEntrada {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.animate-fundo {
+  animation: fundoEntrada 0.2s ease-out;
+}
