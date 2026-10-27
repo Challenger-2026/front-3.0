@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useLocation, Outlet } from 'react-router-dom';
 import Header from './components/Header';
 import Footer from './components/Footer';
@@ -8,9 +8,15 @@ import BotaoTopo from './components/BotaoTopo';
 export default function App() {
   const location = useLocation();
   const nomeProjeto = 'Lobo-guará Tech';
+  const caminhoAnterior = useRef(location.pathname);
 
   useEffect(() => {
-    window.scrollTo(0, 0);
+    const entreIntegrantes =
+      caminhoAnterior.current.startsWith('/integrantes') &&
+      location.pathname.startsWith('/integrantes');
+    caminhoAnterior.current = location.pathname;
+
+    if (!entreIntegrantes) window.scrollTo(0, 0);
 
     let titulo = 'Lobo-guará Tech';
     if (location.pathname === '/sobre') titulo = 'Sobre Nós | Lobo-guará Tech';

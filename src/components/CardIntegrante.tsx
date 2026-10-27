@@ -38,14 +38,9 @@ export default function CardIntegrante({
           {nome}
         </h2>
 
-        <div className="bg-stone-50 rounded-xl py-2 px-4 w-full mb-6 border border-stone-100 space-y-1 text-xs sm:text-sm text-stone-600">
-          <p className="text-xs sm:text-sm text-stone-500 mb-5">
-            RM {rm} &middot; {turma}
-         </p>
-          <p>
-            <strong className="text-stone-800">Turma:</strong> {turma}
-          </p>
-        </div>
+        <p className="text-xs sm:text-sm text-stone-500 mb-5">
+          RM {rm} &middot; {turma}
+        </p>
       </Link>
 
       <div className="grid grid-cols-2 gap-3 w-full mt-auto">
