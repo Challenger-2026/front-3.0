@@ -1,21 +1,28 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
+import { FiFileText, FiTarget, FiAward } from 'react-icons/fi';
 import CardMini, { type CardMiniProps } from '../components/CardMini';
 import Reveal from '../components/Reveal'; 
 
 const listaResumo: CardMiniProps[] = [
   {
     titulo: 'Descrição',
+    icone: FiFileText,
+    frase: 'Ações sustentáveis viram pontos, desafios e ranking.',
     descricao:
       'O projeto Lobo-guará Tech transforma ações sustentáveis em um sistema de recompensas e desafios com rankeamento. Unindo inovação incremental e disruptiva, conectamos mecanismos já existentes com as lacunas da sustentabilidade — criando uma plataforma de gamificação que torna o engajamento ambiental tangível e motivador.',
   },
   {
     titulo: 'Objetivo',
+    icone: FiTarget,
+    frase: 'Fazer da sustentabilidade um hábito com recompensas reais.',
     descricao:
       'Colocar o usuário no centro da solução: tornar a sustentabilidade não apenas uma escolha consciente, mas um hábito reforçado por recompensas reais. A plataforma escala o impacto ambiental de forma ágil, transformando o compromisso com o planeta em uma experiência digital recompensadora.',
   },
   {
     titulo: 'Diferencial',
+    icone: FiAward,
+    frase: 'Comunidades com ONGs, ligas e distintivos da fauna brasileira.',
     descricao:
       'Comunidades ligadas a ONGs focadas em impacto ambiental e um sistema de ranking. Sistema de medalhas mensais inspirado na fauna brasileira, rankeamento entre usuários e ciclos de engajamento personalizados. A identidade do lobo-guará reforça o vínculo entre tecnologia e natureza, criando uma experiência única e com propósito.',
   },
@@ -129,7 +136,7 @@ export default function Home() {
                       className={`inline-block mr-2 md:mr-3 transition-colors duration-300 ${
                         estaAtiva 
                           ? isHighlight ? 'text-[#D35400]' : 'text-stone-900' 
-                          : 'text-[#e5d5b7]' 
+                          : 'text-[#c2ab84]'
                       }`}
                     >
                       {palavra}
@@ -150,7 +157,7 @@ export default function Home() {
             </h2>
           </Reveal>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch w-full">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch w-full max-w-md lg:max-w-none">
             {listaResumo.map((item, index) => (
               <Reveal key={item.titulo} delay={300 + index * 150}>
                 <CardMini {...item} />
