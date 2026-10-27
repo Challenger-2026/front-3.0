@@ -174,10 +174,14 @@ export type ErroComStatus = Error & Partial<Pick<ErroApi, 'status'>>;
 // PATCH só aparece com o json-server (no lugar dos UPDATE que o Java faz no banco)
 export type MetodoRequisicao = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 
+// Para qual API vai a chamada: a Java (Spring Boot) ou a Python (modelo de IA)
+export type ApiDestino = 'java' | 'ia';
+
 export interface OpcoesRequisicao {
   corpo?: object; // vira JSON; nunca entra no registro
   mensagemErro: string; // usada quando a resposta de erro não traz { erro }
   soJsonServer?: boolean; // true: recurso que só existe no json-server (feedbacks); a linha real aparece no painel
+  api?: ApiDestino; // sem valor: API Java
 }
 
 // O que fica registrado de cada chamada (para o painel de requisições ao vivo)
@@ -191,6 +195,7 @@ export interface RegistroRequisicao {
   erro?: string; // mensagem mostrada ao usuário quando falha
   apoio: boolean; // true: chamada ao json-server que só imita o Java (o painel esconde por padrão)
   simulado: boolean; // true: linha "como o Java responderia" (só no modo json-server)
+  api: ApiDestino;
 }
 
 // ===== Painel de requisições e página de status (bloco 5.2) =====
@@ -673,3 +678,42 @@ export type SimuladorContextType = NavegacaoSimulador &
   AcoesCarteira &
   AcoesPrivacidade &
   AcoesTemporizador;
+  
+// ===== IA: previsão de risco de abandono (API Python, mesmos nomes de campo do Flask) =====
+
+export type ClasseRisco = 'engajado' | 'risco_abandono';
+export type PerfilEngajamento = 'Inativos' | 'Intermediários' | 'Engajados';
+
+// Os 7 comportamentos do usuário em 30 dias (entrada do modelo)
+export interface AtributosComportamento {
+  total_acoes: number;
+  streak_maximo: number;
+  diversidade_categorias: number;
+  pontos_totais: number;
+  interacoes_sociais_media: number;
+  posicao_ranking_media: number | null; // null: sem ação, fora do ranking (a API usa 213)
+  tempo_medio_entre_acoes_dias: number | null; // null: 0 ou 1 ação, sem intervalo (a API usa 30)
+}
+
+export type AtributoComportamento = keyof AtributosComportamento;
+
+// GET /sortear: um dos 50 usuários de teste, que o modelo não viu no treino
+export type UsuarioTeste = AtributosComportamento & {
+  usuario_id: string;
+  rotulo_real: ClasseRisco;
+};
+
+export interface OrientacaoRetencao {
+  atributo: AtributoComportamento;
+  acao: string;
+}
+
+// POST /prever
+export interface PrevisaoRisco {
+  classe: ClasseRisco;
+  probabilidade_risco: number; // de 0 a 1
+  perfil: PerfilEngajamento;
+  tom: string;
+  orientacoes: OrientacaoRetencao[]; // até 2; vazia quando nada aumenta o risco
+  valores_usados: Record<AtributoComportamento, number>; // já com os vazios preenchidos
+}

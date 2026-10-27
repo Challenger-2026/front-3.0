@@ -36,6 +36,7 @@ function LinhaRequisicao({ registro }: { registro: RegistroRequisicao }) {
           <span className="rounded bg-indigo-50 px-1.5 font-semibold text-indigo-700">como o Java responderia</span>
         )}
         {registro.apoio && <span className="rounded bg-stone-200 px-1.5 font-semibold">apoio do json-server</span>}
+        {registro.api === 'ia' && <span className="rounded bg-violet-50 px-1.5 font-semibold text-violet-700">API Python (IA)</span>}
       </div>
 
       {registro.erro && <p className="mt-1 pl-16 text-xs text-red-700">{registro.erro}</p>}
@@ -65,7 +66,7 @@ export default function PainelRequisicoes() {
             <div>
               <h2 className="font-extrabold text-[#a84312]">Requisições ao vivo</h2>
               <p className="text-xs text-stone-500">
-                {USANDO_JSON_SERVER ? 'Modo json-server (db.json)' : 'API Java'} · mais novas primeiro
+                {USANDO_JSON_SERVER ? 'Modo json-server (db.json)' : 'API Java'} e API Python (IA) · mais novas primeiro
               </p>
             </div>
             <button

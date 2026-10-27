@@ -7,6 +7,9 @@ export const BASE_URL = import.meta.env.VITE_API_URL ?? JSON_SERVER_URL;
 // Apontando para a porta 5000, o front está usando o json-server (db.json)
 export const USANDO_JSON_SERVER = BASE_URL === JSON_SERVER_URL;
 
+// API Python (Flask) com o modelo de IA de risco de abandono, publicada no Render
+export const IA_URL = import.meta.env.VITE_API_IA_URL ?? 'https://lobo-guara-ia.onrender.com';
+
 const HEADERS_JSON = { 'Content-Type': 'application/json' };
 
 // Erro com a mensagem e o status da API (a tela usa o status, ex.: 403 na fila de moderação)
@@ -56,15 +59,16 @@ export const requisitar = async <T>(metodo: MetodoRequisicao, caminho: string, o
     metodo,
     rota: rotaSegura(caminho),
     horario: new Date(inicio).toISOString(),
-    // no modo json-server, toda chamada só imita o Java (a linha que vale é a simulada); os feedbacks são a exceção
-    apoio: USANDO_JSON_SERVER && !opcoes.soJsonServer,
+    // no modo json-server, toda chamada só imita o Java (a linha que vale é a simulada); os feedbacks e a IA são a exceção
+    apoio: opcoes.api !== 'ia' && USANDO_JSON_SERVER && !opcoes.soJsonServer,
     simulado: false,
+    api: opcoes.api ?? 'java',
   };
 
   let response: Response;
   try {
     response = await fetch(
-      `${BASE_URL}${caminho}`,
+      `${opcoes.api === 'ia' ? IA_URL : BASE_URL}${caminho}`,
       opcoes.corpo === undefined
         ? { method: metodo }
         : { method: metodo, headers: HEADERS_JSON, body: JSON.stringify(opcoes.corpo) },
@@ -120,6 +124,7 @@ export const simularJava = async <T>(
     horario: new Date(inicio).toISOString(),
     apoio: false,
     simulado: true,
+    api: 'java' as const,
   };
 
   try {
