@@ -155,8 +155,7 @@ export default function Solucao() {
 
      
       <section aria-labelledby="ranking-title" className="w-full">
-        <Reveal>
-          <div className="bg-[#1C1C1C] rounded-2xl p-8 sm:p-12 text-center text-amber-50 shadow-lg border border-stone-800">
+        <div className="bg-[#1C1C1C] rounded-2xl p-8 sm:p-12 text-center text-amber-50 shadow-lg border border-stone-800">
             <h2 id="ranking-title" className="text-2xl sm:text-3xl font-extrabold text-[#D35400] mb-3">
               Como funciona a dinâmica de Ranking?
             </h2>
@@ -179,8 +178,7 @@ export default function Solucao() {
                 </Reveal>
               ))}
             </ol>
-          </div>
-        </Reveal>
+        </div>
       </section>
       
     </main>
