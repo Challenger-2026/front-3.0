@@ -30,7 +30,7 @@ export default function App() {
   }, [location.pathname]);
 
   return (
-    <div className="relative isolate min-h-screen flex flex-col bg-[#fffbed] text-stone-900">
+    <div className="relative isolate min-h-screen flex flex-col overflow-x-clip bg-[#fffbed] text-stone-900">
       <Header titulo={nomeProjeto} />
 
       <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fade-in">
