@@ -32,13 +32,15 @@ export default function Faq() {
   return (
     <main className="max-w-4xl mx-auto px-4 py-8">
       <Reveal>
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-extrabold text-[#a84312] mb-2">
+        <div className="text-center mb-10">
+          <span className="inline-block text-xs font-extrabold tracking-[0.14em] uppercase text-[#35685b] bg-[#e3efe9] rounded-full px-3 py-1 mb-3">
+            Dúvidas
+          </span>
+          <h1 className="text-3xl sm:text-4xl font-extrabold text-[#a84312]">
             Perguntas Frequentes
           </h1>
-          <p className="text-stone-600 text-sm">
-            Tire suas dúvidas sobre nossa plataforma e impacto sustentável.
-          </p>
+          <div className="w-24 h-1.5 bg-[#D35400]/40 mx-auto mt-4 mb-4 rounded-full"></div>
+          <p className="text-stone-600 text-sm"> Tire suas dúvidas sobre nossa plataforma e impacto sustentável.</p>
         </div>
       </Reveal>
 

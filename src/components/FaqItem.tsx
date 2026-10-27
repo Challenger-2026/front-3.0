@@ -8,11 +8,9 @@ export interface FaqItemProps {
 
 export default function FaqItem({ pergunta, resposta, estaAberto, aoAlternar }: FaqItemProps) {
   return (
-    <div 
-      className={`bg-white rounded-2xl p-6 shadow-sm border border-stone-100 w-full transition-all duration-300 ${
-        estaAberto ? 'border-l-4 border-l-[#D35400] shadow-md' : 'hover:shadow-md'
-      }`}
-    >
+    <div className={`bg-white rounded-2xl p-6 border border-[#e3cfa8] shadow-[0_10px_28px_-14px_rgba(120,78,35,0.4)] w-full transition-all duration-300 ${
+        estaAberto ? 'border-l-4 border-l-[#D35400]' : 'hover:border-[#D35400]/50'
+      }`}>
       <button
         onClick={aoAlternar}
         className="w-full text-left focus:outline-none flex justify-between items-center group"
