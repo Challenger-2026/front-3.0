@@ -14,6 +14,7 @@ import Contato from './pages/Contato';
 import Simulador from './pages/Simulador';
 import SimuladorCelular from './pages/SimuladorCelular';
 import StatusApi from './pages/StatusApi';
+import SimuladorAdmin from './pages/SimuladorAdmin';
 
 const router = createBrowserRouter([
   {
@@ -31,6 +32,7 @@ const router = createBrowserRouter([
         children: [
           { index: true, element: <SimuladorCelular /> },
           { path: 'status', element: <StatusApi /> },
+          { path: 'admin', element: <SimuladorAdmin /> },
         ],},
       { path: '*', element: <Navigate to="/" replace /> },
     ],

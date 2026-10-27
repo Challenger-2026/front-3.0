@@ -3,10 +3,11 @@ import { RequisicoesProvider } from '../context/RequisicoesContext';
 import { SimuladorProvider } from '../context/SimuladorContext';
 import PainelRequisicoes from '../components/simulador/PainelRequisicoes';
 
-// Abas do simulador: o celular e a página de status da API
+// Abas do simulador: o celular, a página de status da API e o painel admin (IA)
 const abas = [
   { para: '/simulador', texto: 'Celular' },
   { para: '/simulador/status', texto: 'Status da API' },
+  { para: '/simulador/admin', texto: 'Admin (IA)' },
 ];
 
 // Layout do simulador: os contextos ficam aqui para o estado continuar ao trocar de aba
