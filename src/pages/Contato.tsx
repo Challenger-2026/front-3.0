@@ -2,6 +2,13 @@ import { useState } from 'react';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import type { FormContatoInputs } from '../types/types';
 import Botao from '../components/Botao';
+import { FiMail, FiMapPin, FiClock } from 'react-icons/fi';
+
+const itensContato = [
+  { icone: FiMail, rotulo: 'E-mail', texto: 'contato@loboguaratech.com.br' },
+  { icone: FiMapPin, rotulo: 'Localização', texto: 'São Paulo, SP – FIAP' },
+  { icone: FiClock, rotulo: 'Resposta', texto: 'Em até 2 dias úteis' },
+];
 
 export default function Contato() {
   const [mensagemValidada, setMensagemValidada] = useState(false);
@@ -32,8 +39,12 @@ export default function Contato() {
     <main className="max-w-5xl mx-auto p-4 sm:p-6 space-y-12">
       <section className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
         <div className="space-y-6">
-          <div className="relative z-10 bg-[#fffbed]/90 rounded-2xl px-6 py-5 border border-[#ead9b6]/40 shadow-sm">
-            <h1 className="text-3xl font-extrabold text-[#a84312] mb-2">Fale Conosco</h1>
+          <div>
+            <span className="inline-block text-xs font-extrabold tracking-[0.14em] uppercase text-[#35685b] bg-[#e3efe9] rounded-full px-3 py-1 mb-3">
+              Contato
+            </span>
+            <h1 className="text-3xl sm:text-4xl font-extrabold text-[#a84312]">Fale Conosco</h1>
+            <div className="w-24 h-1.5 bg-[#D35400]/40 mt-4 mb-4 rounded-full"></div>
             <p className="text-stone-700 text-sm leading-relaxed">
               Conecte-se com a Lobo-guará Tech! Tem dúvidas sobre como funcionam os rankings e
               medalhas? Ou quer saber como sua empresa pode se tornar parceira do nosso ecossistema
@@ -41,20 +52,22 @@ export default function Contato() {
             </p>
           </div>
 
-          <address className="not-italic bg-stone-900 text-amber-50 p-6 rounded-2xl space-y-3 text-sm shadow-sm border border-stone-800">
-            <p className="break-words">
-              <strong className="text-white font-semibold">E-mail:</strong> contato@loboguaratech.com.br
-            </p>
-            <p>
-              <strong className="text-white font-semibold">Telefone:</strong> (11) 4002-8922
-            </p>
-            <p>
-              <strong className="text-white font-semibold">Localização:</strong> São Paulo, SP - FIAP
-            </p>
+          <address className="not-italic bg-white p-6 rounded-2xl space-y-4 text-sm border border-[#e3cfa8] shadow-[0_10px_28px_-14px_rgba(120,78,35,0.4)]">
+            {itensContato.map(({ icone: Icone, rotulo, texto }) => (
+              <p key={rotulo} className="flex items-center gap-3">
+                <span className="w-10 h-10 shrink-0 rounded-full bg-orange-100 text-[#D35400] flex items-center justify-center">
+                  <Icone className="text-lg" aria-hidden />
+                </span>
+                <span className="min-w-0">
+                  <span className="block text-xs font-bold uppercase tracking-wider text-stone-500">{rotulo}</span>
+                  <span className="block text-stone-800 break-words">{texto}</span>
+                </span>
+              </p>
+            ))}
           </address>
         </div>
 
-        <div className="bg-white p-6 sm:p-8 rounded-2xl border border-stone-200 shadow-sm">
+        <div className="bg-white p-6 sm:p-8 rounded-2xl border border-[#e3cfa8] shadow-[0_10px_28px_-14px_rgba(120,78,35,0.4)]">
           <p id="aviso-formulario" className="mb-5 text-sm text-stone-600 text-center">
             Envie a sua mensagem para a nossa equipa
           </p>

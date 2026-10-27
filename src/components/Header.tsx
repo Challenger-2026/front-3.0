@@ -63,9 +63,7 @@ export default function Header({ titulo }: CabecalhoProps) {
           </div>
         </Link>
 
-        <nav
-          aria-label="Navegação principal"
-          className="relative hidden lg:flex flex-wrap justify-center items-center gap-1 max-w-full p-2.5 sm:py-3 sm:px-5 bg-[#fffbed]/80 rounded-full backdrop-blur-[15px] border border-[#a86b2a]/25 shadow-[0_15px_35px_rgba(120,78,35,0.1)] transition-all duration-300 hover:bg-[#fffbed]/95 hover:shadow-[0_15px_35px_rgba(211,84,0,0.12)] focus-within:bg-[#fffbed]/95 focus-within:shadow-[0_15px_35px_rgba(211,84,0,0.12)]"
+        <nav aria-label="Navegação principal" className="relative hidden lg:flex flex-wrap justify-center items-center gap-1 max-w-full p-2.5 sm:py-3 sm:px-5 bg-white rounded-full border border-[#e3cfa8] shadow-[0_8px_22px_-10px_rgba(120,78,35,0.35)] transition-all duration-300 hover:shadow-[0_10px_26px_-10px_rgba(211,84,0,0.35)] focus-within:shadow-[0_10px_26px_-10px_rgba(211,84,0,0.35)]"
         >
           {itensMenu.map((item) => (
             <NavLink
