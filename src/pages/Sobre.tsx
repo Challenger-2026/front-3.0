@@ -151,7 +151,7 @@ export default function Sobre() {
                 </div>
               </div>
               
-              <div className="p-4 flex flex-col flex-grow text-left">
+              <div className="p-4 flex flex-col grow text-left">
                 <h3 className="text-base font-bold text-stone-900 mb-2">
                   {item.titulo}
                 </h3>
@@ -183,7 +183,7 @@ export default function Sobre() {
             </div>
             
             <div className="lg:col-span-8">
-              <div className="relative pl-6 space-y-6 before:content-[''] before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-[2px] before:bg-stone-300">
+              <div className="relative pl-6 space-y-6 before:content-[''] before:absolute before:left-2.75 before:top-2 before:bottom-2 before:w-0.5 before:bg-stone-300">
                 {etapasRoadmap.map((etapa) => (
                   <TimelineItem key={etapa.numero} {...etapa} />
                 ))}

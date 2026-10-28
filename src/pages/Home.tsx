@@ -68,9 +68,9 @@ export default function Home() {
 
 
   return (
-    <main className="relative w-[100vw] left-1/2 -translate-x-1/2 -mt-8">
+    <main className="relative w-screen left-1/2 -translate-x-1/2 -mt-8">
       
-      <section className="sticky top-0 h-[100vh] w-full flex flex-col items-center justify-center overflow-hidden">
+      <section className="sticky top-0 h-screen w-full flex flex-col items-center justify-center overflow-hidden">
         <video
           autoPlay
           loop
@@ -96,8 +96,8 @@ export default function Home() {
 
       <section className="relative z-20 bg-[#fffbed] pt-12 pb-24 px-4 sm:px-6 lg:px-8">
         
-        <div className="absolute top-0 left-0 w-full overflow-hidden leading-none -translate-y-[99%] drop-shadow-[0_-15px_15px_rgba(0,0,0,0.35)]">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none" className="relative block w-full h-[80px] sm:h-[120px] md:h-[160px]">
+        <div className="absolute top-0 left-0 w-full overflow-hidden leading-none translate-y-[-99%]">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none" className="relative block w-full h-20 sm:h-30 md:h-40">
             <path d="M0,15 C30,20 60,40 80,60 C110,90 130,115 160,115 C190,115 200,85 220,85 C240,85 250,105 280,105 C320,105 340,40 390,40 C420,40 450,70 480,70 C520,70 550,10 600,10 C650,10 680,55 730,55 C770,55 790,35 830,35 C870,35 890,65 940,65 C980,65 1010,25 1050,25 C1090,25 1130,65 1200,65 L1200,120 L0,120 Z" className="fill-[#fffbed]"></path>
           </svg>
         </div>
