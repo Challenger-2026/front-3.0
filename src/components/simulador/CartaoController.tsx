@@ -10,6 +10,7 @@ import {
 import { endpointsIa } from '../../data/ia';
 import { explicacoes } from '../../data/explicacoes';
 import { formatarHora } from '../../utils/formatadores';
+import BadgeMetodo from './BadgeMetodo'
 
 const chipsSituacao: Record<SituacaoApi, string> = {
   operacional: 'bg-emerald-100 text-emerald-800',
@@ -83,7 +84,8 @@ export default function CartaoController({ controller, resultado, horario }: Car
           {doServico.map((e) => (
             <li key={`${e.metodo} ${e.rota}`} className="py-2">
               <p className="font-mono text-xs">
-                <span className="font-bold">{e.metodo}</span> {e.rota}
+                <BadgeMetodo metodo={e.metodo} />
+{e.rota}
               </p>
               <p className="text-xs text-stone-600">{e.descricao}</p>
               <p className={`text-xs ${e.usado ? 'text-[#35685b]' : 'text-stone-400'}`}>{e.uso}</p>

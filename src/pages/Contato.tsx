@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import type { FormContatoInputs } from '../types/types';
 import Botao from '../components/Botao';
+import Reveal from '../components/Reveal';
 import { FiMail, FiMapPin, FiClock } from 'react-icons/fi';
 
 const itensContato = [
@@ -38,7 +39,7 @@ export default function Contato() {
   return (
     <main className="max-w-5xl mx-auto p-4 sm:p-6 space-y-12">
       <section className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
-        <div className="space-y-6">
+        <Reveal className="space-y-6">
           <div>
             <span className="inline-block text-xs font-extrabold tracking-[0.14em] uppercase text-[#35685b] bg-[#e3efe9] rounded-full px-3 py-1 mb-3">
               Contato
@@ -65,11 +66,11 @@ export default function Contato() {
               </p>
             ))}
           </address>
-        </div>
+        </Reveal>
 
-        <div className="bg-white p-6 sm:p-8 rounded-2xl border border-[#e3cfa8] shadow-[0_10px_28px_-14px_rgba(120,78,35,0.4)]">
+        <Reveal delay={100} className="bg-white p-6 sm:p-8 rounded-2xl border border-[#e3cfa8] shadow-[0_10px_28px_-14px_rgba(120,78,35,0.4)]">
           <p id="aviso-formulario" className="mb-5 text-sm text-stone-600 text-center">
-            Envie a sua mensagem para a nossa equipa
+            Envie a sua mensagem para a nossa equipe.
           </p>
 
           {mensagemValidada && (
@@ -178,7 +179,7 @@ export default function Contato() {
               {isSubmitting ? 'Enviando...' : 'Enviar mensagem'}
             </Botao>
           </form>
-        </div>
+        </Reveal>
       </section>
     </main>
   );

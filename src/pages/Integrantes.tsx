@@ -175,7 +175,7 @@ export default function Integrantes() {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 justify-items-center items-stretch mt-8">
         {listaIntegrantes.map((integrante, index) => (
           <Reveal key={integrante.rm} delay={300 + index * 100} className="w-full h-full flex justify-center">
-            <div className="w-full max-w-[220px] h-full flex flex-col transition-transform duration-300 hover:-translate-y-2 rounded-xl">
+            <div className="w-full max-w-[220px] h-full flex flex-col transition-transform duration-300 hover:-translate-y-1 rounded-xl">
               <CardIntegrante
                 nome={integrante.nome}
                 rm={integrante.rm}

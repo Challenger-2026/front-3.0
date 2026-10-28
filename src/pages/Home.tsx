@@ -159,7 +159,7 @@ export default function Home() {
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch w-full max-w-md lg:max-w-none">
             {listaResumo.map((item, index) => (
-              <Reveal key={item.titulo} delay={300 + index * 150}>
+              <Reveal key={item.titulo} delay={300 + index * 100}>
                 <CardMini {...item} />
               </Reveal>
             ))}

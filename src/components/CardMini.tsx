@@ -20,7 +20,7 @@ export default function CardMini({ titulo, descricao, frase, icone: Icone }: Car
     >
       
       <div 
-        className={`relative w-full h-full transition-all duration-700 [transform-style:preserve-3d] rounded-3xl shadow-sm hover:shadow-lg ${
+        className={`relative w-full h-full transition-all duration-500 [transform-style:preserve-3d] rounded-3xl shadow-sm hover:shadow-lg ${
           isFlipped ? '[transform:rotateY(180deg)]' : ''
         }`}
       >
