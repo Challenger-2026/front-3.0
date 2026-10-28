@@ -132,12 +132,7 @@ export default function Solucao() {
             const isAtivo = cardAtivo === card.id;
 
             return (
-              <div 
-                key={card.id} 
-                className={`transition-all duration-500 ease-in-out ${
-                  isAtivo ? 'col-span-1 sm:col-span-2 lg:col-span-3' : 'col-span-1'
-                }`}
-              >
+              <div key={card.id}>
                 <Reveal delay={index * 50}>
                   <CardPilar
                     imagem={card.imagem}
