@@ -13,11 +13,13 @@ export default function SimuladorCelular() {
       </p>
 
       <div className="grid items-start gap-8 lg:grid-cols-2">
-        <Celular>
-          <AppSoulUp>
-            <TelaAtual/>
-          </AppSoulUp>
-        </Celular>
+        <div className="lg:sticky lg:top-28">
+          <Celular>
+            <AppSoulUp>
+              <TelaAtual/>
+            </AppSoulUp>
+          </Celular>
+        </div>
 
         <div className="space-y-6">
           <PainelExplicacao/>

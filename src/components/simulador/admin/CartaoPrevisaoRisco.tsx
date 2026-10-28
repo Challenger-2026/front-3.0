@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { useForm, type SubmitHandler } from 'react-hook-form';
-import type { AtributosComportamento, ClasseRisco, PrevisaoRisco, UsuarioTeste } from '../../../types/types';
 import { apiIa } from '../../../services/apiIa';
 import { atributosIa } from '../../../data/ia';
 import Botao from '../../Botao';
 import ResultadoPrevisao from './ResultadoPrevisao';
+import type { AtributosComportamento, ClasseRisco, PrevisaoRisco, RegistroPrevisao, UsuarioTeste } from '../../../types/types';
 
 const classeCampo =
-  'w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm outline-none focus:border-[#D35400]';
+  'w-full rounded-lg border border-[#e3cfa8] bg-[#fdf8ec] px-3 py-2 text-sm outline-none focus:border-[#D35400] focus:bg-white';
 
 // Campo vazio vira null (a API preenche o ranking e o tempo); o resto vira número
 const paraNumero = (valor: string | number | null) => (valor === '' || valor === null ? null : Number(valor));
@@ -20,9 +20,10 @@ const mensagemErroIa = (err: unknown) =>
 
 type CartaoPrevisaoRiscoProps = {
   aoMudarEtapa: (etapa: 'inicio' | 'sorteado' | 'previsto') => void;
+  aoPrever: (registro: Omit<RegistroPrevisao, 'id' | 'horario'>) => void;
 };
 
-export default function CartaoPrevisaoRisco({ aoMudarEtapa }: CartaoPrevisaoRiscoProps) {
+export default function CartaoPrevisaoRisco({ aoMudarEtapa, aoPrever }: CartaoPrevisaoRiscoProps){
   const [usuario, setUsuario] = useState<UsuarioTeste | null>(null);
   const [previsao, setPrevisao] = useState<PrevisaoRisco | null>(null);
   const [rotuloComparado, setRotuloComparado] = useState<ClasseRisco | null>(null);
@@ -67,7 +68,14 @@ export default function CartaoPrevisaoRisco({ aoMudarEtapa }: CartaoPrevisaoRisc
       const resultado = await apiIa.preverRisco(dados);
       setPrevisao(resultado);
       // só compara com o rótulo real se os valores são exatamente os do usuário sorteado
-      setRotuloComparado(usuario && !isDirty ? usuario.rotulo_real : null);
+      const rotulo = usuario && !isDirty ? usuario.rotulo_real : null;
+      setRotuloComparado(rotulo);
+      aoPrever({
+        usuario: usuario ? `Teste ${usuario.usuario_id}${isDirty ? ' (alterado)' : ''}` : 'Preenchido à mão',
+        classe: resultado.classe,
+        probabilidade_risco: resultado.probabilidade_risco,
+        rotuloReal: rotulo,
+      });
       aoMudarEtapa('previsto');
     } catch (err) {
       setErroApi(mensagemErroIa(err));
@@ -77,7 +85,7 @@ export default function CartaoPrevisaoRisco({ aoMudarEtapa }: CartaoPrevisaoRisc
   const aguardando = sorteando || isSubmitting;
 
   return (
-    <section className="space-y-5 rounded-2xl border border-[#ead9b6] bg-[#fffbed]/95 p-6 shadow-[0_15px_35px_rgba(120,78,35,0.1)]">
+    <section className="space-y-5 rounded-2xl border border-[#e3cfa8] bg-white p-6 shadow-[0_10px_28px_-14px_rgba(120,78,35,0.4)]">
       <div>
         <h2 className="text-2xl font-extrabold text-[#a84312]">Previsão de risco de abandono</h2>
         <p className="mt-1 text-sm text-stone-600">

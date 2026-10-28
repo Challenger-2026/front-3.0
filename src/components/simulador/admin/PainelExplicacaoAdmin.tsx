@@ -10,7 +10,7 @@ export default function PainelExplicacaoAdmin({ proximaAcao }: PainelExplicacaoA
   return (
     <section
       aria-live="polite"
-      className="rounded-2xl border border-[#ead9b6] bg-[#fffbed]/95 p-6 shadow-[0_15px_35px_rgba(120,78,35,0.1)]"
+      className="rounded-2xl border border-[#e3cfa8] bg-white p-6 shadow-[0_10px_28px_-14px_rgba(120,78,35,0.4)]"
     >
       <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#35685b]">Você está vendo</p>
       <h2 className="mt-1 text-2xl font-extrabold text-[#a84312]">{explicacaoAdmin.titulo}</h2>
@@ -26,7 +26,7 @@ export default function PainelExplicacaoAdmin({ proximaAcao }: PainelExplicacaoA
         ))}
       </ul>
 
-      <div className="mt-5 rounded-lg border border-[#ead9b6] bg-white/70 px-4 py-3">
+        <div className="mt-5 rounded-lg border border-[#f0e2c4] bg-[#fdf8ec] px-4 py-3">
         <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#35685b]">Endpoints desta tela</p>
         <p className="mt-1 break-all font-mono text-[11px] text-stone-500">API Python (Flask) em {IA_URL}</p>
         <ul className="mt-2 space-y-2">
@@ -41,7 +41,7 @@ export default function PainelExplicacaoAdmin({ proximaAcao }: PainelExplicacaoA
         </ul>
       </div>
 
-      <p className="mt-5 rounded-lg bg-[#f9e8c9] px-4 py-3 text-sm font-semibold text-[#66513c]">👉 {proximaAcao}</p>
+      <p className="mt-5 rounded-lg border-l-4 border-[#D35400] bg-[#fff4e6] px-4 py-3 text-sm font-semibold text-[#7c2d12]">👉 {proximaAcao}</p>
     </section>
   );
 }
