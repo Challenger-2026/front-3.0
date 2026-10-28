@@ -717,3 +717,11 @@ export interface PrevisaoRisco {
   orientacoes: OrientacaoRetencao[]; // até 2; vazia quando nada aumenta o risco
   valores_usados: Record<AtributoComportamento, number>; // já com os vazios preenchidos
 }
+
+// Uma linha do histórico da aba Admin (Demonstração: fica só no navegador, enquanto a aba está aberta)
+export type RegistroPrevisao = Pick<PrevisaoRisco, 'classe' | 'probabilidade_risco'> & {
+  id: number;
+  horario: string; // ISO
+  usuario: string; // "Teste 12", "Teste 12 (alterado)" ou "Preenchido à mão"
+  rotuloReal: ClasseRisco | null; // null: sem rótulo para comparar
+};

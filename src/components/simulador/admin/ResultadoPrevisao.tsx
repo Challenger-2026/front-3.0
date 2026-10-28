@@ -11,7 +11,7 @@ export default function ResultadoPrevisao({ previsao, rotuloReal }: ResultadoPre
   const acertou = rotuloReal === previsao.classe;
 
   return (
-    <div className="animate-fade-in space-y-4 rounded-xl border border-[#ead9b6] bg-white/80 p-4">
+    <div className="animate-fade-in space-y-4 rounded-xl border border-[#f0e2c4] bg-[#fdf8ec] p-4">
       <div className="flex flex-wrap items-center gap-2">
         <span className={`rounded-full px-3 py-1 text-sm font-bold ${coresClasse[previsao.classe]}`}>
           {textosClasse[previsao.classe]}

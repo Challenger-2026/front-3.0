@@ -37,7 +37,7 @@ export default function StatusApi() {
         Mede um GET de cada controller da API Java e mostra onde cada endpoint aparece no simulador.
       </p>
 
-      <section className="overflow-hidden rounded-2xl border border-[#ead9b6] bg-[#fffbed]/95 shadow-[0_15px_35px_rgba(120,78,35,0.1)]">
+      <section className="overflow-hidden rounded-2xl border border-[#e3cfa8] bg-white shadow-[0_10px_28px_-14px_rgba(120,78,35,0.4)]">
         <div className={`px-6 py-4 text-white ${situacaoGeral ? resumos[situacaoGeral].classe : 'bg-stone-500'}`}>
           <h2 className="text-xl font-extrabold">{situacaoGeral ? resumos[situacaoGeral].titulo : 'Verificando a API…'}</h2>
           <p className="text-sm text-white/90">
@@ -62,7 +62,7 @@ export default function StatusApi() {
           </Botao>
         </div>
 
-        <p className="border-t border-[#ead9b6] bg-[#f9e8c9] px-6 py-3 text-sm text-[#66513c]">
+        <p className="border-t border-[#f0e2c4] bg-[#fdf8ec] px-6 py-3 text-sm text-stone-600">
           Demonstração: o histórico guarda só as últimas {LIMITE_VERIFICACOES} verificações desta sessão e some ao
           recarregar a página.
           {USANDO_JSON_SERVER &&

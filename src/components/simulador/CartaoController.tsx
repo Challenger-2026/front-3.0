@@ -42,7 +42,7 @@ export default function CartaoController({ controller, verificacoes }: CartaoCon
   const doController = endpoints.filter((e) => e.controller === controller);
 
   return (
-    <article className="rounded-2xl border border-[#ead9b6] bg-[#fffbed]/95 p-5 shadow-[0_15px_35px_rgba(120,78,35,0.08)]">
+      <article className="rounded-2xl border border-[#e3cfa8] bg-white p-5 shadow-[0_10px_28px_-14px_rgba(120,78,35,0.4)]">
       <div className="flex flex-wrap items-start justify-between gap-2">
         <div>
           <h3 className="text-lg font-extrabold text-[#a84312]">{nomesControllers[controller]}</h3>
@@ -86,7 +86,7 @@ export default function CartaoController({ controller, verificacoes }: CartaoCon
         <summary className="cursor-pointer text-sm font-semibold text-[#35685b]">
           {doController.length} endpoints e onde aparecem
         </summary>
-        <ul className="mt-2 divide-y divide-[#ead9b6]">
+        <ul className="mt-2 divide-y divide-[#f3e9d6]">
           {doController.map((e) => (
             <li key={`${e.metodo} ${e.rota}`} className="py-2">
               <p className="font-mono text-xs">
