@@ -1,4 +1,4 @@
-import type { ControllerJava, EndpointJava, SituacaoApi, TelaId } from '../types/types';
+import type { ControllerJava, EndpointJava, ServicoStatus, SituacaoApi, TelaId } from '../types/types';
 
 // Os 23 endpoints da API Java (Guara/controller) e as telas do simulador que chamam cada um.
 // Usado pela página de status e pelo bloco "Endpoint desta tela" do painel de explicação.
@@ -190,11 +190,11 @@ export const rotasVerificacao: Record<ControllerJava, string> = {
   ModeracaoController: '/moderacoes',
 };
 
+// A API de IA não tem um GET de listagem: a verificação usa o sorteio (o mesmo da aba Admin)
+export const ROTA_VERIFICACAO_IA = '/sortear';
+
 // Acima disso a resposta conta como lenta
 export const LIMITE_LENTA_MS = 1000;
-
-// Quantas verificações ficam guardadas na sessão (barras da página de status)
-export const LIMITE_VERIFICACOES = 20;
 
 // Sem resposta ou com erro → fora; resposta demorada → lenta
 export const situacaoDe = (status: number | null, tempoMs: number): SituacaoApi => {
@@ -203,11 +203,12 @@ export const situacaoDe = (status: number | null, tempoMs: number): SituacaoApi 
 };
 
 // Nome curto de cada controller nos cartões
-export const nomesControllers: Record<ControllerJava, string> = {
+export const nomesControllers: Record<ServicoStatus, string> = {
   UsuarioController: 'Usuários',
   ComunidadeController: 'Comunidades',
   PostagemController: 'Postagens',
   ModeracaoController: 'Moderações',
+  ApiIa: 'Previsão de risco',
 };
 
 export const textosSituacao: Record<SituacaoApi, string> = {

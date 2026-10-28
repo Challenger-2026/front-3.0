@@ -6,28 +6,32 @@ import type {
   RegistroRequisicao,
   RequisicoesContextType,
   ResultadoVerificacao,
+  ServicoStatus,
   VerificacaoApi,
 } from '../types/types';
 import { ouvirRequisicoes } from '../services/http';
 import { api } from '../services/api';
-import { LIMITE_VERIFICACOES, rotasVerificacao, situacaoDe } from '../data/endpoints';
+import { apiIa } from '../services/apiIa';
+import { ROTA_VERIFICACAO_IA, rotasVerificacao, situacaoDe } from '../data/endpoints';
 
 // Quantas linhas o painel guarda de cada tipo (do Java e de apoio do json-server)
 const LIMITE_REQUISICOES = 20;
 
-// O GET sem parâmetro de cada controller: as mesmas funções que o simulador usa ao abrir
-const chamadasVerificacao: Record<ControllerJava, () => Promise<unknown>> = {
+// O GET de cada serviço: as mesmas funções que o simulador usa (a da IA é o sorteio da aba Admin)
+const chamadasVerificacao: Record<ServicoStatus, () => Promise<unknown>> = {
   UsuarioController: api.getUsuarios,
   ComunidadeController: api.getComunidades,
   PostagemController: api.getPostagens,
   ModeracaoController: api.getModeracoes,
+  ApiIa: apiIa.sortearUsuario,
 };
 
-const controllers = Object.keys(rotasVerificacao) as ControllerJava[];
+// Os 4 controllers do Java e, por último, a API de IA
+const servicos: ServicoStatus[] = [...(Object.keys(rotasVerificacao) as ControllerJava[]), 'ApiIa'];
 
-// Mede o GET de um controller. Nunca lança erro: a falha vira um resultado "fora".
-const medir = async (controller: ControllerJava): Promise<ResultadoVerificacao> => {
-  const rota = rotasVerificacao[controller];
+// Mede o GET de um serviço. Nunca lança erro: a falha vira um resultado "fora".
+const medir = async (controller: ServicoStatus): Promise<ResultadoVerificacao> => {
+  const rota = controller === 'ApiIa' ? ROTA_VERIFICACAO_IA : rotasVerificacao[controller];
   const inicio = Date.now();
   try {
     await chamadasVerificacao[controller]();
@@ -58,7 +62,7 @@ export const RequisicoesProvider = ({ children }: { children: ReactNode }) => {
   const [requisicoes, setRequisicoes] = useState<RegistroRequisicao[]>([]);
 
   // ----- Página de status -----
-  const [verificacoes, setVerificacoes] = useState<VerificacaoApi[]>([]);
+  const [ultimaVerificacao, setUltimaVerificacao] = useState<VerificacaoApi | null>(null);
   const [verificando, setVerificando] = useState<boolean>(false);
 
   // Ouve cada chamada do services/http.ts; o retorno para de ouvir quando o Simulador fecha
@@ -76,14 +80,12 @@ export const RequisicoesProvider = ({ children }: { children: ReactNode }) => {
 
   const limparRequisicoes = useCallback(() => setRequisicoes([]), []);
 
-  // Mede os 4 controllers ao mesmo tempo e guarda a verificação (últimas 20 da sessão)
+  // Mede os 4 controllers e a API de IA ao mesmo tempo e guarda só essa verificação
   const verificarAgora = useCallback(async () => {
     setVerificando(true);
     const horario = new Date().toISOString();
-    const resultados = await Promise.all(controllers.map(medir));
-    setVerificacoes((anteriores) =>
-      [{ id: (anteriores[0]?.id ?? 0) + 1, horario, resultados }, ...anteriores].slice(0, LIMITE_VERIFICACOES),
-    );
+    const resultados = await Promise.all(servicos.map(medir));
+    setUltimaVerificacao((anterior) => ({ id: (anterior?.id ?? 0) + 1, horario, resultados }));
     setVerificando(false);
   }, []);
 
@@ -92,7 +94,7 @@ export const RequisicoesProvider = ({ children }: { children: ReactNode }) => {
       value={{
         requisicoes,
         limparRequisicoes,
-        verificacoes,
+        ultimaVerificacao,
         verificando,
         verificarAgora,
       }}
