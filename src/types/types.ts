@@ -203,6 +203,9 @@ export interface RegistroRequisicao {
 // Os 4 controllers da API Java (Guara/controller)
 export type ControllerJava = 'UsuarioController' | 'ComunidadeController' | 'PostagemController' | 'ModeracaoController';
 
+// O que a página de status mede: os 4 controllers da API Java e a API de IA (Python)
+export type ServicoStatus = ControllerJava | 'ApiIa';
+
 // Um endpoint do Java e as telas do simulador que o chamam (catálogo em data/endpoints.ts)
 export interface EndpointJava {
   metodo: Exclude<MetodoRequisicao, 'PATCH'>; // o Java não tem PATCH
@@ -218,7 +221,7 @@ export type SituacaoApi = 'operacional' | 'lenta' | 'fora';
 
 // Resultado do GET de um controller em uma verificação
 export type ResultadoVerificacao = Pick<RegistroRequisicao, 'status' | 'tempoMs' | 'erro'> & {
-  controller: ControllerJava;
+  controller: ServicoStatus;
   rota: string;
   situacao: SituacaoApi;
 };
@@ -232,7 +235,7 @@ export type VerificacaoApi = Pick<RegistroRequisicao, 'id' | 'horario'> & {
 export interface RequisicoesContextType {
   requisicoes: RegistroRequisicao[]; // mais novas primeiro: até 20 do Java e até 20 de apoio do json-server
   limparRequisicoes: () => void;
-  verificacoes: VerificacaoApi[]; // últimas 20 da sessão, mais nova primeiro
+  ultimaVerificacao: VerificacaoApi | null; // só a mais recente (null: ainda não verificou)
   verificando: boolean;
   verificarAgora: () => Promise<void>;
 }

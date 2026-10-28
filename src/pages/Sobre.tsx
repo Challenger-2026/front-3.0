@@ -75,15 +75,17 @@ export default function Sobre() {
     
       <section aria-labelledby="contexto-title" className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <Reveal>
+          <span className="inline-block text-xs font-extrabold tracking-[0.14em] uppercase text-[#35685b] bg-[#e3efe9] rounded-full px-3 py-1 mb-3">
+            Contexto
+          </span>
+          <h1 id="contexto-title" className="text-3xl sm:text-4xl font-extrabold text-[#a84312]">
+            Contexto e o Problema
+          </h1>
+          <div className="w-24 h-1.5 bg-[#D35400]/40 mt-4 mb-6 rounded-full"></div>
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
             
             <div>
-              <h1
-                id="contexto-title"
-                className="text-2xl sm:text-3xl font-black text-stone-900 mb-4 leading-tight"
-              >
-                Contexto e o <br/><span className="text-[#D35400]">Problema</span>
-              </h1>
               <div className="bg-[#1C1C1C] text-white p-5 rounded-2xl shadow-sm border border-stone-800">
                 <span className="text-4xl font-black text-[#D35400] block mb-1">60%</span>
                 <p className="text-stone-200 text-sm font-semibold mb-3 leading-snug">
@@ -95,14 +97,14 @@ export default function Sobre() {
               </div>
             </div>
 
-            <div className="border-l-2 border-[#D35400] pl-4 md:mt-2">
+            <div className="h-full rounded-2xl border border-[#e3cfa8] border-l-4 border-l-[#D35400] bg-white p-5 shadow-[0_10px_28px_-14px_rgba(120,78,35,0.4)]">
               <h2 className="text-lg font-bold text-stone-900 mb-2">Sociedade 5.0</h2>
               <p className="text-stone-600 text-sm leading-relaxed">
                 Vivemos na era da Sociedade 5.0, onde a tecnologia deve servir ao bem-estar humano. No entanto, enfrentamos um paradoxo: estamos mais conectados do que nunca, mas desconectados das urgências ambientais do nosso próprio bioma.
               </p>
             </div>
             
-            <div className="border-l-2 border-[#D35400] pl-4 md:mt-2">
+            <div className="h-full rounded-2xl border border-[#e3cfa8] border-l-4 border-l-[#D35400] bg-white p-5 shadow-[0_10px_28px_-14px_rgba(120,78,35,0.4)]">
               <h2 className="text-lg font-bold text-stone-900 mb-2">Falha no engajamento</h2>
               <p className="text-stone-600 text-sm leading-relaxed">
                 O grande desafio atual não é apenas a falta de informação, mas a falha no engajamento. Ações sustentáveis são vistas como tarefas isoladas e cansativas, sem um retorno imediato ou social que motive a constância.
@@ -116,13 +118,14 @@ export default function Sobre() {
   
       <section aria-labelledby="solucao-title" className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <Reveal>
-          <div className="mb-6">
-            <h2
-              id="solucao-title"
-              className="text-2xl sm:text-3xl font-black text-stone-900"
-            >
-              A Solução <span className="text-[#D35400]">Lobo-guará Tech</span>
+          <div>
+            <span className="inline-block text-xs font-extrabold tracking-[0.14em] uppercase text-[#35685b] bg-[#e3efe9] rounded-full px-3 py-1 mb-3">
+              Solução
+            </span>
+            <h2 id="solucao-title" className="text-3xl sm:text-4xl font-extrabold text-[#a84312]">
+              A Solução Lobo-guará Tech
             </h2>
+            <div className="w-24 h-1.5 bg-[#D35400]/40 mt-4 mb-6 rounded-full"></div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -166,12 +169,13 @@ export default function Sobre() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             
             <div className="lg:col-span-4 lg:sticky lg:top-24">
-              <h2
-                id="roadmap-title"
-                className="text-2xl sm:text-3xl font-black text-stone-900 mb-2"
-              >
-                Roadmap de <span className="text-[#D35400]">Desenvolvimento</span>
+              <span className="inline-block text-xs font-extrabold tracking-[0.14em] uppercase text-[#35685b] bg-[#e3efe9] rounded-full px-3 py-1 mb-3">
+                Roadmap
+              </span>
+              <h2 id="roadmap-title" className="text-3xl sm:text-4xl font-extrabold text-[#a84312]">
+                Roadmap de Desenvolvimento
               </h2>
+              <div className="w-24 h-1.5 bg-[#D35400]/40 mt-4 mb-4 rounded-full"></div>
               <p className="text-sm text-stone-600">
                 Os passos fundamentais para a consolidação da plataforma.
               </p>

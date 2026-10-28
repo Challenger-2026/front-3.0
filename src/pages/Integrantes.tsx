@@ -138,9 +138,12 @@ export default function Integrantes() {
     <main className="w-full max-w-7xl mx-auto px-4 py-6 text-center overflow-hidden">
       <section className="grid md:grid-cols-5 gap-8 md:gap-10 items-center text-left mb-12">
         <Reveal className="md:col-span-2">
-          <p className="text-xs font-bold tracking-widest text-[#2F5D50] uppercase">Quem somos</p>
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-[#a84312] mt-1">Nossa Equipe</h1>
-          <p className="text-xl sm:text-2xl font-extrabold text-stone-900 leading-snug mt-4">
+          <span className="inline-block text-xs font-extrabold tracking-[0.14em] uppercase text-[#35685b] bg-[#e3efe9] rounded-full px-3 py-1 mb-3">
+            Quem somos
+          </span>
+          <h1 className="text-3xl sm:text-4xl font-extrabold text-[#a84312]">Nossa Equipe</h1>
+          <div className="w-24 h-1.5 bg-[#D35400]/40 mt-4 mb-4 rounded-full"></div>
+          <p className="text-xl sm:text-2xl font-extrabold text-stone-900 leading-snug">
             Linhas de código como ferramentas para{' '}
             <span className="text-orange-700">proteger a biodiversidade</span>.
           </p>
