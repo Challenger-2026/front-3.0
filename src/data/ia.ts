@@ -1,4 +1,4 @@
-import type { AtributoComportamento, ClasseRisco, Explicacao, PerfilEngajamento } from '../types/types';
+import type { AtributoComportamento, ClasseRisco, EndpointJava, Explicacao, PerfilEngajamento } from '../types/types';
 
 // Nome de cada comportamento no formulário (os campos seguem os nomes da API Python)
 export const atributosIa: { campo: AtributoComportamento; nome: string; ajuda: string; opcional?: boolean }[] = [
@@ -43,7 +43,7 @@ export const coresPerfil: Record<PerfilEngajamento, string> = {
 };
 
 // Endpoints da API Python usados nesta aba
-export const endpointsIa = [
+export const endpointsIa: Pick<EndpointJava, 'metodo' | 'rota' | 'descricao'>[] = [
   { metodo: 'GET', rota: '/sortear', descricao: 'Sorteia um dos 50 usuários de teste, com o rótulo real' },
   {
     metodo: 'POST',

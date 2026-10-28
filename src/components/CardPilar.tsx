@@ -10,7 +10,7 @@ export default function CardPilar({ imagem, titulo, descricao, ativo, onClick }:
   return (
     <article
       onClick={onClick}
-      className="group relative w-full h-[380px] rounded-3xl overflow-hidden cursor-pointer bg-stone-900 shadow-sm hover:shadow-xl transition-shadow duration-500"
+      className="group relative w-full h-[380px] rounded-3xl overflow-hidden cursor-pointer bg-stone-900 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 ease-out"
     >
       <img
         src={imagem}

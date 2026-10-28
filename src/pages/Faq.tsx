@@ -47,7 +47,7 @@ export default function Faq() {
       <div className="space-y-4">
         {listaFaq.map((item, index) => (
           /* 3. Efeito escadinha (cascata) multiplicando o index */
-          <Reveal key={item.pergunta} delay={index * 150}>
+          <Reveal key={item.pergunta} delay={index * 100}>
             <FaqItem
               indice={index}
               pergunta={item.pergunta}

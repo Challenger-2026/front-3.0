@@ -1,5 +1,6 @@
 import { endpointsIa, explicacaoAdmin } from '../../../data/ia';
 import { IA_URL } from '../../../services/http';
+import BadgeMetodo from '../BadgeMetodo';
 
 type PainelExplicacaoAdminProps = {
   proximaAcao: string;
@@ -33,7 +34,7 @@ export default function PainelExplicacaoAdmin({ proximaAcao }: PainelExplicacaoA
           {endpointsIa.map((e) => (
             <li key={`${e.metodo} ${e.rota}`}>
               <p className="font-mono text-xs text-stone-800">
-                <span className="font-bold">{e.metodo}</span> {e.rota}
+                <BadgeMetodo metodo={e.metodo} /> {e.rota}
               </p>
               <p className="text-xs text-stone-600">{e.descricao}</p>
             </li>

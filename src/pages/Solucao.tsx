@@ -102,14 +102,14 @@ export default function Solucao() {
             </div>
 
             <div className="lg:w-7/12 grid grid-cols-1 sm:grid-cols-2 gap-5 w-full">
-              <div className="bg-[#1C1C1C] p-6 rounded-2xl border border-stone-800 shadow-md transition-transform hover:-translate-y-1">
+              <div className="bg-[#1C1C1C] p-6 rounded-2xl border border-stone-800 shadow-md">
                 <h2 className="text-lg font-bold text-[#D35400] mb-2">União e Tecnologia</h2>
                 <p className="text-stone-300 text-sm leading-relaxed">
                   Através de validação comunitária e incentivos reais, conectamos pessoas em prol de um ecossistema mais sustentável e colaborativo.
                 </p>
               </div>
               
-              <div className="bg-[#1C1C1C] p-6 rounded-2xl border border-stone-800 shadow-md transition-transform hover:-translate-y-1">
+              <div className="bg-[#1C1C1C] p-6 rounded-2xl border border-stone-800 shadow-md">
                 <h2 className="text-lg font-bold text-[#D35400] mb-2">Hábitos Mensuráveis</h2>
                 <p className="text-stone-300 text-sm leading-relaxed">
                   Transformamos a conscientização ecológica em ações práticas, desenvolvendo hábitos que são diários, constantes e mensuráveis.
@@ -133,7 +133,7 @@ export default function Solucao() {
 
             return (
               <div key={card.id}>
-                <Reveal delay={index * 50}>
+                <Reveal delay={index * 100}>
                   <CardPilar
                     imagem={card.imagem}
                     titulo={card.titulo}
@@ -160,8 +160,8 @@ export default function Solucao() {
 
             <ol className="grid grid-cols-1 md:grid-cols-3 gap-6 list-none">
               {listaEtapas.map((etapa, index) => (
-                <Reveal key={etapa.numero} delay={150 + index * 200}>
-                  <li className="bg-[#242424] border border-stone-800 rounded-2xl p-6 flex flex-col items-center text-center relative transition-transform duration-300 hover:-translate-y-1 shadow-sm h-full">
+                <Reveal key={etapa.numero} delay={100 + index * 100}>
+                  <li className="bg-[#242424] border border-stone-800 rounded-2xl p-6 flex flex-col items-center text-center relative shadow-sm h-full">
                     <span className="w-10 h-10 rounded-full bg-[#D35400] text-white font-bold flex items-center justify-center text-sm mb-4 shadow">
                       {etapa.numero}
                     </span>

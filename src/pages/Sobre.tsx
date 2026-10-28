@@ -82,37 +82,37 @@ export default function Sobre() {
             Contexto e o Problema
           </h1>
           <div className="w-24 h-1.5 bg-[#D35400]/40 mt-4 mb-6 rounded-full"></div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
-            
-            <div>
-              <div className="bg-[#1C1C1C] text-white p-5 rounded-2xl shadow-sm border border-stone-800">
-                <span className="text-4xl font-black text-[#D35400] block mb-1">60%</span>
-                <p className="text-stone-200 text-sm font-semibold mb-3 leading-snug">
-                  do Cerrado pode desaparecer sem inovação.
-                </p>
-                <p className="text-xs text-stone-400 border-t border-stone-700 pt-3">
-                  Berço das águas do Brasil; impacta bacias de todo o continente sul-americano.
-                </p>
-              </div>
-            </div>
-
-            <div className="h-full rounded-2xl border border-[#e3cfa8] border-l-4 border-l-[#D35400] bg-white p-5 shadow-[0_10px_28px_-14px_rgba(120,78,35,0.4)]">
-              <h2 className="text-lg font-bold text-stone-900 mb-2">Sociedade 5.0</h2>
-              <p className="text-stone-600 text-sm leading-relaxed">
-                Vivemos na era da Sociedade 5.0, onde a tecnologia deve servir ao bem-estar humano. No entanto, enfrentamos um paradoxo: estamos mais conectados do que nunca, mas desconectados das urgências ambientais do nosso próprio bioma.
-              </p>
-            </div>
-            
-            <div className="h-full rounded-2xl border border-[#e3cfa8] border-l-4 border-l-[#D35400] bg-white p-5 shadow-[0_10px_28px_-14px_rgba(120,78,35,0.4)]">
-              <h2 className="text-lg font-bold text-stone-900 mb-2">Falha no engajamento</h2>
-              <p className="text-stone-600 text-sm leading-relaxed">
-                O grande desafio atual não é apenas a falta de informação, mas a falha no engajamento. Ações sustentáveis são vistas como tarefas isoladas e cansativas, sem um retorno imediato ou social que motive a constância.
-              </p>
-            </div>
-
-          </div>
         </Reveal>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
+          
+          <Reveal>
+            <div className="bg-[#1C1C1C] text-white p-5 rounded-2xl shadow-sm border border-stone-800">
+              <span className="text-4xl font-black text-[#D35400] block mb-1">60%</span>
+              <p className="text-stone-200 text-sm font-semibold mb-3 leading-snug">
+                do Cerrado pode desaparecer sem inovação.
+              </p>
+              <p className="text-xs text-stone-400 border-t border-stone-700 pt-3">
+                Berço das águas do Brasil; impacta bacias de todo o continente sul-americano.
+              </p>
+            </div>
+          </Reveal>
+
+          <Reveal delay={100} className="h-full rounded-2xl border border-[#e3cfa8] border-l-4 border-l-[#D35400] bg-white p-5 shadow-[0_10px_28px_-14px_rgba(120,78,35,0.4)]">
+            <h2 className="text-lg font-bold text-stone-900 mb-2">Sociedade 5.0</h2>
+            <p className="text-stone-600 text-sm leading-relaxed">
+              Vivemos na era da Sociedade 5.0, onde a tecnologia deve servir ao bem-estar humano. No entanto, enfrentamos um paradoxo: estamos mais conectados do que nunca, mas desconectados das urgências ambientais do nosso próprio bioma.
+            </p>
+          </Reveal>
+          
+          <Reveal delay={200} className="h-full rounded-2xl border border-[#e3cfa8] border-l-4 border-l-[#D35400] bg-white p-5 shadow-[0_10px_28px_-14px_rgba(120,78,35,0.4)]">
+            <h2 className="text-lg font-bold text-stone-900 mb-2">Falha no engajamento</h2>
+            <p className="text-stone-600 text-sm leading-relaxed">
+              O grande desafio atual não é apenas a falta de informação, mas a falha no engajamento. Ações sustentáveis são vistas como tarefas isoladas e cansativas, sem um retorno imediato ou social que motive a constância.
+            </p>
+          </Reveal>
+
+        </div>
       </section>
 
   
@@ -127,40 +127,41 @@ export default function Sobre() {
             </h2>
             <div className="w-24 h-1.5 bg-[#D35400]/40 mt-4 mb-6 rounded-full"></div>
           </div>
+        </Reveal>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {cardsSolucao.map((item, index) => (
-              <div 
-                key={item.numero} 
-                className="bg-white flex flex-col h-full border border-stone-200 rounded-xl overflow-hidden shadow-sm transition-colors hover:border-[#D35400]/50"
-              >
-                
-                <div className="w-full relative">
-                  <video
-                    src={visuaisDireita[index].video}
-                    autoPlay
-                    loop
-                    muted
-                    playsInline
-                    className="w-full h-auto block opacity-90"
-                  />
-                  <div className="absolute top-2 left-2 bg-[#D35400] text-white text-[10px] font-black px-1.5 py-0.5 rounded-sm z-10">
-                    {item.numero}
-                  </div>
-                </div>
-                
-                <div className="p-4 flex flex-col flex-grow text-left">
-                  <h3 className="text-base font-bold text-stone-900 mb-2">
-                    {item.titulo}
-                  </h3>
-                  <p className="text-xs text-stone-600 leading-relaxed">
-                    {item.descricao}
-                  </p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {cardsSolucao.map((item, index) => (
+            <Reveal
+              key={item.numero}
+              delay={index * 100}
+              className="bg-white flex flex-col h-full border border-stone-200 rounded-xl overflow-hidden shadow-sm"
+            >
+              
+              <div className="w-full relative">
+                <video
+                  src={visuaisDireita[index].video}
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  className="w-full h-auto block opacity-90"
+                />
+                <div className="absolute top-2 left-2 bg-[#D35400] text-white text-[10px] font-black px-1.5 py-0.5 rounded-sm z-10">
+                  {item.numero}
                 </div>
               </div>
-            ))}
-          </div>
-        </Reveal>
+              
+              <div className="p-4 flex flex-col flex-grow text-left">
+                <h3 className="text-base font-bold text-stone-900 mb-2">
+                  {item.titulo}
+                </h3>
+                <p className="text-xs text-stone-600 leading-relaxed">
+                  {item.descricao}
+                </p>
+              </div>
+            </Reveal>
+          ))}
+        </div>
       </section>
 
      

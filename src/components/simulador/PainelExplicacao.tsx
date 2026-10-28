@@ -3,6 +3,7 @@ import { explicacoes } from '../../data/explicacoes';
 import { endpointsDaTela } from '../../data/endpoints';
 import { useSimulador } from '../../hooks/useSimulador';
 import Botao from '../Botao';
+import BadgeMetodo from './BadgeMetodo'
 
 export default function PainelExplicacao() {
   const { telaAtual, reiniciar } = useSimulador();
@@ -42,7 +43,8 @@ export default function PainelExplicacao() {
             {endpointsTela.map((e) => (
               <li key={`${e.metodo} ${e.rota}`}>
                 <p className="font-mono text-xs text-stone-800">
-                  <span className="font-bold">{e.metodo}</span> {e.rota}
+                  <BadgeMetodo metodo={e.metodo} />
+{e.rota}
                 </p>
                 <p className="text-xs text-stone-600">{e.descricao}</p>
               </li>
