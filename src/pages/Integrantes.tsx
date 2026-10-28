@@ -19,9 +19,12 @@ const listaIntegrantes: IntegranteProps[] = [
     foto: foto1,
     funcao: 'Líder de Projeto',
     contribuicao: [
-      'Gestão e Qualidade: Coordenação do fluxo da equipe, controle de prazos e revisão final de código e conformidade dos artefatos.',
-      'Banco de Dados: Modelagem física no Oracle Data Modeler e geração do script DDL com constraints de integridade (PK, FK, CHECK, UNIQUE).',
-      'Engenharia de Software: Validação das regras de negócio e suporte na estruturação dos diagramas de casos de uso e atividades.',
+      'Gestão e Qualidade: Coordenação do fluxo da equipe com Git Flow, controle de prazos e revisão final do código e dos artefatos de todas as disciplinas.',
+      'Engenharia de Software: Business Model Canvas, análise de concorrência, precificação, retorno esperado para o cliente, SLA e versão final do MVP.',
+      'Inteligência Artificial: Treinamento de dois modelos de aprendizado de máquina e disponibilização de um deles em API REST, usada na aba Admin (IA) do simulador.',
+      'Banco de Dados: Modelagem física no Oracle Data Modeler, script DDL com constraints, carga inicial com INSERTs e consultas SQL com JOIN, GROUP BY e agregações.',
+      'Java: Apoio na API Restful em Spring Boot, com os endpoints consumidos pelo front-end.',
+      'Front-End: Simulador Lobo-guará Tech em React + TypeScript, integração com as APIs Java e de IA e padronização visual com Tailwind CSS.',
     ],
     github: 'https://github.com/anabautzer',
     linkedin: 'https://www.linkedin.com/in/ana-bautzer/',
@@ -36,6 +39,7 @@ const listaIntegrantes: IntegranteProps[] = [
       'Arquitetura e SPA: Migração para React, Vite e TypeScript com rotas dinâmicas via React Router.',
       'Interface e Estilo: Componentização modular e layout 100% responsivo com Tailwind CSS.',
       'Formulários e Regras: Validação reativa com React Hook Form tipado e acessibilidade semântica.',
+      'Responsividade e Deploy: Adaptação para mobile, tablet e desktop e publicação da aplicação na Vercel.',
     ],
     github: 'https://github.com/duduutech',
     linkedin: 'https://www.linkedin.com/in/duduulimatech/',
@@ -73,11 +77,12 @@ const listaIntegrantes: IntegranteProps[] = [
     rm: '573178',
     turma: '1TDSPW',
     foto: foto5,
-    funcao: 'Java',
+    funcao: 'Java e Python',
     contribuicao: [
-      'Modelagem & OOP: Estruturação das entidades da camada Model com encapsulamento, construtores e métodos de acesso.',
-      'Regras de Negócio: Implementação dos métodos principais com a lógica da solução e classe executável de testes.',
-      'Persistência & DAO: Configuração da classe de conexão JDBC e operações completas de CRUD na camada DAO.',
+      'Java – Modelagem e OOP: Entidades da camada Model conforme o MER, com encapsulamento, construtores e métodos de acesso.',
+      'Java – API Restful: Camadas DAO, BO e Resource em Spring Boot, com CRUD completo, Connection Factory, CorsFilter e tratamento de exceções.',
+      'Python – CRUD com Banco: Menus e submenus para inserir, alterar, excluir e consultar, com exportação das consultas para JSON.',
+      'Python – Integração: Consumo de API externa pública, com os dados refletidos no sistema web.',
     ],
     github: 'https://github.com/NickRM22',
     linkedin: 'https://www.linkedin.com/in/nicolas-rodrigues-martins-126607360/',
@@ -175,7 +180,7 @@ export default function Integrantes() {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 justify-items-center items-stretch mt-8">
         {listaIntegrantes.map((integrante, index) => (
           <Reveal key={integrante.rm} delay={300 + index * 100} className="w-full h-full flex justify-center">
-            <div className="w-full max-w-[220px] h-full flex flex-col transition-transform duration-300 hover:-translate-y-1 rounded-xl">
+            <div className="w-full max-w-55 h-full flex flex-col transition-transform duration-300 hover:-translate-y-1 rounded-xl">
               <CardIntegrante
                 nome={integrante.nome}
                 rm={integrante.rm}
@@ -189,7 +194,7 @@ export default function Integrantes() {
         ))}
       </div>
       {selecionado && (
-        <div className="fixed inset-0 z-[60]">
+        <div className="fixed inset-0 z-60">
           <div
             onClick={fecharPainel}
             className="absolute inset-0 bg-stone-900/30 animate-fundo"
