@@ -2,7 +2,7 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom';
 import './index.css';
-import { FeedbackProvider } from './context/FeedbackContext';
+
 
 import App from './App.tsx';
 import Home from './pages/Home';
@@ -11,6 +11,10 @@ import Sobre from './pages/Sobre';
 import Faq from './pages/Faq';
 import Integrantes from './pages/Integrantes';
 import Contato from './pages/Contato';
+import Simulador from './pages/Simulador';
+import SimuladorCelular from './pages/SimuladorCelular';
+import StatusApi from './pages/StatusApi';
+import SimuladorAdmin from './pages/SimuladorAdmin';
 
 const router = createBrowserRouter([
   {
@@ -22,8 +26,14 @@ const router = createBrowserRouter([
       { path: '/sobre', element: <Sobre /> },
       { path: '/faq', element: <Faq /> },
       { path: '/integrantes', element: <Integrantes /> },
-      { path: '/integrantes/:rm', element: <Integrantes /> },
+      { path: '/integrantes/:rm?', element: <Integrantes /> },
       { path: '/contato', element: <Contato /> },
+      { path: '/simulador', element: <Simulador />,
+        children: [
+          { index: true, element: <SimuladorCelular /> },
+          { path: 'status', element: <StatusApi /> },
+          { path: 'admin', element: <SimuladorAdmin /> },
+        ],},
       { path: '*', element: <Navigate to="/" replace /> },
     ],
   },
@@ -31,8 +41,6 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <FeedbackProvider>
       <RouterProvider router={router} />
-    </FeedbackProvider>
   </StrictMode>,
 );

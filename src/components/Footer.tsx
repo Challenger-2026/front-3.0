@@ -5,7 +5,7 @@ export default function Footer() {
   const anoAtual = new Date().getFullYear();
 
   return (
-    <footer className="w-full mt-auto px-4 sm:px-6 py-4 text-[#66513c] bg-[#f7efd9] border-t-[3px] border-[#86b6a2] rounded-t-[32px]">
+    <footer className="w-full mt-auto px-4 sm:px-6 pt-4 pb-20 text-[#66513c] bg-[#f7efd9] border-t-[3px] border-[#86b6a2] rounded-t-[32px]">
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
           <Link to="/" className="inline-flex items-center gap-2 text-[#a84312]">

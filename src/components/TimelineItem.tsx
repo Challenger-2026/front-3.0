@@ -1,19 +1,49 @@
-import type { TimelineItemProps } from '../types/types';
+import { useState } from 'react';
 
-export default function TimelineItem({ numero, titulo, descricao }: TimelineItemProps) {
+export interface EtapaRoadmap {
+  numero: number;
+  titulo: string;
+  descricao: string;
+}
+
+export default function TimelineItem({ numero, titulo, descricao }: EtapaRoadmap) {
+  const [aberto, setAberto] = useState(false);
+
   return (
-    <div className="relative flex items-start gap-4 sm:gap-6">
-      <span className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-[#D35400] text-white font-bold flex items-center justify-center text-sm sm:text-base flex-shrink-0 z-10 shadow">
+    <div className="relative pl-10 sm:pl-12 w-full">
+      
+      <button
+        onClick={() => setAberto(!aberto)}
+        className="absolute left-0 top-6 w-8 h-8 rounded-full bg-[#D35400] text-white font-bold flex items-center justify-center -translate-x-1/2 z-10 hover:scale-110 transition-transform cursor-pointer shadow-md focus:outline-none"
+        aria-expanded={aberto}
+      >
         {numero}
-      </span>
-      <div className="bg-white rounded-2xl p-6 shadow-sm border border-stone-100 flex-1">
-        <h3 className="text-base sm:text-lg font-bold text-stone-900 mb-2">
-          {titulo}
-        </h3>
-        <p className="text-stone-600 text-xs sm:text-sm leading-relaxed">
-          {descricao}
-        </p>
+      </button>
+
+      <div 
+        className={`bg-white rounded-2xl p-6 shadow-sm border border-stone-100 w-full transition-all duration-300 ${aberto ? 'border-l-4 border-l-[#D35400] shadow-md' : 'hover:shadow-md'}`}
+      >
+        <button
+          onClick={() => setAberto(!aberto)}
+          className="w-full text-left focus:outline-none flex justify-between items-center group"
+        >
+          <h3 className="text-lg font-bold text-stone-900 group-hover:text-[#D35400] transition-colors">
+            {titulo}
+          </h3>
+          <span className={`text-[#D35400] text-sm transition-transform duration-300 ${aberto ? 'rotate-180' : 'rotate-0'}`}>
+            ▼
+          </span>
+        </button>
+
+        <div
+          className={`overflow-hidden transition-all duration-500 ease-in-out ${
+            aberto ? 'max-h-96 opacity-100 mt-4' : 'max-h-0 opacity-0'
+          }`}
+        >
+          <p className="text-stone-600 text-sm leading-relaxed">{descricao}</p>
+        </div>
       </div>
+      
     </div>
   );
 }
