@@ -12,9 +12,49 @@ O objetivo deste trabalho é consolidar uma solução que coloque o usuário no 
 
 Nesta Sprint 4, o site passa a ter o **Simulador Lobo-guará Tech**, que consome a **API Java (Spring Boot)** e a **API de IA (Python)** do grupo. Ele tem três abas:
 
-* **Celular:** o aplicativo Soul Up funcionando dentro de um celular, com cadastro, login, postagens de ações sustentáveis, comunidades, moderação, ranking, carteira de pontos e benefícios. Ao lado, um painel explica cada tela e mostra o endpoint usado.
-* **Status da API:** a situação da API Java e da API de IA, com a lista dos endpoints e das telas que chamam cada um.
-* **Admin (IA):** visão de administração que usa o modelo de IA para prever o risco de abandono de um usuário.
+* **Celular:** o aplicativo Soul Up funcionando dentro de um celular, com explicação de cada tela ao lado.
+* **Status da API:** a situação das duas APIs e onde cada endpoint é usado.
+* **Admin (IA):** previsão de risco de abandono de um usuário com o modelo de IA.
+
+Os detalhes estão na seção [Simulador Lobo-guará Tech](#-simulador-lobo-guará-tech).
+
+## 🧪 Simulador Lobo-guará Tech
+
+O simulador fica em `/simulador` e usa **rotas aninhadas com `Outlet`**. As três abas compartilham o mesmo estado (`SimuladorContext` e `RequisicoesContext`), então trocar de aba não perde o login nem o histórico de requisições.
+
+| Aba | Rota | API usada | O que mostra |
+| --- | --- | --- | --- |
+| **Celular** | `/simulador` | API Java | O app Soul Up dentro de um celular: cadastro, onboarding, login, postagens de ações sustentáveis, comunidades, moderação às cegas, contestações, ranking (liga semanal e disputa mensal), carteira de pontos e benefícios. Ao lado, um painel explica a tela atual e mostra o endpoint chamado. |
+| **Status da API** | `/simulador/status` | API Java e API de IA | Se cada API está no ar (última verificação) e a lista dos 23 endpoints da API Java, com as telas que chamam cada um. |
+| **Admin (IA)** | `/simulador/admin` | API de IA | Visão de administração: sorteia um usuário de teste, envia os dados ao modelo e mostra a classe prevista, a probabilidade de risco de abandono, o perfil do agrupamento (K-Means), orientações de retenção e se o modelo acertou o rótulo real. |
+
+### Painel de requisições ao vivo
+
+Todas as chamadas às APIs passam por uma função única (`requisitar`, em `src/services/http.ts`) e aparecem no painel de requisições com o método, o endpoint e o status da resposta. Assim dá para ver, enquanto se navega, onde cada API é usada.
+
+### Endpoints da API de IA
+
+| Método | Endpoint | Uso no simulador |
+| :---: | --- | --- |
+| `GET` | `/sortear` | Sorteia um dos 50 usuários de teste, com o rótulo real |
+| `POST` | `/prever` | Devolve a classe, a probabilidade de risco, o perfil do K-Means e as orientações de retenção |
+
+### Perfis de teste
+
+Todos usam a senha `soulup123` (os mesmos dados no `db.json` e na API Java).
+
+| Usuário | O que demonstra |
+| --- | --- |
+| `anacarol` | Contestação de rejeição e o 409 do Criador |
+| `brunot` | Criador de comunidades |
+| `carlam` | Reputação 88: fila de moderação sem as comunidades dela |
+| `helenap` | Reputação 96: revisa contestações |
+| `diegoa` | Elegível: passa na candidatura a moderador |
+| `dudalopes` | Não elegível (taxa de rejeição de 50%) |
+
+### Recursos em demonstração
+
+O que a API Java ainda não tem (missões, temas e respostas do onboarding, distintivos, benefícios, limite diário de moderações e histórico de previsões da IA) fica só no front e aparece com o aviso **"Demonstração"** na própria tela.
 
 ## 🛠️ Tecnologias Utilizadas
 
@@ -29,7 +69,7 @@ Nesta Sprint 4, o site passa a ter o **Simulador Lobo-guará Tech**, que consome
 * **React Icons:** ícones da interface.
 * **json-server:** API local de apoio (`db.json`) para testar o front sem a API Java.
 * **API Java (Spring Boot):** back-end do projeto, publicado no Render ([repositório](https://github.com/Challenger-2026/java-api)).
-* **API de IA (Python/Flask):** modelo de risco de abandono, publicado no Render.
+* **API de IA (Python/Flask):** modelo de risco de abandono, publicado no Render ([repositório](https://github.com/Challenger-2026/lobo-guara-ia)).
 * **Git, GitHub e Git Flow:** versionamento com branches `feature/` a partir da `develop`, pull requests e releases na `main`.
 * **Vercel:** deploy da aplicação.
 
@@ -39,7 +79,7 @@ Nesta Sprint 4, o site passa a ter o **Simulador Lobo-guará Tech**, que consome
 
 * 🔗 **Repositório no GitHub:** [github.com/Challenger-2026/front-3.0](https://github.com/Challenger-2026/front-3.0)
 * 🌐 **Aplicação na Vercel:** [https://lobo-guara-swart.vercel.app/](https://lobo-guara-swart.vercel.app/)
-* 📹 **Vídeo no YouTube:** [COLOCAR_LINK_DO_VIDEO](COLOCAR_LINK_DO_VIDEO)
+* 📹 **Vídeo no YouTube:** [https://youtu.be/bQpkMBSZxE4](https://youtu.be/bQpkMBSZxE4)
 
 ### Como executar
 
@@ -75,7 +115,7 @@ Para usar o json-server, rode `npm run backend` em outro terminal. Os demais com
 
 * Navegue pelas páginas pelo menu: Home, Sobre, Solução, FAQ, Integrantes, Contato e Simulador.
 * Em **Integrantes**, clique em uma pessoa para abrir o painel com a rota `/integrantes/:rm`.
-* No **Simulador**, crie uma conta, faça login, publique uma ação sustentável e acompanhe o painel de requisições.
+* No **Simulador**, crie uma conta ou entre com um dos [perfis de teste](#perfis-de-teste), publique uma ação sustentável e acompanhe o painel de requisições.
 * Na aba **Status da API**, veja se as APIs estão no ar e quais endpoints cada tela usa.
 * Na aba **Admin (IA)**, sorteie um usuário de teste e veja a previsão de risco de abandono.
 * Confira o layout em celular, tablet e desktop.
@@ -159,14 +199,16 @@ As imagens estão na pasta `src/assets`.
 
 ### 💻 1. Página Inicial (Home)
 ![Demonstração da Home Page](src/assets/index.png)
+![Demonstração da Home Page](src/assets/indexcont.png)
 *Legenda: seção principal com a proposta do projeto e acesso às demais páginas.*
 
 ### 📄 2. Página Sobre
 ![Demonstração da Página Sobre](src/assets/sobre.png)
+![Demonstração da Página Sobre](src/assets/sobrecont.png)
 *Legenda: contexto e problema, tipos de solução e roadmap de desenvolvimento.*
 
 ### 🚀 3. Página Solução
-![Demonstração da Página de Solução](src/assets/solucao.png)
+![Demonstração da Página de Solução](src/assets/solucao.png)![Demonstração da Página de Solução](src/assets/solucaocont.png)
 *Legenda: explicação do ecossistema de gamificação, regras e dinâmica de pontuação.*
 
 ### 📱 4. FAQ
@@ -180,6 +222,18 @@ As imagens estão na pasta `src/assets`.
 ### ✉️ 6. Contato
 ![Demonstração da Página de Contato](src/assets/contato.png)
 *Legenda: formulário com validação dos campos.*
+
+### 🧪 7. Simulador — Celular
+![Demonstração do Simulador](src/assets/simulador.png)
+*Legenda: app Soul Up dentro do celular, com a explicação da tela e o endpoint usado ao lado, e o painel de requisições ao vivo.*
+
+### 📡 8. Simulador — Status da API
+![Demonstração do Status da API](src/assets/api.png)
+*Legenda: situação da API Java e da API de IA e a lista de endpoints com as telas que chamam cada um.*
+
+### 🤖 9. Simulador — Admin (IA)
+![Demonstração do Admin com IA](src/assets/ia.png)
+*Legenda: previsão de risco de abandono de um usuário de teste, com a probabilidade, o perfil do K-Means e a comparação com o rótulo real.*
 
 ## 📞 Contato
 
