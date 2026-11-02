@@ -234,7 +234,7 @@ As imagens estão na pasta `src/assets`.
 *Legenda: situação da API Java e da API de IA e a lista de endpoints com as telas que chamam cada um.*
 
 ### 🤖 9. Simulador — Admin (IA)
-![Demonstração do Admin com IA](src/assets/ia.png)
+![Demonstração do Admin com IA](src/assets/IA.png)
 *Legenda: previsão de risco de abandono de um usuário de teste, com a probabilidade, o perfil do K-Means e a comparação com o rótulo real.*
 
 ## 📞 Contato
