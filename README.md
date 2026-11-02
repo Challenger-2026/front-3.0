@@ -79,7 +79,7 @@ O que a API Java ainda não tem (missões, temas e respostas do onboarding, dist
 
 * 🔗 **Repositório no GitHub:** [github.com/Challenger-2026/front-3.0](https://github.com/Challenger-2026/front-3.0)
 * 🌐 **Aplicação na Vercel:** [https://lobo-guara-swart.vercel.app/](https://lobo-guara-swart.vercel.app/)
-* 📹 **Vídeo no YouTube:** [COLOCAR_LINK_DO_VIDEO](COLOCAR_LINK_DO_VIDEO)
+* 📹 **Vídeo no YouTube:** [https://youtu.be/bQpkMBSZxE4](https://youtu.be/bQpkMBSZxE4)
 
 ### Como executar
 
