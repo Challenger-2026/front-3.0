@@ -80,6 +80,8 @@ O que a API Java ainda não tem (missões, temas e respostas do onboarding, dist
 * 🔗 **Repositório no GitHub:** [github.com/Challenger-2026/front-3.0](https://github.com/Challenger-2026/front-3.0)
 * 🌐 **Aplicação na Vercel:** [https://lobo-guara-swart.vercel.app/](https://lobo-guara-swart.vercel.app/)
 * 📹 **Vídeo no YouTube:** [https://youtu.be/bQpkMBSZxE4](https://youtu.be/bQpkMBSZxE4)
+* ☕ **API Java publicada (Render):** [https://guara-api.onrender.com](https://guara-api.onrender.com)
+* 🤖 **API de IA publicada (Render):** [https://lobo-guara-ia.onrender.com](https://lobo-guara-ia.onrender.com)
 
 ### Como executar
 
